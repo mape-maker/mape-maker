@@ -10,6 +10,8 @@ This package can be used to create simulations of wind power forecasts from actu
 from actuals to forecasts. It has been implemented so that a generalization to any type of dataframe providing
 actuals and forecasts, is possible.
 
+Documentation is available at `readthedocs. <https://mape-maker.readthedocs.io/en/latest/>`_
+
 The main inputs of the package are :
 
 * an input dataset giving forecasts and actuals for specified datetimes.
@@ -25,7 +27,7 @@ With these three steps, MapeMaker aims at satisfying the plausability criteria. 
 In this regard, the two technical specification to make for each simulation are the following :
 
 * Base Process : IID (generate IDD and so uncorrelated base process), ARMA (default)
-* Curvature : boolean
+* Curvature : boolean (This is usually not needed, so the default is FALSE)
 
 
 Skeleton of the project
