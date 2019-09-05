@@ -12,11 +12,11 @@ Here is a step-by-step explanation:
     git clone https://github.com/GridMod/RTS-GMLC.git
 
 2. Now use the process_RTS_GMLC_data_s.py file to process the data in the required format for MapeMaker.
-First, cd to rts_data directory.
+First, cd to the directory with the program:
 
 ::
 
-    cd test/rts_data/
+    cd mape_maker/samples/rts_gmlc/
 
 Then, you can run the python script as follows:
 
