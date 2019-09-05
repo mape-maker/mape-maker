@@ -6,6 +6,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-   - python -m test/load_quick_test.py
-#script:
-#   - python -m unittest discover -s test -p "*.py"
+   - python -m unittest discover -s test -p "l*.py"
