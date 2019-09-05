@@ -10,7 +10,7 @@ This package can be used to create simulations of wind power forecasts from actu
 from actuals to forecasts. It has been implemented so that a generalization to any type of dataframe providing
 actuals and forecasts, is possible.
 
-Documentation is available at `readthedocs. <https://mape-maker.readthedocs.io/en/latest/>`_
+Documentation is available at `readthedocs <https://mape-maker.readthedocs.io/en/latest/>`_ and there is a paper on `arXiv. <http://arxiv.org/abs/1909.01919>`
 
 The main inputs of the package are :
 
