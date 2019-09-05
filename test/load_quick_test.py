@@ -76,17 +76,13 @@ class TestUM(unittest.TestCase):
         """
         create a sub temporary directory inside the main temporary directory
         to save the output file
-        :return: sub_directory
         """
         sub_directory = tempfile.mkdtemp(dir=self.temp_dir)
         print("sub temporary directory:", sub_directory)
         return sub_directory
 
-    #def return_first_last_num(self, csv_datafile):
-
-    @unittest.skipIf(skip_all_but_one,
-                     "skipping the second tests")
     def test_load_first_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_iid" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
@@ -111,8 +107,9 @@ class TestUM(unittest.TestCase):
         #print(output_file_path)
 
     @unittest.skipIf(skip_all_but_one,
-                     "skipping the second tests")
+                     "skipping the second test")
     def test_load_second_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_actuals_ARMA" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
@@ -132,8 +129,9 @@ class TestUM(unittest.TestCase):
         shutil.move(output_dir_path, self.create_temp_dir())
 
     @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
-                     "skipping the third tests")
+                     "skipping the third test")
     def test_load_third_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
@@ -151,8 +149,9 @@ class TestUM(unittest.TestCase):
         shutil.move(output_dir_path, self.create_temp_dir())
 
     @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
-                     "skipping the fourth tests")
+                     "skipping the fourth test")
     def test_load_fourth_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_forecasts_iid" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
@@ -173,7 +172,6 @@ class TestUM(unittest.TestCase):
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.create_temp_dir())
 
-
     def get_the_first_and_last_num(self, output_dir_path):
         """
         this function will convert the output dir into dataframe
@@ -193,7 +191,7 @@ class TestUM(unittest.TestCase):
         return first_num, last_num
 
     @unittest.skipIf(skip_all_but_one,
-                     "skipping the second tests")
+                     "skipping compare output dir with seed test")
     def compare_output_dirs_with_seed(self):
         """
         In this test, we are going to compare the first and the
@@ -201,6 +199,7 @@ class TestUM(unittest.TestCase):
         the same results with the given seed.
         :return: boolean
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict                   = self._base_dict()
         parm_dict["input_file"]     = self.load_data
@@ -230,7 +229,7 @@ class TestUM(unittest.TestCase):
             sys.exit(1)
 
     @unittest.skipIf(skip_all_but_one,
-                     "skipping the second tests")
+                     "skipping compare output dir without seed test")
     def compare_output_dirs_without_seed(self):
         """
         In this test, we are going to compare the first and the
@@ -238,6 +237,7 @@ class TestUM(unittest.TestCase):
         the same results without the given seed.
         :return: boolean
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict                   = self._base_dict()
         parm_dict["input_file"]     = self.load_data
@@ -267,6 +267,8 @@ class TestUM(unittest.TestCase):
                   " the numbers should be different")
             sys.exit(1)
 
+    @unittest.skipIf(skip_all_but_one,
+                     "skipping check input and simulation dates test")
     def test_simulation_and_input_dates(self):
         """
         python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-4-22 0:0:0" -ed "2020-6-29 23:0:0" -s 1234
@@ -274,6 +276,7 @@ class TestUM(unittest.TestCase):
         than the input start dates, then the code will throw some error messages.
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data

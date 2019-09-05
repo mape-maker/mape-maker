@@ -78,6 +78,7 @@ class TestUM(unittest.TestCase):
         This test will fail because the simulation date range is too small
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
         parm_dict = self._basic_dict()
@@ -100,6 +101,7 @@ class TestUM(unittest.TestCase):
             self.assertTrue('infeasible to meet target' in context)
 
     def test_second_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -s 1234
         parm_dict = self._basic_dict()
@@ -118,6 +120,7 @@ class TestUM(unittest.TestCase):
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the third tests")
     def test_third_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
         parm_dict = self._basic_dict()
@@ -135,6 +138,7 @@ class TestUM(unittest.TestCase):
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fourth tests")
     def test_fourth_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "iid" --output_dir "wind_forecasts_iid" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
         parm_dict = self._basic_dict()
@@ -162,6 +166,7 @@ class TestUM(unittest.TestCase):
         This test will fail because the simulation date range is too small
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "ARMA" -o "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
         parm_dict = self._basic_dict()
@@ -206,6 +211,7 @@ class TestUM(unittest.TestCase):
         the same results with the given seed.
         :return: boolean
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
@@ -237,6 +243,7 @@ class TestUM(unittest.TestCase):
         the same results without the given seed.
         :return: boolean
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
@@ -268,6 +275,7 @@ class TestUM(unittest.TestCase):
         than the input start dates, then the code will throw some error messages.
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         # initialize the parameters
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data

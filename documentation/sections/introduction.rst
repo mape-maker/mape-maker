@@ -7,7 +7,7 @@ actuals and forecasts, is possible.
 The main inputs of the package are :
 
 * an input dataset giving forecasts and actuals for specified datetimes as a csv file.
-* a simulation input dataset : the start and end-date of the subset of the input dataset.
+* a simulation input dataset : the start and end-date of the subset of the input dataset, the dataset's start and end dates are the default dates.
 * r_tilde : a desired MAPE (i.e mean absolute percent error see more at :ref:`Percent Errors and MAPEs`) for the simulations in output
 * user-specified technical parameters (see more at :ref:`Options`).
 
@@ -42,12 +42,14 @@ A scenario set is said to be "plausible" if :
 Setup
 ******
 The package is compatible with Python version 3 or higher only.
+The user is expected to have installed pyomo before running the package.
+Go to http://www.pyomo.org for more information.
 
 1. Switch to a proper directory and then type:
 
 ::
 
-    git clone + https://github.com/GuillaumeGoujard/mape_maker_v2.git
+    git clone + https://github.com/mape-maker/mape-maker.git
 
 
 2. Install the package with the setup.py file:
@@ -70,7 +72,7 @@ Notes about the Input File
 
 1. If you want to use your own datafile as an input to run the mape_maker, then the input file format should be:
 
-    * **"datetime"** as the first column, format as 'Y-m-d H:M:S'.  i.e: 2020-01-01 01:00:00
+    * **"datetime"** as the first column, format as 'Y-M-D H:M:S'.  i.e: 2020-01-01 01:00:00
     * **"forecasts"** data as the second column, format as "float".  i.e: 3264.59
     * **"actuals"** data as the third column, format as "float".  i.e: 3264.59
 
@@ -84,6 +86,3 @@ Summary of the Algorithm
 .. figure:: ../_static/flow_chart.png
    :width: 500px
    :align: center
-
-
-In MapeMaker,
