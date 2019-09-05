@@ -204,7 +204,7 @@ If you are simulating **actuals from forecasts**,
 
 
 Plausability criteria
-########################
+#####################
 
 A scenario set is said to be "plausible" if :
     - its distribution of errors is close to the empirical distribution of errors i.e its plausibility score is close to 1.
@@ -213,7 +213,7 @@ A scenario set is said to be "plausible" if :
 
 
 References
-########################
+##########
 
 [1] "Mape_Maker: A Scenario Creator"
 Guillaume Goujard, Jean-Paul Watson, and David L. Woodruff,
@@ -222,3 +222,9 @@ Guillaume Goujard, Jean-Paul Watson, and David L. Woodruff,
 
 [2] "Fitting Time-Series Input Processes for Simulation", Bahar Biller, Barry L. Nelson, OPERATIONS RESEARCH
 Vol. 53, No. 3, May–June 2005, pp. 549–559
+
+Travis Status
+#############
+
+.. image:: https://travis-ci.org/mape-maker/mape-maker.svg?branch=master
+    :target: https://travis-ci.org/mape-maker/mape-maker
