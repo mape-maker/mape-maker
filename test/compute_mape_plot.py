@@ -19,6 +19,7 @@ dir_sep = '/'
 
 def combine_mape_plot(input_file, output_file, scenario_type):
     """
+    This function will compute the target mare and create the scenario plots
     :param input_file:
     :param output_file:
     :param scenario_type:
@@ -92,15 +93,13 @@ def print_usage(msg):
 if __name__ == '__main__':
     # Format for the command line arguements:
     # python compute_mape_plot.py input_file_path output_file_path scenario_type
-    scenario_type = "forecasts"
-    # scenario_type = "actuals"
 
     if len(sys.argv) != 4:
         print_usage("Need four arguments")
 
     # example:
-    # input_file_path = "../../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"
-    # output_file_path = "../../load_actuals_iid/target_mape__of_the_empirical_dataset-_base_process_ARMA__seed-1234.csv"
+    # input_file_path = "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"
+    # output_file_path = "../load_actuals_iid/target_mape__of_the_empirical_dataset-_base_process_ARMA__seed-1234.csv"
     # scenario_type = "actuals"
     input_file_path = sys.argv[1]
     output_file_path = sys.argv[2]

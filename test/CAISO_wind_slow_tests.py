@@ -210,7 +210,6 @@ class TestUM(unittest.TestCase):
         parm_dict["input_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
         parm_dict["target_mape"] = 30
         parm_dict["seed"] = 1234
-        parm_dict["full_dataset"] = False
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # add a new column to compare two simulations

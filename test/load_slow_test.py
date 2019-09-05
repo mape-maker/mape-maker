@@ -63,9 +63,8 @@ class TestUM(unittest.TestCase):
                     "curvature": None,
                     "time_limit": 1,
                     "curvature_target": None,
-                    "mip": None,
+                    "mip_gap": None,
                     "solver": None,
-                    "full_dataset": True,
                     "latex_output": False,
                     "show": False
                     }
@@ -90,7 +89,6 @@ class TestUM(unittest.TestCase):
         parm_dict["number_simulations"]     = 3
         parm_dict["base-process"]           = "ARMA"
         parm_dict["output_dir"]             = "load_actuals_iid"
-        parm_dict["full_dataset"]           = True
         parm_list                           = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
@@ -132,7 +130,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"] = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"] = datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)
         parm_dict["output_dir"] = "load_actuals_ARMA"
-        parm_dict["full_dataset"] = False
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
@@ -171,7 +168,6 @@ class TestUM(unittest.TestCase):
         parm_dict["number_simulations"] = 3
         parm_dict["base-process"] = "ARMA"
         parm_dict["output_dir"] = "load_actuals_ARMA"
-        parm_dict["full_dataset"] = True
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
@@ -213,7 +209,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"] = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"] = datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)
         parm_dict["output_dir"] = "load_forecasts_iid"
-        parm_dict["full_dataset"] = False
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
