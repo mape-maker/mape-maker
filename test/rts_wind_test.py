@@ -70,6 +70,7 @@ class TestUM(unittest.TestCase):
         python -m mape_maker "mape_maker/samples/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -s 1234
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"

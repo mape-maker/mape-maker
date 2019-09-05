@@ -61,6 +61,7 @@ class TestUM(unittest.TestCase):
                          "Bus_220_Load_zone2_forecasts_actuals.csv"
 
     def test_Bus_220_load(self):
+        print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "test/rts_data/prescient_rts_gmlc/timeseries_data_files_noerror/Bus_220_Load_zone2_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-10 0:0:0" -ie "2020-7-20 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "Bus_220_load" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
