@@ -74,6 +74,7 @@ class TestUM(unittest.TestCase):
         return basedict
 
     def test_first_commmand(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -s 1234
         parm_dict = self._basic_dict()
@@ -116,6 +117,7 @@ class TestUM(unittest.TestCase):
         This test will fail because the simulation date range is too small
         :return:
         """
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "ARMA" -o "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
         parm_dict = self._basic_dict()
@@ -159,6 +161,7 @@ class TestUM(unittest.TestCase):
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the third tests")
     def test_third_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
         parm_dict = self._basic_dict()
@@ -196,6 +199,7 @@ class TestUM(unittest.TestCase):
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fourth tests")
     def test_fourth_command(self):
+        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "ARMA" --output_dir "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
         parm_dict = self._basic_dict()

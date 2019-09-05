@@ -1,18 +1,19 @@
 CAISO wind data file examples
 =============================
 
-**sample command 1:**
+**Sample Command 1:**
 
 ---------------------------------------------
 
 The following command will take the data from *wind_total_forecast_actual_070113_063015.csv*
 , and launch the simulations with n=5 and target mape=30 from forecasts to actuals using an ARMA
-Base Process. It will simulate from 2014-6-27 01:00:00 to 2014-6-30 00:00:00. Finally, it will return a
-plot of simulations, and create an output dir called "wind_actuals_ARMA_1".
+Base Process. It will simulate from 2014-6-10 01:00:00 to 2014-6-29 00:00:00. Finally, it will return a
+plot of simulations, and create an output dir called "wind_actuals_ARMA" in the temporary dir.
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-30 00:00:00" -t 30 -s 1234
+    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA" -is "2013-7-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-10 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
+
 
 This command will first call the __main__.py, which will create a MapeMaker class and
 call the simulate function. You should see a plot similar to this:
@@ -26,28 +27,28 @@ call the simulate function. You should see a plot similar to this:
  The number of simulations that we want to create is "5". This will create three simulation columns in the output file.
 * **-bp "ARMA"**:
  Use "ARMA" as the base process. The default base process is set as "ARMA".
-* **-sd "2014-6-27 01:00:00"**:
- The start date of the simulation is "2014-6-27 01:00:00"
-* **-ed "2014-6-30 00:00:00"**:
- The end date of the simulation is "2014-6-30 00:00:00"
-* **-is "2014-6-1 00:00:00"**:
+* **-is "2014-7-1 00:00:00"**:
  The start date for the computation of the distributions is "2014-6-1 00:00:00"
 * **-ie "2014-6-30 00:00:00"**:
  The end date for the computation of the distributions is "2014-6-30 00:00:00"
+* **-sd "2014-6-10 01:00:00"**:
+ The start date of the simulation is "2014-6-27 01:00:00"
+* **-ed "2014-6-29 00:00:00"**:
+ The end date of the simulation is "2014-6-30 00:00:00"
 * **-t 30**:
  The mape that you want to return is 30
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
- * **-o "wind_actuals_ARMA_1"**:
- Create an output directory called "wind_actuals_ARMA_1", in which will store the simulation output file.
+ * **-o "wind_actuals_ARMA"**:
+ Create an output directory called "wind_actuals_ARMA", in which will store the simulation output file.
 
 After running the command line, you should see a similar plot like this:
 
-.. figure::  ../_static/wind_command_line2.png
+.. figure::  ../_static/wind_actuals_ARMA.png
    :align:   center
 |
 |
-**sample command 2:**
+**Sample Command 2:**
 
 ---------------------------------------------
 
@@ -69,13 +70,13 @@ plot of simulations, and create an output dir called "wind_actuals_iid".
  The number of simulations that we want to create is "3". This will create three simulation columns in the output file.
 * **-bp "iid"**:
  Use "iid" as the base process. The default base process is "ARMA".
-* **-s 1234**:
- Set the seed as "1234", so it won't randomly choose a number as the seed.
 * **-o "wind_actuals_iid"**:
  Create an output directory called "wind_actuals_iid", in which will store the simulation output file.
+* **-s 1234**:
+ Set the seed as "1234", so it won't randomly choose a number as the seed.
 
 After running the command line, you should see a similar plot like this:
 
-.. figure::  ../_static/wind_command_line1.png
+.. figure::  ../_static/wind_actuals_iid.png
    :align:   center
 

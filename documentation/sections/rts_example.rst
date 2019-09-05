@@ -48,9 +48,9 @@ and create an output dir called "wind_forecasts_actuals".
 
 ::
 
-    python -m mape_maker "test/rts_data/my_rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -s 1234
+    python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -s 1234
 
-* **"test/rts_data/my_rts_gmlc/WIND_forecasts_actuals.csv"**:
+* **"mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
@@ -59,16 +59,15 @@ and create an output dir called "wind_forecasts_actuals".
  The number of simulations that we want to create is "5". This will create three simulation columns in the output file.
 * **-bp "ARMA"**:
  Use "ARMA" as the base process.
+* **-o "wind_forecasts_actuals"**:
+ Create an output directory called "wind_forecasts_actuals" in the temporary subdirectory, in which will store the simulation output file.
+ The program prints the temporary subdirectory in the temporary directory. The user can retrieve the output dir using that location.
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
-* **-o "wind_forecasts_actuals"**:
- Create an output directory called "wind_forecasts_actuals", in which will store the simulation output file.
 
-
-make sure forecast_error = True
 After running the command line, you should see a similar plot like this:
 
-.. figure::  ../_static/rts_wind_command1.png
+.. figure::  ../_static/wind_forecasts_actuals.png
    :align:   center
 
 Example 2 - Bus_220_Load_zone2_forecasts_actuals.csv
@@ -81,9 +80,9 @@ plot of simulations, and create an output dir called "Bus_220_load".
 
 ::
 
-    python -m mape_maker "test/rts_data/prescient_rts_gmlc/timeseries_data_files_noerror/Bus_220_Load_zone2_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-10 1:0:0" -ie "2020-7-20 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "Bus_220_load" -s 1234
+    python -m mape_maker "mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-10 1:0:0" -ie "2020-7-20 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "Bus_220_load" -s 1234
 
-* **"test/rts_data/prescient_rts_gmlc/timeseries_data_files_noerror/Bus_220_Load_zone2_forecasts_actuals.csv"**:
+* **"mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
@@ -100,12 +99,12 @@ plot of simulations, and create an output dir called "Bus_220_load".
  The start date of the scenario simulation is "2020-6-1 0:0:0"
 * **-ed "2020-6-30 23:0:0"**:
  The end date of the scenario simulation is "2020-6-1 0:0:0"
-* **-s 1234**:
- Set the seed as "1234", so it won't randomly choose a number as the seed.
 * **-o "Bus_220_load"**:
  Create an output directory called "Bus_220_load", in which will store the simulation output file.
+* **-s 1234**:
+ Set the seed as "1234", so it won't randomly choose a number as the seed.
 
 After running the command line, you should see a similar plot like this:
 
-.. figure::  ../_static/rts_bus_220_load_command1.png
+.. figure::  ../_static/bus_220_load.png
    :align:   center
