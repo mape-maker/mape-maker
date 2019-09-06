@@ -11,7 +11,7 @@ loading_bar = "-"*60
 
 
 class MapeMaker:
-    __version__ = "2.0"
+    __version__ = "0.9"
     path_to_test = {
         "BPA": "samples/2012-2013_BPA_forecasts_actuals.csv",
         "CAISO": "samples/wind_total_forecast_actual_070113_063015.csv",
