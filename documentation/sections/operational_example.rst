@@ -43,3 +43,6 @@ After running the command line, you should see a similar plot like this:
 
 .. figure::  ../_static/operations_example.png
    :align:   center
+
+Since rts_gmlc Load data has very little relative error and hence very little mape,
+the scenario lines tend to overlap in the plot.
