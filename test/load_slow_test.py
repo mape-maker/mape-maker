@@ -47,27 +47,27 @@ class TestUM(unittest.TestCase):
         initialize the parameters
         :return: basedict
         """
-        basedict = {"input_file": "",
-                    "target_mape": None,
-                    "simulated_timeseries": "",
-                    "base-process": "",
-                    "a": None,
-                    "output_dir": "result",
-                    "number_simulations": 3,
-                    "input_start_dt": None,
-                    "input_end_dt": None,
-                    "simulation_start_dt": None,
-                    "simulation_end_dt": None,
-                    "title": "",
-                    "seed": 1234,
-                    "load_pickle": False,
-                    "curvature": None,
-                    "time_limit": 1,
-                    "curvature_target": None,
-                    "mip_gap": None,
-                    "solver": "gurobi",
-                    "latex_output": False,
-                    "show": True
+        basedict = {"input_file"                : "",
+                    "target_mape"               : None,
+                    "simulated_timeseries"      : "",
+                    "base-process"              : "",
+                    "a"                         : None,
+                    "output_dir"                : "result",
+                    "number_simulations"        : 3,
+                    "input_start_dt"            : None,
+                    "input_end_dt"              : None,
+                    "simulation_start_dt"       : None,
+                    "simulation_end_dt"         : None,
+                    "title"                     : "",
+                    "seed"                      : 1234,
+                    "load_pickle"               : False,
+                    "curvature"                 : None,
+                    "time_limit"                : 1,
+                    "curvature_target"          : None,
+                    "mip_gap"                   : None,
+                    "solver"                    : "gurobi",
+                    "latex_output"              : False,
+                    "show"                      : True
                     }
 
         return basedict
@@ -82,7 +82,7 @@ class TestUM(unittest.TestCase):
         print("sub temporary directory:", sub_directory)
         return sub_directory
 
-    def test_load_first_command(self):
+    def test_load_actuals_iid(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_iid" -s 1234
         parm_dict                           = self._base_dict()
@@ -118,9 +118,11 @@ class TestUM(unittest.TestCase):
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.create_temp_dir())
 
+
+
     @unittest.skipIf(skip_all_but_one,
                      "skipping the second tests")
-    def test_load_second_command(self):
+    def test_load_actuals_ARMA_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_actuals_ARMA" -s 1234
         parm_dict = self._base_dict()
@@ -161,9 +163,12 @@ class TestUM(unittest.TestCase):
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.create_temp_dir())
 
+
+
+
     @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
                      "skipping the third tests")
-    def test_load_third_command(self):
+    def test_load_actuals_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
         parm_dict = self._base_dict()
@@ -199,9 +204,12 @@ class TestUM(unittest.TestCase):
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.create_temp_dir())
 
+
+
+
     @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
                      "skipping the fourth tests")
-    def test_load_fourth_command(self):
+    def test_load_forecasts_iid_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_forecasts_iid" -s 1234
         parm_dict = self._base_dict()

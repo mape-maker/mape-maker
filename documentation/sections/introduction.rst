@@ -1,7 +1,7 @@
 Introduction
 ============
-This package can be used to simulate scenarios of wind power forecasts from actuals or from actuals
-to forecasts. It has been implemented so that a generalization to any source of uncertainty providing
+This package can be used to simulate scenarios of wind power forecasts from actuals and vice-versa.
+It has been implemented so that a generalization to any source of uncertainty providing
 actuals and forecasts, is possible.
 
 The main inputs of the package are :

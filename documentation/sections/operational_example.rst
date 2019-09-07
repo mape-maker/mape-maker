@@ -13,29 +13,31 @@ Finally, it will return a plot of simulations, and create an output dir called "
 
 ::
 
-    python -m mape_maker "mape_maker/samples/operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2013-7-1 00:00:00" -ie "2014-2-14 23:00:00" -sd "2014-2-15 00:00:00" -ed "2014-2-16 23:00:00" -o "operations_example" -s 1234
+    python -m mape_maker "mape_maker/samples/rts_gmlc/load_operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "operations_example" -s 1234 -t 50
 
 * **"mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
-* **-n 3**:
+* **-n 5**:
  The number of simulations that we want to create is "3". This will create three simulation columns in the output file.
 * **-bp "ARMA"**:
  Use "ARMA" as the base process. The default base process is set as "ARMA".
-* **-is "2013-7-1 00:00:00"**:
+* **-is "2020-1-1 01:00:00"**:
  The start date for the computation of the distributions is "2013-7-1 00:00:00"
-* **-ie "2014-2-14 23:00:00"**:
+* **-ie "2020-12-29 23:00:00"**:
  The end date for the computation of the distributions is "2014-2-14 23:00:00"
-* **-sd "2014-2-15 00:00:00"**:
+* **-sd "2020-12-30 00:00:00"**:
  The start date of the simulation is "2014-2-15 00:00:00"
-* **-ed "2014-2-16 23:00:00"**:
+* **-ed "2020-12-31 23:00:00"**:
  The end date of the simulation is ""2014-2-16 23:00:00"
 * **-o "operations_example"**:
  Create an output directory called "operations_example", in which will store the simulation output file.
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
+* **-t 50**:
+ Set the target mape as 50.
 
 After running the command line, you should see a similar plot like this:
 
