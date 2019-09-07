@@ -72,6 +72,10 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
          mip, solver, latex_output, show):
 
     input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir)
+    if simulation_start_dt is None and input_start_dt is not None:
+        simulation_start_dt = input_start_dt
+    if simulation_end_dt is None and input_end_dt is not None:
+        simulation_end_dt = input_end_dt
     full_dataset = simulation_start_dt is None and simulation_end_dt is None
         
     mare_embedder = MapeMaker.MapeMaker(path=input_file,
