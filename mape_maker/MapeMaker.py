@@ -228,7 +228,7 @@ class MapeMaker:
             "%.2f" % closest_zero))
         self.s_x_tilde[0] = self.s_x_tilde[closest_zero]
         print(loading_bar)
-        return self.s_x_tilde
+        return self.s_x_tilde, nb_errors
 
     def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False, output_dir=None, seed=None,
                  list_of_date_ranges=(datetime.datetime(2013, 8, 1), datetime.datetime(2014, 1, 1),),
@@ -303,7 +303,7 @@ class MapeMaker:
                 self.r_tilde = target_mare
                 self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
                 self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
-                self.s_x_tilde = self.get_simulation_parameters(target_mare, self.datasetsid)
+                self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
                 if self.s_x_tilde is None:
                     return False
             if curvature_parameters is not None:
@@ -328,7 +328,7 @@ class MapeMaker:
                 print("Latex output not supported for now")
                 # to_latex.generate_unique(self.saved_scores, results, 0.01)
 
-        return self.saved_scores
+        return self.saved_scores, nb_errors
 
     def create_parameters_simulation(self, n, base_process, curvature_parameters, output_dir):
         """
@@ -466,11 +466,15 @@ if __name__ == "__main__":
         "forecasts": [None, 2],
     }
 
-    scores = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
+    scores,nb_errors = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
                                     full_dataset=False, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
                                     latex=False)
+    if nb_errors > 0:
+        print ("WARNING:")
+        print ("   {} errors computing simulating distribution parameters".format(nb_errors))
+        print ("   so the simulated MAPE may not match the target.")
 
     mare_embedder.plot_example()
 
