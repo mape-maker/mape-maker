@@ -100,8 +100,6 @@ class TestUM(unittest.TestCase):
             self.assertTrue(isinstance(context, Iterable))
             self.assertTrue('infeasible to meet target' in context)
 
-    @unittest.skipIf(skip_all_but_one,
-                     "skipping the second tests")
     def test_wind_actuals_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
@@ -111,10 +109,10 @@ class TestUM(unittest.TestCase):
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 3
         parm_dict["base-process"] = "iid"
-        parm_dict["input_start_dt"] = "2014-7-1 00:00:00"
-        parm_dict["input_end_dt"] = "2014-8-1 00:00:00"
-        parm_dict["simulation_start_dt"] = "2014-7-2 00:00:00"
-        parm_dict["simulation_end_dt"] = "2014-7-31 00:00:00"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
         parm_dict["output_dir"] = "wind_actuals_iid"
         parm_dict["seed"] = 1234
         parm_list = list(parm_dict.values())

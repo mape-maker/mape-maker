@@ -59,7 +59,7 @@ plot of simulations, and create an output dir called "wind_actuals_iid".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -s 1234
+    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_iid" -t 15 -s 1234
 
 * **"mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.

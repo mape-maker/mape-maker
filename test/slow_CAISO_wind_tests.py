@@ -73,15 +73,19 @@ class TestUM(unittest.TestCase):
                     }
         return basedict
 
-    def test_first_commmand(self):
+    def test_wind_actuals_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 3
         parm_dict["base-process"] = "iid"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
         parm_dict["output_dir"] = "wind_actuals_iid"
         parm_dict["seed"] = 1234
         parm_list = list(parm_dict.values())
@@ -93,17 +97,17 @@ class TestUM(unittest.TestCase):
         # step 4 : save the new output file and create a graph to show the differences
         csv_path = self.temp_dir + dir_sep + parm_dict["output_dir"] + dir_sep + "*.csv"
         output_file = glob.glob(csv_path)
-        df = pd.read_csv(output_file[0],index_col=0)
+        df = pd.read_csv(output_file[0], index_col=0)
         df["simulation_1_minus_2"] = df["simulation_n_1"] - df["simulation_n_2"]
         df.index.name = 'dates'
         new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
                                + dir_sep + "simulation_comparison.csv"
-        plt.figure(0)
+        plt.figure(1)
         plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
         plt.xlabel("dates")
         plt.ylabel("simulation differences")
         plot_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
-                               + dir_sep + "plot"
+                    + dir_sep + "plot"
         plt.savefig(plot_path)
         df.to_csv(new_output_file_path)
         # save the output dir to the sub temporary directory
@@ -112,7 +116,89 @@ class TestUM(unittest.TestCase):
 
     @unittest.skipIf(skip_all_but_one,
                      "skipping the second tests")
-    def test_second_command(self):
+    def test_wind_actuals_ARMA(self):
+        print("Running ", str(self.id()).split('.')[2])
+        # here is the command :
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
+        parm_dict = self._basic_dict()
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["simulated_timeseries"] = "actuals"
+        parm_dict["number_simulations"] = 3
+        parm_dict["base-process"] = "ARMA"
+        parm_dict["output_dir"] = "wind_actuals_ARMA"
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+        # add a new column to compare two simulations
+        # step 1 : read the output file
+        # step 2 : convert the output file into dataframe
+        # step 3 : add a new column called "simulation_1_minus_2"
+        # step 4 : save the new output file and create a graph to show the differences
+        csv_path = self.temp_dir + dir_sep + parm_dict["output_dir"] + dir_sep + "*.csv"
+        output_file = glob.glob(csv_path)
+        df = pd.read_csv(output_file[0], index_col=0)
+        df["simulation_1_minus_2"] = df["simulation_n_1"] - df["simulation_n_2"]
+        df.index.name = 'dates'
+        new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
+                               + dir_sep + "simulation_comparison.csv"
+        plt.figure(2)
+        plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
+        plt.xlabel("dates")
+        plt.ylabel("simulation differences")
+        plot_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
+                    + dir_sep + "plot"
+        plt.savefig(plot_path)
+        df.to_csv(new_output_file_path)
+        # save the output dir to the sub temporary directory
+        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
+        shutil.move(output_dir_path, self.create_temp_dir())
+
+    @unittest.skipIf(quick_test or skip_all_but_one,
+                     "skipping the third tests")
+    def test_wind_forecasts_iid_with_dates(self):
+        print("Running ", str(self.id()).split('.')[2])
+        # here is the command :
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "iid" --output_dir "wind_forecasts_iid" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
+        parm_dict = self._basic_dict()
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["simulated_timeseries"] = "forecasts"
+        parm_dict["number_simulations"] = 5
+        parm_dict["base-process"] = "iid"
+        parm_dict["output_dir"] = "wind_forecasts_iid"
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=2, hour=1, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
+        parm_dict["input_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
+        parm_dict["target_mape"] = 30
+        parm_dict["seed"] = 1234
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+        # add a new column to compare two simulations
+        # step 1 : read the output file
+        # step 2 : convert the output file into dataframe
+        # step 3 : add a new column called "simulation_1_minus_2"
+        # step 4 : save the new output file and create a graph to show the differences
+        csv_path = self.temp_dir + dir_sep + parm_dict["output_dir"] + dir_sep + "*.csv"
+        output_file = glob.glob(csv_path)
+        df = pd.read_csv(output_file[0], index_col=0)
+        df["simulation_1_minus_2"] = df["simulation_n_1"] - df["simulation_n_2"]
+        df.index.name = 'dates'
+        new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
+                               + dir_sep + "simulation_comparison.csv"
+        plt.figure(3)
+        plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
+        plt.xlabel("dates")
+        plt.ylabel("simulation differences")
+        plot_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
+                    + dir_sep + "plot"
+        plt.savefig(plot_path)
+        df.to_csv(new_output_file_path)
+        # save the output dir to the sub temporary directory
+        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
+        shutil.move(output_dir_path, self.create_temp_dir())
+
+    @unittest.skipIf(quick_test or skip_all_but_one,
+                     "skipping the fourth tests")
+    def test_wind_forecasts_ARMA_with_dates(self):
         """
         This test will fail because the simulation date range is too small
         :return:
@@ -146,89 +232,7 @@ class TestUM(unittest.TestCase):
         df.index.name = 'dates'
         new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
                                + dir_sep + "simulation_comparison.csv"
-        plt.figure(1)
-        plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
-        plt.xlabel("dates")
-        plt.ylabel("simulation differences")
-        plot_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
-                    + dir_sep + "plot"
-        plt.savefig(plot_path)
-        df.to_csv(new_output_file_path)
-        # save the output dir to the sub temporary directory
-        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
-
-    @unittest.skipIf(quick_test or skip_all_but_one,
-                     "skipping the third tests")
-    def test_third_command(self):
-        print("Running ", str(self.id()).split('.')[2])
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 3
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["output_dir"] = "wind_actuals_ARMA_2"
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-        # add a new column to compare two simulations
-        # step 1 : read the output file
-        # step 2 : convert the output file into dataframe
-        # step 3 : add a new column called "simulation_1_minus_2"
-        # step 4 : save the new output file and create a graph to show the differences
-        csv_path = self.temp_dir + dir_sep + parm_dict["output_dir"] + dir_sep + "*.csv"
-        output_file = glob.glob(csv_path)
-        df = pd.read_csv(output_file[0], index_col=0)
-        df["simulation_1_minus_2"] = df["simulation_n_1"] - df["simulation_n_2"]
-        df.index.name = 'dates'
-        new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
-                               + dir_sep + "simulation_comparison.csv"
-        plt.figure(2)
-        plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
-        plt.xlabel("dates")
-        plt.ylabel("simulation differences")
-        plot_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
-                    + dir_sep + "plot"
-        plt.savefig(plot_path)
-        df.to_csv(new_output_file_path)
-        # save the output dir to the sub temporary directory
-        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
-
-    @unittest.skipIf(quick_test or skip_all_but_one,
-                     "skipping the fourth tests")
-    def test_fourth_command(self):
-        print("Running ", str(self.id()).split('.')[2])
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "ARMA" --output_dir "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["number_simulations"] = 5
-        parm_dict["base-process"] = "iid"
-        parm_dict["output_dir"] = "wind_forecasts_iid"
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=2, hour=1, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
-        parm_dict["input_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
-        parm_dict["target_mape"] = 30
-        parm_dict["seed"] = 1234
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-        # add a new column to compare two simulations
-        # step 1 : read the output file
-        # step 2 : convert the output file into dataframe
-        # step 3 : add a new column called "simulation_1_minus_2"
-        # step 4 : save the new output file and create a graph to show the differences
-        csv_path = self.temp_dir + dir_sep + parm_dict["output_dir"] + dir_sep + "*.csv"
-        output_file = glob.glob(csv_path)
-        df = pd.read_csv(output_file[0], index_col=0)
-        df["simulation_1_minus_2"] = df["simulation_n_1"] - df["simulation_n_2"]
-        df.index.name = 'dates'
-        new_output_file_path = self.temp_dir + dir_sep + parm_dict["output_dir"] \
-                               + dir_sep + "simulation_comparison.csv"
-        plt.figure(3)
+        plt.figure(4)
         plt.scatter(df.index, df["simulation_1_minus_2"], s=2)
         plt.xlabel("dates")
         plt.ylabel("simulation differences")
