@@ -73,14 +73,14 @@ class TestUM(unittest.TestCase):
         print("sub temporary directory:", sub_directory)
         return sub_directory
 
-    def test_first_commmand(self):
+    def test_with_known_error(self):
         """
         This test will fail because the simulation date range is too small
         :return:
         """
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
@@ -91,7 +91,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=29, hour=0, minute=0, second=0)
         parm_dict["input_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["input_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
-        parm_dict["target_mape"] = 30
         parm_dict["seed"] = 1234
         parm_list = list(parm_dict.values())
         # the function should get an error message
@@ -100,15 +99,19 @@ class TestUM(unittest.TestCase):
             self.assertTrue(isinstance(context, Iterable))
             self.assertTrue('infeasible to meet target' in context)
 
-    def test_second_command(self):
+    def test_wind_actuals_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 3
         parm_dict["base-process"] = "iid"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
         parm_dict["output_dir"] = "wind_actuals_iid"
         parm_dict["seed"] = 1234
         parm_list = list(parm_dict.values())
@@ -119,7 +122,7 @@ class TestUM(unittest.TestCase):
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the third tests")
-    def test_third_command(self):
+    def test_wind_actuals_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
@@ -128,7 +131,7 @@ class TestUM(unittest.TestCase):
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 3
         parm_dict["base-process"] = "ARMA"
-        parm_dict["output_dir"] = "wind_actuals_ARMA_2"
+        parm_dict["output_dir"] = "wind_actuals_ARMA"
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # save the output dir to the sub temporary directory
@@ -137,7 +140,7 @@ class TestUM(unittest.TestCase):
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fourth tests")
-    def test_fourth_command(self):
+    def test_wind_forecasts_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "iid" --output_dir "wind_forecasts_iid" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
@@ -161,7 +164,7 @@ class TestUM(unittest.TestCase):
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fifth tests")
-    def test_fifth_commmand(self):
+    def test_wind_forecasts_ARMA_with_dates(self):
         """
         This test will fail because the simulation date range is too small
         :return:
