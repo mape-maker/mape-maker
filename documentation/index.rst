@@ -20,4 +20,4 @@ actuals and forecasts, is possible.
    sections/demand_example.rst
    sections/rts_example.rst
    sections/unittest_example.rst
-   sections/operational_example.rst
+   sections/infeasible_example.rst

@@ -39,8 +39,7 @@ class TestUM(unittest.TestCase):
         self.cwd = os.getcwd()
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
-        self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
-                         "samples" + dir_sep + "rts_gmlc" + dir_sep + "Load_forecasts_actuals.csv"
+        self.load_data = file_path + dir_sep + "rts_gmlc" + dir_sep + "Load_forecasts_actuals.csv"
 
     def _base_dict(self):
         """
@@ -81,18 +80,23 @@ class TestUM(unittest.TestCase):
         print("sub temporary directory:", sub_directory)
         return sub_directory
 
-    def test_load_actuals_iid(self):
+    def test_load_actuals_ARMA_dates(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_iid" -s 1234
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 1 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-10 0:0:0" -ed "2020-2-30 23:0:0"-o "load_actuals_iid_dates" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "actuals"
         parm_dict["number_simulations"]     = 1
         parm_dict["base-process"]           = "ARMA"
-        parm_dict["output_dir"]             = "load_actuals_iid"
+        parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1,   hour=1,   minute=0, second=0)
+        parm_dict["input_end_dt"]           = datetime(year=2020, month=3, day=30,  hour=0,   minute=0, second=0)
+        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=2, day=10,   hour=0,   minute=0, second=0)
+        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=2, day=30,  hour=23,  minute=0, second=0)
+        parm_dict["output_dir"]             = "load_actuals_iid_dates"
         parm_list                           = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
+
         # save the output dir to the sub temporary directory
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
         print("output_dir_path = ", output_dir_path)
@@ -101,70 +105,26 @@ class TestUM(unittest.TestCase):
         print("Created temp_sub_dir = ", temp_sub_dir)
         shutil.move(output_dir_path, temp_sub_dir)
 
-    @unittest.skipIf(skip_all_but_one,
-                     "skipping the second test")
-    def test_load_actuals_ARMA_dates(self):
+    def test_load_forecasts_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_actuals_ARMA" -s 1234
-        parm_dict                           = self._base_dict()
-        parm_dict["input_file"]             = self.load_data
-        parm_dict["simulated_timeseries"]   = "actuals"
-        parm_dict["base-process"]           = "iid"
-        parm_dict["input_start_dt"]         = datetime(year=2020, month=5, day=1,   hour=1,   minute=0, second=0)
-        parm_dict["input_end_dt"]           = datetime(year=2020, month=7, day=30,  hour=0,   minute=0, second=0)
-        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=6, day=10,   hour=0,   minute=0, second=0)
-        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=6, day=30,  hour=23,  minute=0, second=0)
-        parm_dict["output_dir"]             = "load_actuals_ARMA"
-        parm_list                           = list(parm_dict.values())
-        # run the test
-        mapemain.main_func(*parm_list)
-        # save the output dir to the sub temporary directory
-        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
-
-    @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
-                     "skipping the third test")
-    def test_load_actuals_ARMA(self):
-        print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 1 -bp "ARMA" -o "load_forecasts_iid -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "forecasts"
+        parm_dict["number_simulations"]     = 1
         parm_dict["base-process"]           = "ARMA"
-        parm_dict["output_dir"]             = "load_actuals_ARMA"
-        parm_list                           = list(parm_dict.values())
-
-        # run the test
-        mapemain.main_func(*parm_list)
-        # save the output dir to the sub temporary directory
-
-        output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
-
-    @unittest.skipIf(skip_all_but_one or test_known_failure or quick_test,
-                     "skipping the fourth test")
-    def test_load_forecasts_iid_dates(self):
-        print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_forecasts_iid" -s 1234
-        parm_dict                           = self._base_dict()
-        parm_dict["input_file"]             = self.load_data
-        parm_dict["simulated_timeseries"]   = "forecasts"
-        parm_dict["number_simulations"]     = 3
-        parm_dict["base-process"]           = "iid"
-        parm_dict["input_start_dt"]         = datetime(year=2020, month=5, day=1,   hour=1,   minute=0, second=0)
-        parm_dict["input_end_dt"]           = datetime(year=2020, month=7, day=30,  hour=0,   minute=0, second=0)
-        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=6, day=1,   hour=0,   minute=0, second=0)
-        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=6, day=30,  hour=23,  minute=0, second=0)
         parm_dict["output_dir"]             = "load_forecasts_iid"
         parm_list                           = list(parm_dict.values())
-
         # run the test
         mapemain.main_func(*parm_list)
 
         # save the output dir to the sub temporary directory
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
-
+        print("output_dir_path = ", output_dir_path)
+        print("parm_dict[output_dir]", parm_dict["output_dir"])
+        temp_sub_dir = self.create_temp_dir()
+        print("Created temp_sub_dir = ", temp_sub_dir)
+        shutil.move(output_dir_path, temp_sub_dir)
 
 if __name__ == "__main__":
     unittest.main()
