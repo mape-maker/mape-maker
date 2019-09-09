@@ -86,3 +86,4 @@ Summary of the Algorithm
 .. figure:: ../_static/flow_chart.png
    :width: 500px
    :align: center
+
