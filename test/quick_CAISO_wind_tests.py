@@ -80,7 +80,7 @@ class TestUM(unittest.TestCase):
         """
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
@@ -91,7 +91,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=29, hour=0, minute=0, second=0)
         parm_dict["input_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["input_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
-        parm_dict["target_mape"] = 30
         parm_dict["seed"] = 1234
         parm_list = list(parm_dict.values())
         # the function should get an error message
