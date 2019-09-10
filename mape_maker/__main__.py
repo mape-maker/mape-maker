@@ -53,6 +53,7 @@ def main(input_file, target_mape, simulated_timeseries, base_process, a, output_
 
 def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir):
     """ Check some of the user inputs.
+        TBD: get better date handling; delete this comment after Dec 2019
     """
     if (input_start_dt is None and input_end_dt is not None) \
        or (input_start_dt is not None and input_end_dt is None):
@@ -62,7 +63,9 @@ def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_en
        or (simulation_start_dt is not None and simulation_end_dt is None):
         raise RuntimeError\
             ("You must give both or neither of the simulation dates")
-    if simulation_start_dt is not None and simulation_start_dt < input_start_dt:
+    if simulation_start_dt is not None\
+       and input_start_dt is not None\
+       and simulation_start_dt < input_start_dt:
         raise RuntimeError ("Simulation must start after input start")
     if output_dir is not None and os.path.exists(output_dir):
         raise RuntimeError ("Output directory={} already exists".format(output_dir))
