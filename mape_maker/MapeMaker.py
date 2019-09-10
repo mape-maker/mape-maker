@@ -298,14 +298,16 @@ class MapeMaker:
             base_process = None
         for l in list_of_date_ranges:
             start_date, end_date = l
-            if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
-                self.start_date, self.end_date = start_date, end_date
-                self.r_tilde = target_mare
-                self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
-                self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
-                self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
-                if self.s_x_tilde is None:
-                    return False
+            # DLW: try to get the efficiency back (this could be skipped for all data)
+            ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
+            self.start_date, self.end_date = start_date, end_date
+            self.r_tilde = target_mare
+            self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
+            self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
+            self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
+            if self.s_x_tilde is None:
+                return False, None
+            ### end if
             if curvature_parameters is not None:
                 curvature_parameters["Y"] = self.full_df[self.y][self.start_date:self.end_date]
                 curvature_parameters["x"] = self.x_timeseries_sid
