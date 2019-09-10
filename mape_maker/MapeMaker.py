@@ -230,8 +230,8 @@ class MapeMaker:
         print(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False, output_dir=None, seed=None,
-                 list_of_date_ranges=(datetime.datetime(2013, 8, 1), datetime.datetime(2014, 1, 1),),
+    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
+                 output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
         Compute and stores simulation results in self.results
