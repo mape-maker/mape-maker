@@ -17,7 +17,7 @@ r = p.find("'", l+1)
 mape_maker_path = p[l+1:r]
 file_path = mape_maker_path + dir_sep + "samples"
 #to skip non-ops tests
-operational_only = False
+operational_only = True
 
 class TestUM(unittest.TestCase):
 
@@ -143,7 +143,7 @@ class TestUM(unittest.TestCase):
         '''
         The operational examples are giving very bad scenarios as of now.
         This test is using rts_wind test
-        target mape             : 90 (dataset's mape =186.39%)
+        target mape             : 370 (dataset's mape =186.39%)
         the input start date    : "2020-01-01 01:00:00"
         the input end date      : "2020-12-29 23:00:00"
         the sim start date      : "2020-12-30 00:00:00"
@@ -161,7 +161,7 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "wind_operations_example_1"
-        parm_dict["target_mape"]            = 90
+        parm_dict["target_mape"]            = 370
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
@@ -177,7 +177,7 @@ class TestUM(unittest.TestCase):
         '''
         The operational examples are giving very bad scenarios as of now.
         This test is using rts_wind test
-        target mape             : 90 (dataset's mape =186.39%)
+        target mape             : 370 (dataset's mape =186.39%)
         the input start date    : "2020-01-01 01:00:00"
         the input end date      : "2020-12-29 23:00:00"
         the sim start date      : "2020-12-30 12:00:00" ****
@@ -195,7 +195,7 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=12, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "wind_operations_example_2"
-        parm_dict["target_mape"]            = 90
+        parm_dict["target_mape"]            = 370
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
@@ -207,6 +207,9 @@ class TestUM(unittest.TestCase):
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
+
+    @unittest.skipIf(operational_only,
+                     "skipping the second test - test_load_sd_ed_min_range")
     def test_WIND_operations_example_3(self):
         print("OPERATIONAL TESTS")
         '''
@@ -241,6 +244,8 @@ class TestUM(unittest.TestCase):
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
+    @unittest.skipIf(operational_only,
+                     "skipping the second test - test_load_sd_ed_min_range")
     def test_WIND_operations_example_4(self):
         '''
         The operational examples are giving very bad scenarios as of now.
