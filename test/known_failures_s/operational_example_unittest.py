@@ -74,7 +74,7 @@ class TestUM(unittest.TestCase):
 
 
 
-    def test_Bus_220_load(self):
+    def test_load_operations_example(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/load_operations_example.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "load_operations_example" -s 1234
         parm_dict                           = self._base_dict()
@@ -99,7 +99,7 @@ class TestUM(unittest.TestCase):
         print("Created temp_sub_dir = ", temp_sub_dir)
         shutil.move(output_dir_path, temp_sub_dir)
 
-    def test_Bus_220_load(self):
+    def test_wind_operations_example(self):
         print("Running ", str(self.id()).split('.')[2])
         # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example" -s 1234
         parm_dict                           = self._base_dict()
