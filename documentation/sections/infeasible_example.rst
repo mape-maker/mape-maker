@@ -4,7 +4,9 @@ Infeasible_example
 Example
 ^^^^^^^
 
-This command line will fail with an error because it's infeasible to meet the target mape:
+Sometimes when the user may receive an error showing "
+This command line will fail with an error because the simulation date range is too small, which will cause the error become very big. Therefore, it's infeasible to meet the target mape.
+.. note:: If the user set the date range greater than a month, then the command line will run successfully without giving an error.
 
 ::
 

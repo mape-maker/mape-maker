@@ -56,7 +56,6 @@ class TestUM(unittest.TestCase):
         return basedict
 
     def test_wind_actuals_ARMA_with_dates(self):
-        print("Running ", str(self.id()).split('.')[2])
         # here is the command :
         # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()

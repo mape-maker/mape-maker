@@ -12,18 +12,19 @@ import shutil
 import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
-dir_sep = "/"
-p = str(mape_maker.__path__)
-l = p.find("'")
-r = p.find("'", l+1)
-mape_maker_path = p[l+1:r]
-file_path = mape_maker_path + dir_sep + "samples"
-# whether to skip the last two tests
-quick_test = False
-# whether to run only one example
-skip_all_but_one = False
+from collections.abc import Iterable
 
 class TestUM(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(self):
+        # find the path to mape_maker
+        p = str(mape_maker.__path__)
+        l = p.find("'")
+        r = p.find("'", l + 1)
+        mape_maker_path = p[l + 1:r]
+        self.wind_data = mape_maker_path + dir_sep + "samples" + \
+                           dir_sep + "wind_total_forecast_actual_070113_063015.csv"
 
     def _basic_dict(self):
         basedict = {"input_file": "",
@@ -50,35 +51,28 @@ class TestUM(unittest.TestCase):
                     }
         return basedict
 
-    @classmethod
-    def setUpClass(self):
-        # make a temp dir
-        self.temp_dir = tempfile.mkdtemp()
-        sys.path.insert(1, self.temp_dir)
-        # change to the temp directory
-        os.chdir(self.temp_dir)
-        self.cwd = os.getcwd()
-        print("temporary directory:", self.cwd)
-        # path to the RTS wind data
 
-        self.wind_data = file_path + dir_sep + "rts_gmlc" + \
-                         dir_sep + "WIND_forecasts_actuals.csv"
-
-    def test_commmand(self):
+    def test_for_single_date_ranges(self):
         """
-        here is the command :
-        python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "iid" -o "wind_forecasts_actuals" -s 1234
+        The user needs to set the input dates, otherwise the test will
+        ends with errors
         :return:
         """
         print("Running ", str(self.id()).split('.')[2])
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 5
-        parm_dict["base-process"] = "iid"
-        parm_dict["output_dir"] = "wind_forecasts_actuals"
+        parm_dict["base-process"] = "ARMA"
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
         parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        # the function should get an error message
+        with self.assertRaises(TypeError) as context:
+            mapemain.main_func(*parm_list)
+            self.assertTrue(isinstance(context, Iterable))
+            self.assertTrue("'<' not supported between instances of"
+                            " 'datetime.datetime' and 'NoneType'" in context)
+
 
 if __name__ == "__main__":
     unittest.main()
