@@ -146,14 +146,23 @@ def get_maes_from_parameters(s_x, cap):
     :param s_x:
     :return: m_hat
     """
+    lastgood = None # deal with failure to get good beta parameters
     m_hat, m_max = {}, {}
     p = len(list(s_x.keys())) // 16
     for i, x in enumerate(s_x.keys()):
         a, b, l_, s_ = s_x[x]
-        if a < 0 or b < 0:
-            raise RuntimeError("infeasible to meet target; e.g. at x={} we have a={} and b={}"\
-                               .format(x, a, b))
-        sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
+        try:
+            sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
+        except:
+            print ("******* WARNING!! **********")
+            print (" beta rvs failed at i={},x={}; a={}, b={}, l_={}, s_={}".format(i,x,a,b,l_,s_))
+            if lastgood is None:
+                raise
+            else:
+                print (" Using last good beta parameters.")
+                a, b, l_, s_ = lastgood
+                sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
+        lastgood = (a, b, l_, s_)
         opt = optimize.minimize(integrate_a_mean_1d, x0=(l_, s_), bounds=((-x, 0), (0, cap-x)), args=(a, b),
                                 tol=1e-1)
         m_max[x] = max(-opt.fun, ((cap-x)*a)/(a+b))
