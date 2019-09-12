@@ -35,14 +35,14 @@ class TestUM(unittest.TestCase):
                     "simulation_end_dt"     : None,
                     "title"                 : "",
                     "seed"                  : 1234,
-                    "curvature"             : None,
+                    "load_pickle"           : False,
+                    "curvature"             : False,
                     "time_limit"            : 1,
                     "curvature_target"      : None,
-                    "mip"                   : None,
-                    "solver"                : None,
-                    "full_dataset"          : True,
+                    "mip_gap"               : None,
+                    "solver"                : "gurobi",
                     "latex_output"          : False,
-                    "show"                  : False
+                    "show"                  : True
                     }
 
         return basedict
