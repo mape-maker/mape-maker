@@ -141,7 +141,6 @@ class TestUM(unittest.TestCase):
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
 
-
     def test_WIND_ops_full_90mape_curvature(self):
         '''
         The operational examples are giving very bad scenarios as of now.

@@ -76,12 +76,9 @@ class TestUM(unittest.TestCase):
         # run the test
         mapemain.main_func(*parm_list)
 
-        # save the output dir to the sub temporary directory
-        output_dir_path = parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.cwd)
         # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
-        shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
+        shutil.move(plot1, parm_dict["output_dir"] )
 
     def test_wind_operations_example(self):
         print("Running ", str(self.id()).split('.')[2])
@@ -100,11 +97,8 @@ class TestUM(unittest.TestCase):
         # run the test
         mapemain.main_func(*parm_list)
 
-        # save the output dir to the sub temporary directory
-        output_dir_path = parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.cwd)
-        # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
-        shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
+        shutil.move(plot1, parm_dict["output_dir"] )
+
 if __name__ == "__main__":
     unittest.main()
