@@ -155,13 +155,30 @@ def plot_from_date(X, Y, screen, results=None, title: str = "",
     ax1.set_xlabel('datetime')
     ax1.set_ylabel('Power', color=color)  # we already handled the x-label with ax1
     if Y is not None:
-        ax1.plot(index, Y.loc[index], '--', marker=".", label=ending_features)
-    ax1.plot(index, X.loc[index], "-", marker="o", color="black", label=x_legend, linewidth=0.5)
+        try:
+            ax1.plot(index, Y.loc[index], '--', marker=".", label=ending_features)
+        except:
+            print ("**** Y Plot failed ****")
+            print ("dump of Y.loc[index]")
+            print (Y.loc[index])
+            print ("end dump")
+    try:
+        ax1.plot(index, X.loc[index], "-", marker="o", color="black",
+                 label=x_legend, linewidth=0.5)
+    except:
+        print ("********* WARNING: Plot failed for", x_legend)
+        print ("dumping data: {}".format(X.loc[index]))
+        print ("****** end WARNING ******")
     if results is not None:
         for r in results:
             simulations = results[r]
             for i, c in enumerate(simulations.columns):
-                ax1.plot(index, simulations[c].loc[index], marker=".",  linewidth=0.5, label=r+" s_{}".format(i))
+                try:
+                    ax1.plot(index, simulations[c].loc[index], marker=".",
+                             linewidth=0.5, label=r+" s_{}".format(i))
+                except:
+                    print ("******* WARNING: Plot failed for simulation {}"\
+                           .format(c))
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.legend()
 
