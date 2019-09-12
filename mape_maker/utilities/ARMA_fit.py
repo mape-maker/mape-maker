@@ -162,6 +162,7 @@ def find_best_arma_repr(base_process):
     """
     ps, ds, qs = list(range(5)), [0], list(range(5))
     best_model, bic = None, np.inf
+    print ("Start search for ARMA parameters:")
     for p, d, q in itertools.product(ps, ds, qs):
         model = ARIMA(base_process, order=(p, d, q))
         try:
@@ -171,8 +172,10 @@ def find_best_arma_repr(base_process):
                 bic = model_fit.bic
                 print(p, d, q, " BIC = {}".format(model_fit.bic))
         except Exception as e:
+            print (p,d,q, "rejected:")
             print(e)
             continue
 
+    print ("End search for ARMA parameters.")    
     return best_model
 
