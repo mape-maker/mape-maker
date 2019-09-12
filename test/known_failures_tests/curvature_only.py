@@ -65,7 +65,8 @@ class TestUM(unittest.TestCase):
 
 
     '''
-    The next test are just checking the affect of setting curvature to be true
+    These 2 test are just checking the affect of setting curvature
+    We are using 
     '''
 
 
@@ -74,25 +75,25 @@ class TestUM(unittest.TestCase):
         '''
         The operational examples are giving very bad scenarios as of now.
         This test is using rts_wind test
-        target mape             : 90 (dataset's mape =186.39%)
         the input start date    : "2020-01-01 01:00:00"
         the input end date      : "2020-12-29 23:00:00"
         the sim start date      : "2020-12-30 00:00:00"
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 12:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example_4" -s 1234 -t 90
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.wind_ops
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 2
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=12, day=30, hour=00, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
-        parm_dict["output_dir"] = "full_dtmape_curvature_only"
-        parm_dict["curvature"] = True
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_dtmape_curvature_only" -s 1234 -c True
+        parm_dict                               = self._base_dict()
+        parm_dict["input_file"]                 = self.wind_ops
+        parm_dict["simulated_timeseries"]       = "actuals"
+        parm_dict["number_simulations"]         = 2
+        parm_dict["base-process"]               = "ARMA"
+        parm_dict["input_start_dt"]             = datetime(year=2020, month=1,  day=1,  hour=0,  minute=0, second=0)
+        parm_dict["input_end_dt"]               = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
+        parm_dict["simulation_start_dt"]        = datetime(year=2020, month=12, day=30, hour=00, minute=0, second=0)
+        parm_dict["simulation_end_dt"]          = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
+        parm_dict["output_dir"]                 = "full_dtmape_curvature_only"
+        parm_dict["curvature"]                  = True
+
         print("parm_dict = ", parm_dict)
         parm_list = list(parm_dict.values())
         # run the test
@@ -101,34 +102,35 @@ class TestUM(unittest.TestCase):
         # save the output dir to the sub temporary directory
         output_dir_path = self.cwd + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.saving)
-
+        # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"])
+
 
     def test_WIND_ops_30_1200_curvature(self):
         print("Testing curvature")
         '''
         The operational examples are giving very bad scenarios as of now.
         This test is using rts_wind test
-        target mape             : 90 (dataset's mape =186.39%)
         the input start date    : "2020-01-01 01:00:00"
         the input end date      : "2020-12-29 23:00:00"
         the sim start date      : "2020-12-30 12:00:00" ****
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 12:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example_4" -s 1234 -t 90
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.wind_ops
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 2
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=12, day=30, hour=12, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
-        parm_dict["output_dir"] = "30_1200_dtmape_curvature_only"
-        parm_dict["curvature"] = True
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 12:00:00" -ed "2020-12-31 23:00:00" -o "30_1200_dtmape_curvature_only" -s 1234 -c True
+        parm_dict                           = self._base_dict()
+        parm_dict["input_file"]             = self.wind_ops
+        parm_dict["simulated_timeseries"]   = "actuals"
+        parm_dict["number_simulations"]     = 2
+        parm_dict["base-process"]           = "ARMA"
+        parm_dict["input_start_dt"]         = datetime(year=2020, month=1,  day=1,  hour=0,  minute=0, second=0)
+        parm_dict["input_end_dt"]           = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
+        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=12, minute=0, second=0)
+        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
+        parm_dict["output_dir"]             = "30_1200_dtmape_curvature_only"
+        parm_dict["curvature"]              = True
+
         print("parm_dict = ", parm_dict)
         parm_list = list(parm_dict.values())
         # run the test
@@ -137,7 +139,7 @@ class TestUM(unittest.TestCase):
         # save the output dir to the sub temporary directory
         output_dir_path = self.cwd + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.saving)
-
+        #saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"])
 

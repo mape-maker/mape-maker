@@ -17,7 +17,7 @@ def find_sim_diff(file1, file2, file3):
     dataframe4 = dataframe1["simulation_n_2"]
     frames = [dataframe1, dataframe2, dataframe3]
     final_df = pd.concat(frames, axis=1, sort=True)
-    final_df["df1_diff_df2"] = da
+    #final_df["df1_diff_df2"] = da
 
     # saving final_dataframe as csv file in current directory
     simulation_file_path = os.path.join(file_path, "final_df.csv")

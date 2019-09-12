@@ -16,7 +16,6 @@ l = p.find("'")
 r = p.find("'", l+1)
 mape_maker_path = p[l+1:r]
 file_path = mape_maker_path + dir_sep + "samples"
-#to skip non-ops tests
 
 class TestUM(unittest.TestCase):
 
@@ -78,7 +77,7 @@ class TestUM(unittest.TestCase):
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example_1" -s 1234
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_dtmape_curvature" -s 1234 -c True
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.wind_ops
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -90,6 +89,7 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "full_dtmape_curvature"
         parm_dict["curvature"] = True
+
         print("parm_dict = ", parm_dict)
         parm_list = list(parm_dict.values())
         # run the test
@@ -98,7 +98,7 @@ class TestUM(unittest.TestCase):
         # save the output dir to the sub temporary directory
         output_dir_path = self.cwd  + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.saving)
-
+        # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
@@ -114,7 +114,7 @@ class TestUM(unittest.TestCase):
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example_2" -s 1234 -t 370
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_370mape_curvature" -s 1234 -t 370 -c True
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.wind_ops
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -127,6 +127,7 @@ class TestUM(unittest.TestCase):
         parm_dict["output_dir"]             = "full_370mape_curvature"
         parm_dict["target_mape"]            = 370
         parm_dict["curvature"] = True
+
         print("parm_dict = ", parm_dict)
         parm_list = list(parm_dict.values())
         # run the test
@@ -135,7 +136,7 @@ class TestUM(unittest.TestCase):
         # save the output dir to the sub temporary directory
         output_dir_path = self.cwd  + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.saving)
-
+        # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
@@ -152,7 +153,7 @@ class TestUM(unittest.TestCase):
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example_3" -s 1234  -t 90
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_90mape_curvature" -s 1234  -t 90 -c True
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.wind_ops
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -165,6 +166,7 @@ class TestUM(unittest.TestCase):
         parm_dict["output_dir"]             = "full_90mape_curvature"
         parm_dict["target_mape"]            = 90
         parm_dict["curvature"] = True
+
         print("parm_dict = ", parm_dict)
         parm_list = list(parm_dict.values())
         # run the test
@@ -173,7 +175,7 @@ class TestUM(unittest.TestCase):
         # save the output dir to the sub temporary directory
         output_dir_path = self.cwd  + dir_sep + parm_dict["output_dir"]
         shutil.move(output_dir_path, self.saving)
-
+        # saving the plot in the "output_dir"
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
