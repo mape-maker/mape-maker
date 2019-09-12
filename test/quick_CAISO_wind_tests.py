@@ -53,7 +53,7 @@ class TestUM(unittest.TestCase):
                     "title": None,
                     "seed": None,
                     "load_pickle": False,
-                    "curvature": None,
+                    "curvature": False,
                     "time_limit": 3600,
                     "curvature_target": None,
                     "mip_gap": 0.3,
@@ -73,6 +73,7 @@ class TestUM(unittest.TestCase):
         print("sub temporary directory:", sub_directory)
         return sub_directory
 
+    '''
     def test_with_known_error(self):
         """
         This test will fail because the simulation date range is too small
@@ -117,8 +118,11 @@ class TestUM(unittest.TestCase):
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # save the output dir to the sub temporary directory
+        output_plot_path = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
+        sub_temp_dir = self.create_temp_dir()
+        shutil.move(output_plot_path, sub_temp_dir)
+        shutil.move(output_dir_path, sub_temp_dir)
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the third tests")
@@ -135,8 +139,11 @@ class TestUM(unittest.TestCase):
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # save the output dir to the sub temporary directory
+        output_plot_path = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
+        sub_temp_dir = self.create_temp_dir()
+        shutil.move(output_plot_path, sub_temp_dir)
+        shutil.move(output_dir_path, sub_temp_dir)
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fourth tests")
@@ -159,8 +166,11 @@ class TestUM(unittest.TestCase):
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # save the output dir to the sub temporary directory
+        output_plot_path = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
+        sub_temp_dir = self.create_temp_dir()
+        shutil.move(output_plot_path, sub_temp_dir)
+        shutil.move(output_dir_path, sub_temp_dir)
 
     @unittest.skipIf(quick_test or skip_all_but_one,
                      "skipping the fifth tests")
@@ -187,8 +197,12 @@ class TestUM(unittest.TestCase):
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
         # save the output dir to the sub temporary directory
+        output_plot_path = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        shutil.move(output_dir_path, self.create_temp_dir())
+        sub_temp_dir = self.create_temp_dir()
+        shutil.move(output_plot_path, sub_temp_dir)
+        shutil.move(output_dir_path, sub_temp_dir)
+    '''
 
     def get_the_first_and_last_num(self, output_dir_path):
         """
@@ -207,7 +221,47 @@ class TestUM(unittest.TestCase):
         print("first number : ", first_num, "last number : ", last_num)
         return first_num, last_num
 
-    def compare_output_dirs_with_seed(self):
+    def test_output_dirs_with_seed(self):
+        """
+        In this test, we are going to compare the first and the
+        last number in the output files to see whether it gives
+        the same results with the given seed.
+        :return: boolean
+        """
+        print("Running ", str(self.id()).split('.')[2])
+        # initialize the parameters
+        parm_dict = self._basic_dict()
+        parm_dict["seed"] = 1234
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["number_simulations"] = 2
+        parm_dict["output_dir"] = "first_testing_folder_with_seed"
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+        output_plot_path1 = self.temp_dir + dir_sep + "mmFinalFig.png"
+        output_dir_path1 = self.temp_dir + dir_sep + parm_dict["output_dir"]
+        # get the first and last number
+        f1, l1 = self.get_the_first_and_last_num(output_dir_path1)
+        sub_temp_dir1 = self.create_temp_dir()
+        shutil.move(output_plot_path1, sub_temp_dir1)
+        shutil.move(output_dir_path1, sub_temp_dir1)
+        # run the test again to get the second output directory
+        parm_dict["output_dir"] = "second_testing_folder_with_seed"
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+        output_plot_path2 = self.temp_dir + dir_sep + "mmFinalFig.png"
+        output_dir_path2 = self.temp_dir + dir_sep + parm_dict["output_dir"]
+        # get the first and last number
+        f2, l2 = self.get_the_first_and_last_num(output_dir_path2)
+        sub_temp_dir2 = self.create_temp_dir()
+        shutil.move(output_plot_path2, sub_temp_dir2)
+        shutil.move(output_dir_path2, sub_temp_dir2)
+        # check the first and last numbers
+        if f1 != f2 or l1 != l2:
+            print("If you set the seed, when you run the tests twice,"
+                  " the numbers should be the same")
+            sys.exit(1)
+
+    def test_output_dirs_without_seed(self):
         """
         In this test, we are going to compare the first and the
         last number in the output files to see whether it gives
@@ -218,57 +272,32 @@ class TestUM(unittest.TestCase):
         # initialize the parameters
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
-        parm_dict["output_dir"] = "first_testing_folder"
+        parm_dict["number_simulations"] = 2
+        parm_dict["output_dir"] = "first_testing_folder_without_seed"
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
+        output_plot_path1 = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path1 = self.temp_dir + dir_sep + parm_dict["output_dir"]
         # get the first and last number
         f1, l1 = self.get_the_first_and_last_num(output_dir_path1)
-        shutil.move(output_dir_path1, self.create_temp_dir())
+        sub_temp_dir1 = self.create_temp_dir()
+        shutil.move(output_plot_path1, sub_temp_dir1)
+        shutil.move(output_dir_path1, sub_temp_dir1)
         # run the test again to get the second output directory
-        parm_dict["output_dir"] = "second_testing_folder"
+        parm_dict["output_dir"] = "second_testing_folder_without_seed"
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
+        output_plot_path2 = self.temp_dir + dir_sep + "mmFinalFig.png"
         output_dir_path2 = self.temp_dir + dir_sep + parm_dict["output_dir"]
         # get the first and last number
         f2, l2 = self.get_the_first_and_last_num(output_dir_path2)
-        shutil.move(second_output_dir_path, self.create_temp_dir())
+        sub_temp_dir2 = self.create_temp_dir()
+        shutil.move(output_plot_path2, sub_temp_dir2)
+        shutil.move(output_dir_path2, sub_temp_dir2)
         # check the first and last numbers
-        if f1 != f2 or l1 != l2:
-            print("If you set the seed, when you run the tests twice,"
-                  " the numbers should be the same")
-            sys.exit(1)
-
-    def compare_output_dirs_without_seed(self):
-        """
-        In this test, we are going to compare the first and the
-        last number in the output files to see whether it gives
-        the same results without the given seed.
-        :return: boolean
-        """
-        print("Running ", str(self.id()).split('.')[2])
-        # initialize the parameters
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["output_dir"] = "first_testing_folder"
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-        output_dir_path1 = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        # get the first and last number
-        f1, l1 = self.get_the_first_and_last_num(output_dir_path1)
-        shutil.move(output_dir_path1, self.create_temp_dir())
-        # run the test again to get the second output directory
-        parm_dict["output_dir"] = "second_testing_folder"
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-        output_dir_path2 = self.temp_dir + dir_sep + parm_dict["output_dir"]
-        # get the first and last number
-        f2, l2 = self.get_the_first_and_last_num(output_dir_path2)
-        shutil.move(second_output_dir_path, self.create_temp_dir())
-        # check the first and last numbers
-        if f1 == f2 and l1 == l2:
+        if f1 == f2 or l1 == l2:
             print("If you don't set the seed, when you run the tests twice,"
-                  " the numbers should be different")
+                  " the numbers shouldn't be the same")
             sys.exit(1)
 
     def test_simulation_and_input_dates(self):
