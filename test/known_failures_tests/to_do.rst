@@ -24,10 +24,7 @@ Ops Example:
 3. Giving 90,180,370 and setting the curvature = True
 
 
-lab computer to run tests?
-
-
-ops
+ops (S)
 inf doc (Y)
 run the tests
 pyomo - rearrange (later[F]: header and *)
