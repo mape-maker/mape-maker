@@ -3,8 +3,9 @@ README
 ******
 
 Introduction
-##############
+############
 
+Beta release.
 
 This package can be used to create simulations of wind power forecasts from actuals or the other way around
 from actuals to forecasts. It has been implemented so that a generalization to any type of dataframe providing
