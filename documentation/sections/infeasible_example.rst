@@ -43,5 +43,5 @@ beta rvs failed at i=691,x=3420.0; a=-0.05177452493780477, b=-0.3897512549813409
 Using last good beta parameters.
 
 This error occurs when the program is trying to estimate the maximum target mean absolute error function(called as m_max).
-It fails because alpha and beta are negative.
+It fails because a and b are negative values.
 .. note:: If there have not been any good beta parameters, the program will terminate, but otherwise, it will continue.
