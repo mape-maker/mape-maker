@@ -77,6 +77,7 @@ class TestUM(unittest.TestCase):
         '''
         print("Running ", str(self.id()).split('.')[2])
         print("THIS TEST WILL FAIL -> sd and ed range is less than 12 days")
+        print("The failure is due to infeasibility of meeting the target 'with bounds'")
         # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "load_sd_ed_range_less" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_rts

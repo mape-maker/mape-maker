@@ -16,7 +16,8 @@ l = p.find("'")
 r = p.find("'", l+1)
 mape_maker_path = p[l+1:r]
 file_path = mape_maker_path + dir_sep + "samples"
-#to skip non-ops tests
+
+skip = True
 
 class TestUM(unittest.TestCase):
 
@@ -106,7 +107,8 @@ class TestUM(unittest.TestCase):
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"])
 
-
+    @unittest.skipIf(skip,
+                     "skipping the test_WIND_ops_30_1200_curvaturetest")
     def test_WIND_ops_30_1200_curvature(self):
         print("Testing curvature")
         '''

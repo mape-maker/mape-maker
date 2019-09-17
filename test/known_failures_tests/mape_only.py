@@ -17,7 +17,7 @@ r = p.find("'", l+1)
 mape_maker_path = p[l+1:r]
 file_path = mape_maker_path + dir_sep + "samples"
 #to skip non-ops tests
-#mape_only
+skip = True
 class TestUM(unittest.TestCase):
 
 
@@ -184,6 +184,11 @@ class TestUM(unittest.TestCase):
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
+
+
+
+    @unittest.skipIf(skip,
+                     "skipping the test_WIND_ops_30_1200_dtmape test")
     def test_WIND_ops_30_1200_dtmape(self):
         '''
         The operational examples are giving very bad scenarios as of now.
@@ -220,7 +225,8 @@ class TestUM(unittest.TestCase):
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"] )
 
 
-
+    @unittest.skipIf(skip,
+                     "skipping the test_WIND_ops_30_1200_370mape test")
     def test_WIND_ops_30_1200_370mape(self):
         '''
         The operational examples are giving very bad scenarios as of now.
@@ -257,6 +263,9 @@ class TestUM(unittest.TestCase):
         plot1 = "mmFinalFig.png"
         shutil.move(plot1, self.saving + dir_sep + parm_dict["output_dir"])
 
+
+    @unittest.skipIf(skip,
+                     "skipping the test_WIND_ops_30_1200_90mape test")
     def test_WIND_ops_30_1200_90mape(self):
         '''
         The operational examples are giving very bad scenarios as of now.

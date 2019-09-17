@@ -35,7 +35,7 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
             scenario_mare.append(mare)
     else:
         for i in range(number_of_scenarios):
-            ares = abs(final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["actuals"] / final_dataframe["actuals"])
+            ares = abs((final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["actuals"]) / final_dataframe["actuals"])
             mare = np.mean(ares)/100
             scenario_mare.append(mare)
 
@@ -88,10 +88,10 @@ if __name__ == '__main__':
         print_usage("Need five arguments")
 
     # example:
-    # input_file_path = "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"
-    # output_file_path = "../../../load_actuals_iid/load_scenarios_3.csv"
-    # scenario_type = "actuals"
-    # number_of_scenarios = 3
+    # input_file_path = "../mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv"
+    # output_file_path = "known_failures_tests/wind_ops/full_dtmape/full_dtmape.csv"
+    # scenario_type = "forecasts"
+    # number_of_scenarios = 2
 
     input_file_path = sys.argv[1]
     output_file_path = sys.argv[2]
