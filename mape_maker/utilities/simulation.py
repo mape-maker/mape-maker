@@ -183,7 +183,8 @@ def check_simulation_mare(X, Y, results, r_tilde):
     """
     x, y = X.loc[results.index], Y.loc[results.index]
     re_hat = (y - x) / x
-    re_hat = re_hat[x != 0]
+    re_hat = re_hat[x > 1] ## dlw 
+    re_hat = re_hat.dropna() 
     are_hat = re_hat.apply(abs)
     simulation_mares = []
     for c in results.columns:
@@ -192,7 +193,7 @@ def check_simulation_mare(X, Y, results, r_tilde):
         print("-" * 60)
         simulation = results[c]
         re_tilde = (simulation-x)/x
-        re_tilde = re_tilde[x != 0]
+        re_tilde = re_tilde[x > 1] ## dlw
         re_tilde = re_tilde.dropna()
         are_tilde = re_tilde.apply(abs)
         mare_hat = np.mean(are_hat)
