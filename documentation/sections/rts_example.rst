@@ -76,7 +76,7 @@ and create an output dir called "wind_forecasts_actuals".
 
 After running the command line, you should see a similar plot like this:
 
-.. figure::  ../_static/wind_forecasts_actuals.png
+.. figure::  ../_static/wind_forecast_actual.png
    :align:   center
 
 Example 2 - Bus_220_Load_zone2_forecasts_actuals.csv
