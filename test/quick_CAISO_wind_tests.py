@@ -80,11 +80,11 @@ class TestUM(unittest.TestCase):
         """
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 2 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 5
+        parm_dict["number_simulations"] = 2
         parm_dict["base-process"] = "ARMA"
         parm_dict["output_dir"] = "wind_actuals_ARMA_1"
         parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=27, hour=1, minute=0, second=0)
@@ -102,11 +102,11 @@ class TestUM(unittest.TestCase):
     def test_wind_actuals_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 2 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 3
+        parm_dict["number_simulations"] = 2
         parm_dict["base-process"] = "iid"
         parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
         parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
@@ -128,11 +128,11 @@ class TestUM(unittest.TestCase):
     def test_wind_actuals_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 2 -bp "ARMA" -o "wind_actuals_ARMA_2" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 3
+        parm_dict["number_simulations"] = 2
         parm_dict["base-process"] = "ARMA"
         parm_dict["output_dir"] = "wind_actuals_ARMA"
         parm_list = list(parm_dict.values())
@@ -149,11 +149,11 @@ class TestUM(unittest.TestCase):
     def test_wind_forecasts_iid_with_dates(self):
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "iid" --output_dir "wind_forecasts_iid" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 2 -bp "iid" --output_dir "wind_forecasts_iid" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-30 00:00:00" --target_mape 30 -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["number_simulations"] = 5
+        parm_dict["number_simulations"] = 2
         parm_dict["base-process"] = "iid"
         parm_dict["output_dir"] = "wind_forecasts_iid"
         parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=2, hour=1, minute=0, second=0)
@@ -180,11 +180,11 @@ class TestUM(unittest.TestCase):
         """
         print("Running ", str(self.id()).split('.')[2])
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 5 -bp "ARMA" -o "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 2 -bp "ARMA" -o "wind_forecasts_ARMA" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-2 01:00:00" -ed "2014-6-29 00:00:00" -t 30 -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["number_simulations"] = 5
+        parm_dict["number_simulations"] = 2
         parm_dict["base-process"] = "ARMA"
         parm_dict["output_dir"] = "wind_forecasts_ARMA"
         parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=2, hour=1, minute=0, second=0)

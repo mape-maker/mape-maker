@@ -67,7 +67,7 @@ class TestUM(unittest.TestCase):
     def test_commmand(self):
         """
         here is the command :
-        python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "iid" -o "wind_forecasts_actuals" -s 1234
+        python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
         :return:
         """
         print("Running ", str(self.id()).split('.')[2])
@@ -75,8 +75,13 @@ class TestUM(unittest.TestCase):
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 5
-        parm_dict["base-process"] = "iid"
+        parm_dict["base-process"] = "ARMA"
         parm_dict["output_dir"] = "wind_forecasts_actuals"
+        parm_dict["seed"] = 1234
+        parm_dict["simulation_start_dt"] = datetime(year=2020, month=2, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2020, month=3, day=2, hour=0, minute=0, second=0)
+        parm_dict["input_start_dt"] = datetime(year=2020, month=2, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2020, month=5, day=1, hour=0, minute=0, second=0)
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
 

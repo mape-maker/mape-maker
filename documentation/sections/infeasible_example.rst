@@ -12,8 +12,7 @@ Example 1
 
 ::
 
-python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-27 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
-
+python mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -sd "2014-6-17 01:00:00" -ed "2014-6-30 00:00:00" -s 1234
 
 This command line will fail with an error, showing the following output:
 Determination of the Plausability score and the r_tilde_max
@@ -45,14 +44,6 @@ This error occurs when the program is trying to estimate the maximum target mean
 It fails because the shape parameters(alpha and beta) are negative values.
 .. note:: If there have not been any good beta parameters, the program will terminate, but otherwise, it will continue.
 
-Example 3
-^^^^^^^^^^
-
-::
-
-python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
-
-This command line will fail with an error, showing the following output:
 
 
 
