@@ -42,13 +42,14 @@ Example 1 - WIND_forecasts_actuals.csv
 **************************************
 
 The following command will take the data from *WIND_forecasts_actuals.csv*, and launch the
-simulations with n = 5 and seed = 1234 from forecasts to actuals using an IID base process.
-It will simulate all the dates in the input files. Finally, it will return a plot of simulations,
+simulations with n = 5 and seed = 1234 from forecasts to actuals using an ARMA base process.
+It will compute the distribution from 2020-2-1 00:00:00 to 2020-5-1 00:00:00 and simulate from
+2020-2-2 00:00:00 to 2020-3-2 00:00:00. Finally, it will return a plot of simulations,
 and create an output dir called "wind_forecasts_actuals".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -s 1234
+    python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -s 1234 -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
 
 * **"mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
@@ -64,6 +65,14 @@ and create an output dir called "wind_forecasts_actuals".
  The program prints the temporary subdirectory in the temporary directory. The user can retrieve the output dir using that location.
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
+* **-is "2020-2-1 00:00:00"**:
+ The start date for the computation of the distributions is "2020-2-1 00:00:00"
+* **-ie "2020-5-1 00:00:00"**:
+ The end date for the computation of the distributions is "2020-5-1 00:00:00"
+* **-sd "2020-2-2 00:00:00"**:
+ The start date of the simulation is "2020-2-2 00:00:00"
+* **-ed "2020-3-2 00:00:00"**:
+ The end date of the simulation is "2020-3-2 00:00:00"
 
 After running the command line, you should see a similar plot like this:
 

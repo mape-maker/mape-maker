@@ -9,16 +9,11 @@ The following command will take the data from *wind_total_forecast_actual_070113
 and launch the simulations with n=3 and s=1234 from forecasts to actuals using an iid Base Process. It will
 compute the distribution from 2014-7-1 00:00:00 to 2014-8-1 00:00:00 and simulate from
 2014-7-2 00:00:00 to 2014-7-31 00:00:00. Finally, it will return a plot of simulations, and create
-an output dir called "wind_actuals_iid" in your current working directory.
+an output dir called "wind_actuals_iid_with_dates" in your current working directory.
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
-
-After running the command line, you should see a similar plot like this:
-
-.. figure::  ../_static/wind_actuals_iid.png
-   :align:   center
+    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid_with_dates" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
 
 * **"mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
@@ -39,8 +34,8 @@ After running the command line, you should see a similar plot like this:
  The end date of the simulation is "2014-7-31 00:00:00"
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
- * **-o "wind_actuals_iid"**:
- Create an output directory called "wind_actuals_iid", in which will store the simulation output file.
+ * **-o "wind_actuals_iid_with_dates"**:
+ Create an output directory called "wind_actuals_iid_with_dates", in which will store the simulation output file.
 
 After running the command line, you should see a similar plot like this:
 
