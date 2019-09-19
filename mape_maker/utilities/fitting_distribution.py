@@ -311,9 +311,13 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap):
         nx = index_parameters[i]
         a, b, loc_nx, scale_nx = s_x[nx]
         try:
-            loc_nx = x if loc_nx < -x else loc_nx
+            loc_nx = -x if loc_nx < -x else loc_nx
             scale_nx = cap - x if scale_nx > cap - x else scale_nx
-            nl, ns = least_squares(find_intersections, x0=(loc_nx+5, scale_nx), bounds=([-x, -x], [cap, cap]),
+            # bounds are ([lower, lower], [upper,upper])
+            # NOTE: the upper bound for s should be cap - x - l
+            nl, ns = least_squares(find_intersections,
+                                   x0=(min(loc_nx+5,-x/2), scale_nx),
+                                   bounds=([-x, 0], [0, cap-x]),
                                    args=(m_tilde[x], a, b, False),
                                    ftol=1e-3, method="dogbox").x
             if j % p == 0:
@@ -322,15 +326,14 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap):
                                                   "%.1f" % nl, "%.1f" % ns, "%.1f" % m_tilde[x], "%.1f" % m_max[x]),
                       " {}% done".format((round(100*j / len(datasetsid[:-1]), 3))))
         except Exception as e:
-            nb_errors += 1
-            if nb_errors < 10:
-                print(e)
+            if x != 0 and x != cap:  # bounds are equal for these cases
+                nb_errors += 1
                 if m_tilde[x] > m_max[x]:
                     print("     * The MAE target {} is greater than the maximum target {}".format(round(m_tilde[x]),
                                                                                              round(m_max[x])))
-                print("     * For x = {}, x0 =  ({}, {}), infeasible to meet the target with bounds = (l0 in ({}, {}) "
-                      "and s0 in ({}, {}))".format(round(x), round(loc_nx), round(scale_nx), round(-x), round(cap),
-                                                    round(-x), round(cap)) + "\n")
+                print("     * For x = {}, infeasible to meet the target exactly.".format(x))
+                print("    ", e)
             nl, ns = loc_nx, scale_nx
+            
         s_x_sid[x] = [a, b, nl, ns]
     return s_x_sid, nb_errors
