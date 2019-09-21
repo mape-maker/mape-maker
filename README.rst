@@ -87,6 +87,8 @@ Then you can use the package in command-line, for a quick-first run :
 
     python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"
 
+This is real data from CAISO with negative values that mape_maker treats as zero. The
+presence of many low power values makes it difficult to exactly hit a target MAPE.
 
 Options
 ########################

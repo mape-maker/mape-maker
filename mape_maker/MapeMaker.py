@@ -11,7 +11,7 @@ loading_bar = "-"*60
 
 
 class MapeMaker:
-    __version__ = "0.9"
+    __version__ = "0.91"
     path_to_test = {
         "BPA": "samples/2012-2013_BPA_forecasts_actuals.csv",
         "CAISO": "samples/wind_total_forecast_actual_070113_063015.csv",
@@ -132,7 +132,7 @@ class MapeMaker:
         self.e_score = 1
         self.om_tilde = self.om_x
         self.s_x_tilde = self.s_x
-        self.r_tilde = self.r_m_hat
+        self.r_tilde = None   ##self.r_m_hat
         self.start_date, self.end_date = self.x_timeseries.index[0], self.x_timeseries.index[-1]
         print("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
 
@@ -257,7 +257,8 @@ class MapeMaker:
         if target_mare is None:
             tg = " of the empirical dataset"
             # We take the last target used to prevent from recomputing all the weights
-            target_mare = self.r_tilde
+            # dlw, Sept 2019: clean up the defaults for target_mare
+            target_mare = self.r_m_hat
         else:
             tg = "{}%".format('%.1f' % (100*target_mare))
         name_simul = "target mape {}, base_process {} ".format(tg, base_process)
