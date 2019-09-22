@@ -19,36 +19,43 @@ def find_sim_diff(file1, file2, file3, file4, file5, file6, file7, n):
     dataframe6 = pd.read_csv(file6, index_col=0)
     dataframe7 = pd.read_csv(file7, index_col=0)
 
-    dataframe1 = pd.DataFrame(dataframe1)
-    dataframe2 = pd.DataFrame(dataframe2)
-    dataframe3 = pd.DataFrame(dataframe3)
-    dataframe4 = pd.DataFrame(dataframe4)
-    dataframe5 = pd.DataFrame(dataframe5)
-    dataframe6 = pd.DataFrame(dataframe6)
-    dataframe7 = pd.DataFrame(dataframe7)
+    #renaming the col titles
+    dataframe1.columns = ['actuals', 'forecasts']
+    dataframe1.index = pd.to_datetime(dataframe1.index)
+    dataframe2.columns = ['dt_mape_1', 'dt_mape_2']
+    dataframe2.index = pd.to_datetime(dataframe2.index)
+    dataframe3.columns = ['dt_mape_c_1', 'dt_mape_c_2']
+    dataframe3.index = pd.to_datetime(dataframe3.index)
+    dataframe4.columns = ['370_mape_1', '370_mape_2']
+    dataframe4.index = pd.to_datetime(dataframe4.index)
+    dataframe5.columns = ['370_mape_c_1', '370_mape_c_2']
+    dataframe5.index = pd.to_datetime(dataframe5.index)
+    dataframe6.columns = ['90_mape_1', '90_mape_2']
+    dataframe6.index = pd.to_datetime(dataframe6.index)
+    dataframe7.columns = ['90_mape_c_1','90_mape_c_2']
+    dataframe7.index = pd.to_datetime(dataframe7.index)
 
+    frames = [dataframe1,dataframe2,dataframe3,dataframe4,dataframe5,dataframe6,dataframe7]
+    final_df = pd.concat(frames, axis=1, sort=True)
 
-    one      = dataframe1.join(dataframe2, lsuffix='_a', rsuffix='_b', sort=True)
-    print("one")
-    print(one)
-    two      = one.join(dataframe3,  lsuffix='_a', rsuffix='_b', sort=True)
-    print("two")
-    print(two)
-    three    = two.join(dataframe4,  lsuffix='_a', rsuffix='_b', sort=True)
-    four     = three.join(dataframe5,lsuffix='_a', rsuffix='_b', sort=True)
-    five     = four.join(dataframe6, lsuffix='_a', rsuffix='_b', sort=True)
-    final_df = five.join(dataframe7, lsuffix='_a', rsuffix='_b', sort=True)
-    '''
     #To find the row-wise differences in the second scenario between the three files
     # same mape, with and without curvature
-    final_df["dtmape_diff"] = dataframe2["simulation_n_2"] - dataframe3["simulation_n_2"]
-    final_df["90mape_diff"] = dataframe4["simulation_n_2"] - dataframe5["simulation_n_2"]
-    final_df["370mape_diff"] = dataframe6["simulation_n_2"] - dataframe7["simulation_n_2"]
+    final_df["dtmape_diff"]  = final_df["dt_mape_2"]  - final_df["dt_mape_c_2"]
+    final_df["90mape_diff"]  = final_df["90_mape_2"]   - final_df["90_mape_2"]
+    final_df["370mape_diff"] = final_df["370_mape_2"] - final_df["370_mape_c_2"]
 
-    ares =  abs((final_df["forecasts"] - final_df["actuals"]) / final_df["actuals"])
+    ares =  abs((final_df["actuals"] - final_df["forecasts"]) / final_df["forecasts"])
     dataset_mape  = np.mean(ares)
     print("dataset_mape = ", dataset_mape)
+    final_df["input_mape"] = dataset_mape
 
+    r_m_hat = 0
+    for x in m_hat.keys():
+        if x != 0:
+            r_m_hat += m_hat[x]/x
+    r_m_hat = r_m_hat/len(m_hat.keys())
+    return r_m_hat
+    '''
     #to find the mape per scenario
     per_scenario_mare = []
     for i in range(n):
