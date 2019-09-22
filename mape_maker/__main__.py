@@ -108,11 +108,14 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
 
     t = mare_embedder.r_tilde
     text = "Dataset used : {}\n" \
-           "Original Mape from the dataset {}%\n" \
+           "Computed Mape from the dataset {}%\n" \
+           "Mape fit from the dataset {}%\n" \
            "Target Mape : {}%\n" \
            "Simulated from {} to {}\n" \
            "With base process {}\n" \
-           "Computed {} simulations from {} to {}".format(input_file, round(100*mare_embedder.r_m_hat,2), round(100*t,2),
+           "Computed {} simulations from {} to {}".format(input_file,
+                                                          round(100*mare_embedder.mare,2),
+                                                          round(100*mare_embedder.r_m_hat,2), round(100*t,2),
                                                           mare_embedder.x, mare_embedder.y, base_process,
                                                           number_simulations, mare_embedder.start_date.strftime("%Y-%m-%d"),
                                                           mare_embedder.end_date.strftime("%Y-%m-%d"))
