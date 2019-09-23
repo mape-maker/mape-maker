@@ -19,6 +19,17 @@ def find_sim_diff(file1, file2, file3, file4, file5, file6, file7, n):
     dataframe6 = pd.read_csv(file6, index_col=0)
     dataframe7 = pd.read_csv(file7, index_col=0)
 
+    dataframe8 = dataframe1["actuals"] - dataframe1["forecasts"] #errors in the input file
+    actuals   = dataframe1["actuals"]
+    forecasts = dataframe1["forecasts"]
+    # computing mape using error; excluding rows where  forecasts = 0
+    mare = 0
+    for i in range(len(forecasts)):
+        if forecasts[i] != 0:
+            mare = mare + (abs(actuals[i] - forecasts[i]) /forecasts[i])
+    mape = mare/len(forecasts)*100
+    print("mape = ", mape)
+
     #renaming the col titles
     dataframe1.columns = ['actuals', 'forecasts']
     dataframe1.index = pd.to_datetime(dataframe1.index)
@@ -34,27 +45,23 @@ def find_sim_diff(file1, file2, file3, file4, file5, file6, file7, n):
     dataframe6.index = pd.to_datetime(dataframe6.index)
     dataframe7.columns = ['90_mape_c_1','90_mape_c_2']
     dataframe7.index = pd.to_datetime(dataframe7.index)
-
-    frames = [dataframe1,dataframe2,dataframe3,dataframe4,dataframe5,dataframe6,dataframe7]
+    dataframe8.columns = ['error_in_input']
+    dataframe8.index = pd.to_datetime(dataframe8.index)
+    #combining the dataframes into a single frame
+    frames = [dataframe1,dataframe2,dataframe3,dataframe4,dataframe5,dataframe6,dataframe7, dataframe8]
+    #creating the final dataset
     final_df = pd.concat(frames, axis=1, sort=True)
-
+    #adding relative error col to the final dataset
+    final_df["relative_error"] = dataframe8/forecasts
     #To find the row-wise differences in the second scenario between the three files
-    # same mape, with and without curvature
+    # same mape, without curvature - with curvature
     final_df["dtmape_diff"]  = final_df["dt_mape_2"]  - final_df["dt_mape_c_2"]
     final_df["90mape_diff"]  = final_df["90_mape_2"]   - final_df["90_mape_2"]
     final_df["370mape_diff"] = final_df["370_mape_2"] - final_df["370_mape_c_2"]
-
-    ares =  abs((final_df["actuals"] - final_df["forecasts"]) / final_df["forecasts"])
-    dataset_mape  = np.mean(ares)
+    # computing mape
+    ares =  abs(final_df["actuals"] - final_df["forecasts"]) / final_df["forecasts"]
+    dataset_mape  = np.mean(ares) * 100
     print("dataset_mape = ", dataset_mape)
-    final_df["input_mape"] = dataset_mape
-
-    r_m_hat = 0
-    for x in m_hat.keys():
-        if x != 0:
-            r_m_hat += m_hat[x]/x
-    r_m_hat = r_m_hat/len(m_hat.keys())
-    return r_m_hat
     '''
     #to find the mape per scenario
     per_scenario_mare = []

@@ -83,9 +83,9 @@ class TestUM(unittest.TestCase):
         parm_dict["simulated_timeseries"]   = "actuals"
         parm_dict["number_simulations"]     = 2
         parm_dict["base-process"]           = "ARMA"
-        parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_start_dt"]         = datetime(year=2020, month=1,  day=1,  hour=1,  minute=0, second=0)
         parm_dict["input_end_dt"]           = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
-        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=0,  minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "full_dtmape_curvature"
         parm_dict["curvature"] = True
@@ -120,7 +120,7 @@ class TestUM(unittest.TestCase):
         parm_dict["simulated_timeseries"]   = "actuals"
         parm_dict["number_simulations"]     = 2
         parm_dict["base-process"]           = "ARMA"
-        parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_start_dt"]         = datetime(year=2020, month=1,  day=1,  hour=1,  minute=0, second=0)
         parm_dict["input_end_dt"]           = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=00, minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
@@ -158,9 +158,9 @@ class TestUM(unittest.TestCase):
         parm_dict["simulated_timeseries"]   = "actuals"
         parm_dict["number_simulations"]     = 2
         parm_dict["base-process"]           = "ARMA"
-        parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_start_dt"]         = datetime(year=2020, month=1,  day=1,  hour=1,  minute=0, second=0)
         parm_dict["input_end_dt"]           = datetime(year=2020, month=12, day=29, hour=23, minute=0, second=0)
-        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"]    = datetime(year=2020, month=12, day=30, hour=0,  minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=12, day=31, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "full_90mape_curvature"
         parm_dict["target_mape"]            = 90
