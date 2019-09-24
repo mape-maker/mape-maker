@@ -24,7 +24,7 @@ def check_date(s):
 @click.command()
 @click.argument('input_file')
 @click.option('--target_mape', "-t",  default=None, type=float, help='mape you want in return otherwise will take the mape of the dataset')
-@click.option('--simulated_timeseries','-st', default="forecasts", help="feature you want to simulate 'actuals' or 'forecasts'")
+@click.option('--simulated_timeseries','-st', default="actuals", help="feature you want to simulate 'actuals' or 'forecasts'")
 @click.option('--base_process', '-bp', default="ARMA", help="method used to this end 'iid' or 'ARMA")
 @click.option('--a', '-a', default=4, type=float, help="percent of data on the left or on the right for the estimation")
 @click.option('--output_dir', "-o", default=None, help="path to a directory to save the simulations")
