@@ -97,22 +97,24 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
     else:
         pyomo_parameters = None
 
-    if target_mape is not None:
-        target_mape = target_mape/100
+    tmare = target_mape/100 if target_mape is not None else None
 
     list_of_date_ranges = [[simulation_start_dt, simulation_end_dt]]
-    scores = mare_embedder.simulate(target_mare=target_mape, base_process=base_process, n=number_simulations,
+    scores = mare_embedder.simulate(target_mare=tmare, base_process=base_process, n=number_simulations,
                                     full_dataset=full_dataset, output_dir=output_dir,
                                     list_of_date_ranges=list_of_date_ranges, curvature_parameters=pyomo_parameters,
                                     latex=latex_output)
 
     t = mare_embedder.r_tilde
     text = "Dataset used : {}\n" \
-           "Original Mape from the dataset {}%\n" \
+           "Computed Mape from the dataset {}%\n" \
+           "Mape fit from the dataset {}%\n" \
            "Target Mape : {}%\n" \
            "Simulated from {} to {}\n" \
            "With base process {}\n" \
-           "Computed {} simulations from {} to {}".format(input_file, round(100*mare_embedder.r_m_hat,2), round(100*t,2),
+           "Computed {} simulations from {} to {}".format(input_file,
+                                                          round(100*mare_embedder.mare,2),
+                                                          round(100*mare_embedder.r_m_hat,2), round(100*t,2),
                                                           mare_embedder.x, mare_embedder.y, base_process,
                                                           number_simulations, mare_embedder.start_date.strftime("%Y-%m-%d"),
                                                           mare_embedder.end_date.strftime("%Y-%m-%d"))
