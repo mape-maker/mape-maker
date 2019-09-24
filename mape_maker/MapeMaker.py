@@ -39,8 +39,14 @@ class MapeMaker:
         """
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
-        self.y = "actuals" if ending_feature == "actuals" else "forecasts"
-        self.x = "forecasts" if ending_feature == "actuals" else "actuals"
+        if ending_feature == "actuals":
+            self.y = "actuals"
+            self.x = "forecasts"
+        elif ending_feature == "forecasts": 
+            self.y = "forecasts"
+            self.x = "actuals"
+        else:
+            raise RuntimeError("Bad ending feature: {}".format(ending_feature))
         """
         Saved preference
         """
@@ -72,6 +78,7 @@ class MapeMaker:
             df = df.loc[input_start_dt:input_end_dt]
         self.full_df = full_df
         self.x_timeseries, self.errors, self.y_timeseries = df[self.x], df["errors"], df[self.y]
+        x = self.x_timeseries # typing aid
         self.d = self.compute_second_dif()
         ares = abs(self.errors)/self.x_timeseries
         self.mare = np.mean(ares)
