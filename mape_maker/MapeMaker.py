@@ -78,10 +78,14 @@ class MapeMaker:
             df = df.loc[input_start_dt:input_end_dt]
         self.full_df = full_df
         self.x_timeseries, self.errors, self.y_timeseries = df[self.x], df["errors"], df[self.y]
-        x = self.x_timeseries # typing aid
         self.d = self.compute_second_dif()
+        xname = "forecasts" if ending_feature == "actuals" else "actuals"
         ares = abs(self.errors)/self.x_timeseries
-        self.mare = np.mean(ares)
+        max_ares = max(ares[df[xname]!=0])
+        if max_ares > 100:
+            print ("WARNING: the maximum relative error in the input is {}%".\
+                   format(round(100*max_ares),1))
+        self.mare = np.mean(ares[df[xname]!=0])
         self.cap = max(self.x_timeseries)
         """
         Estimation of parameters
