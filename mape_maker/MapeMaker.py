@@ -39,8 +39,14 @@ class MapeMaker:
         """
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
-        self.y = "actuals" if ending_feature == "actuals" else "forecasts"
-        self.x = "forecasts" if ending_feature == "actuals" else "actuals"
+        if ending_feature == "actuals":
+            self.y = "actuals"
+            self.x = "forecasts"
+        elif ending_feature == "forecasts": 
+            self.y = "forecasts"
+            self.x = "actuals"
+        else:
+            raise RuntimeError("Bad ending feature: {}".format(ending_feature))
         """
         Saved preference
         """
@@ -73,8 +79,13 @@ class MapeMaker:
         self.full_df = full_df
         self.x_timeseries, self.errors, self.y_timeseries = df[self.x], df["errors"], df[self.y]
         self.d = self.compute_second_dif()
+        xname = "forecasts" if ending_feature == "actuals" else "actuals"
         ares = abs(self.errors)/self.x_timeseries
-        self.mare = np.mean(ares)
+        max_ares = max(ares[df[xname]!=0])
+        if max_ares > 100:
+            print ("WARNING: the maximum relative error in the input is {}%".\
+                   format(round(100*max_ares),1))
+        self.mare = np.mean(ares[df[xname]!=0])
         self.cap = max(self.x_timeseries)
         """
         Estimation of parameters
