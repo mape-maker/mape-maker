@@ -77,7 +77,7 @@ class TestUM(unittest.TestCase):
         the sim end date        : "2020-12-31 23:00:00"
         '''
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_dtmape_curvature" -s 1234 -c True
+        # python -m mape_maker "wind_operations_example.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "full_dtmape_curvature" -s 1234 -c True
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.wind_ops
         parm_dict["simulated_timeseries"]   = "actuals"
