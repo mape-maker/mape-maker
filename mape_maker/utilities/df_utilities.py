@@ -87,7 +87,7 @@ def create_errors_columns(df: pd.DataFrame, type_of_simulation: str = "actuals")
     df = df.rename(columns={col_forecasts: "forecasts", col_actuals: "actuals"})
     denominator = "forecasts" if type_of_simulation == "actuals" else "actuals"
     numerator = "actuals" if type_of_simulation == "actuals" else "forecasts"
-    df = repair_nan_zeros.replace_negative(df, "actuals")
+    df = repair_nan_zeros.replace_negative(df, denominator)
     df["errors"] = df[numerator] - df[denominator]
     return df
 

@@ -100,7 +100,7 @@ The options of the package are :
     python mape_maker --help
     Options:
       -t, --target_mape FLOAT         desired mape otherwise will take
-                                      the mape of the dataset
+                                      a MAPE based on the dataset
       -st, --simulated_timeseries TEXT       feature you want to simulate 'actuals' or
                                       'forecasts'
       -bp, --base_process TEXT        base procees either 'iid' or 'ARMA'
