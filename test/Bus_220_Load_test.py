@@ -73,7 +73,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "Bus_220_load"
-        parm_dict["full_dataset"]           = True
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
