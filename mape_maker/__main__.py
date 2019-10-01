@@ -24,7 +24,7 @@ def check_date(s):
 @click.command()
 @click.argument('input_file')
 @click.option('--target_mape', "-t",  default=None, type=float, help='mape you want in return otherwise will take the mape of the dataset')
-@click.option('--simulated_timeseries','-st', default="forecasts", help="feature you want to simulate 'actuals' or 'forecasts'")
+@click.option('--simulated_timeseries','-st', default="actuals", help="feature you want to simulate 'actuals' or 'forecasts'")
 @click.option('--base_process', '-bp', default="ARMA", help="method used to this end 'iid' or 'ARMA")
 @click.option('--a', '-a', default=4, type=float, help="percent of data on the left or on the right for the estimation")
 @click.option('--output_dir', "-o", default=None, help="path to a directory to save the simulations")
@@ -97,11 +97,10 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
     else:
         pyomo_parameters = None
 
-    if target_mape is not None:
-        target_mape = target_mape/100
+    tmare = target_mape/100 if target_mape is not None else None
 
     list_of_date_ranges = [[simulation_start_dt, simulation_end_dt]]
-    scores = mare_embedder.simulate(target_mare=target_mape, base_process=base_process, n=number_simulations,
+    scores = mare_embedder.simulate(target_mare=tmare, base_process=base_process, n=number_simulations,
                                     full_dataset=full_dataset, output_dir=output_dir,
                                     list_of_date_ranges=list_of_date_ranges, curvature_parameters=pyomo_parameters,
                                     latex=latex_output)
