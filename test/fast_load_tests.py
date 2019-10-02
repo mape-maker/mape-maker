@@ -48,7 +48,7 @@ class TestUM(unittest.TestCase):
         """
         basedict = {"input_file"            : "",
                     "target_mape"           : None,
-                    "simulated_timeseries"  : "",
+                    "simulated_timeseries"  : "actuals",
                     "base-process"          : "",
                     "a"                     : None,
                     "output_dir"            : "result",
@@ -91,7 +91,7 @@ class TestUM(unittest.TestCase):
         parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1,   hour=1,   minute=0, second=0)
         parm_dict["input_end_dt"]           = datetime(year=2020, month=3, day=30,  hour=0,   minute=0, second=0)
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=2, day=10,   hour=0,   minute=0, second=0)
-        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=2, day=30,  hour=23,  minute=0, second=0)
+        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=2, day=28,  hour=23,  minute=0, second=0)
         parm_dict["output_dir"]             = "load_actuals_iid_dates"
         parm_list                           = list(parm_dict.values())
         # run the test

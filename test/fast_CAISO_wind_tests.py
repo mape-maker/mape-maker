@@ -70,3 +70,6 @@ class TestUM(unittest.TestCase):
         parm_dict["seed"] = 1134
         parm_list = list(parm_dict.values())
         mapemain.main_func(*parm_list)
+
+if __name__ == "__main__":
+    unittest.main()

@@ -49,7 +49,7 @@ class TestUM(unittest.TestCase):
         """
         basedict = {"input_file"            : "",
                     "target_mape"           : None,
-                    "simulated_timeseries"  : "",
+                    "simulated_timeseries"  : "actuals",
                     "base-process"          : "",
                     "a"                     : None,
                     "output_dir"            : "result",
