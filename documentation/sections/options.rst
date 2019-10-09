@@ -19,7 +19,7 @@ The options of the package are :
    * - -t
      - --target_mape
      - FLOAT
-     - desired mape, otherwise will take the mape of the dataset
+     - desired mape, otherwise will take the mape based on the input dataset
    * - -st
      - --simulated_timeseries
      - TEXT
@@ -115,7 +115,7 @@ Options with More Details
 
  ``-t 41.1``
 
- If this option is not given, the target MAPE is the MAPE of the input data.
+ If this option is not given, the target MAPE is the MAPE based on the input data.
 |
 * **--simulated_timeseries TEXT**:
  If the user wants to simulate actuals from forecasts, then the simulated timeseries will be "actuals".
