@@ -48,11 +48,11 @@ class TestUM(unittest.TestCase):
         """
         basedict = {"input_file"            : "",
                     "target_mape"           : None,
-                    "simulated_timeseries"  : "",
+                    "simulated_timeseries"  : "actuals",
                     "base-process"          : "",
                     "a"                     : None,
                     "output_dir"            : "result",
-                    "number_simulations"    : 3,
+                    "number_simulations"    : 2,
                     "input_start_dt"        : None,
                     "input_end_dt"          : None,
                     "simulation_start_dt"   : None,
@@ -60,7 +60,7 @@ class TestUM(unittest.TestCase):
                     "title"                 : "",
                     "seed"                  : 1234,
                     "load_pickle"           : False,
-                    "curvature"             : None,
+                    "curvature"             : False,
                     "time_limit"            : 1,
                     "curvature_target"      : None,
                     "mip_gap"               : None,
@@ -82,16 +82,16 @@ class TestUM(unittest.TestCase):
 
     def test_load_actuals_ARMA_dates(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 1 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-10 0:0:0" -ed "2020-2-30 23:0:0"-o "load_actuals_iid_dates" -s 1234
+        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-10 0:0:0" -ed "2020-2-30 23:0:0"-o "load_actuals_iid_dates" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "actuals"
-        parm_dict["number_simulations"]     = 1
+        parm_dict["number_simulations"]     = 2
         parm_dict["base-process"]           = "ARMA"
         parm_dict["input_start_dt"]         = datetime(year=2020, month=1, day=1,   hour=1,   minute=0, second=0)
         parm_dict["input_end_dt"]           = datetime(year=2020, month=3, day=30,  hour=0,   minute=0, second=0)
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=2, day=10,   hour=0,   minute=0, second=0)
-        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=2, day=30,  hour=23,  minute=0, second=0)
+        parm_dict["simulation_end_dt"]      = datetime(year=2020, month=2, day=28,  hour=23,  minute=0, second=0)
         parm_dict["output_dir"]             = "load_actuals_iid_dates"
         parm_list                           = list(parm_dict.values())
         # run the test
@@ -111,7 +111,7 @@ class TestUM(unittest.TestCase):
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "forecasts"
-        parm_dict["number_simulations"]     = 1
+        parm_dict["number_simulations"]     = 2
         parm_dict["base-process"]           = "ARMA"
         parm_dict["output_dir"]             = "load_forecasts_iid"
         parm_list                           = list(parm_dict.values())
