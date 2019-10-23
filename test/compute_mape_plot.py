@@ -22,7 +22,7 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
     final_dataframe = pd.concat(frames, axis=1, sort=True)
     # raise error for missing entries
     # calculating MAPE (using formula from MapeMaker lines 61-62
-    ares = abs(final_dataframe["forecasts"] - final_dataframe["actuals"] / final_dataframe["actuals"])
+    ares = abs(final_dataframe["actuals"] - final_dataframe["forecasts"] / final_dataframe["actuals"])
     mare = np.mean(ares)
     mare =  mare/100
     print("mare = ", mare)
@@ -30,12 +30,12 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
     # computing mare of the simulated scenarios
     if scenario_type == "actuals":
         for i in range(number_of_scenarios):
-            ares = abs(final_dataframe["forecasts"] - final_dataframe["simulation_n_"+str(i+1)] / final_dataframe["simulation_n_"+str(i+1)])
+            ares = abs(final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["forecasts"] / final_dataframe["forecasts"])
             mare = np.mean(ares)/100
             scenario_mare.append(mare)
     else:
         for i in range(number_of_scenarios):
-            ares = abs(final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["actuals"] / final_dataframe["actuals"])
+            ares = abs((final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["actuals"]) / final_dataframe["actuals"])
             mare = np.mean(ares)/100
             scenario_mare.append(mare)
 
@@ -54,8 +54,8 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
     index = final_dataframe[first].iloc[screen*40:(screen+1)*40].index
     fig, ax1 = plt.subplots(figsize=(15, 6), dpi=80, facecolor='w', edgecolor='k',
                             num="MapeMaker - Plot of simulations")
-    color = 'black'
-    color_list = ["red", "green", "orange", "purple", "brown"]
+
+    color_list = ["red", "green", "orange", "purple", "brown", "pink", "blue"]
 
     if number_of_scenarios > 5:
         number_of_scenarios = 5
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     # example:
     # input_file_path = "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"
-    # output_file_path = "../../../load_actuals_iid/load_scenarios_3.csv"
+    # output_file_path = "../load_actuals/load_output.csv"
     # scenario_type = "actuals"
     # number_of_scenarios = 3
 

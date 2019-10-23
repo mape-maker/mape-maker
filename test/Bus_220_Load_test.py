@@ -35,14 +35,14 @@ class TestUM(unittest.TestCase):
                     "simulation_end_dt"     : None,
                     "title"                 : "",
                     "seed"                  : 1234,
-                    "curvature"             : None,
+                    "load_pickle"           : False,
+                    "curvature"             : False,
                     "time_limit"            : 1,
                     "curvature_target"      : None,
-                    "mip"                   : None,
-                    "solver"                : None,
-                    "full_dataset"          : True,
+                    "mip_gap"               : None,
+                    "solver"                : "gurobi",
                     "latex_output"          : False,
-                    "show"                  : False
+                    "show"                  : True
                     }
 
         return basedict
@@ -73,7 +73,6 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)
         parm_dict["output_dir"]             = "Bus_220_load"
-        parm_dict["full_dataset"]           = True
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
