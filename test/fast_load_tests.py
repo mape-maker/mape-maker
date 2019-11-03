@@ -39,7 +39,8 @@ class TestUM(unittest.TestCase):
         self.cwd = os.getcwd()
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
-        self.load_data = file_path + dir_sep + "rts_gmlc" + dir_sep + "Load_forecasts_actuals.csv"
+        self.load_data = file_path + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc_based" +\
+                         dir_sep + "procssed_file.csv"
 
     def _base_dict(self):
         """
@@ -82,7 +83,7 @@ class TestUM(unittest.TestCase):
 
     def test_load_actuals_ARMA_dates(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-10 0:0:0" -ed "2020-2-30 23:0:0"-o "load_actuals_iid_dates" -s 1234
+        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-10 0:0:0" -ed "2020-2-30 23:0:0"-o "load_actuals_iid_dates" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -107,7 +108,7 @@ class TestUM(unittest.TestCase):
 
     def test_load_forecasts_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 1 -bp "ARMA" -o "load_forecasts_iid -s 1234
+        # python -m mape_maker "mape_maker/samples/rbased_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "forecasts" -n 1 -bp "ARMA" -o "load_forecasts_iid -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "forecasts"

@@ -40,7 +40,8 @@ class TestUM(unittest.TestCase):
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
         self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
-                         "samples" + dir_sep + "rts_gmlc" + dir_sep + "Load_forecasts_actuals.csv"
+                         "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir sep + \
+                         "processed_file.csv"
 
     def _base_dict(self):
         """
@@ -194,7 +195,7 @@ class TestUM(unittest.TestCase):
                      "skipping input and simulation dates test")
     def test_input_and_simulation_dates(self):
         """
-        python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-4-22 0:0:0" -ed "2020-6-29 23:0:0" -s 1234
+        python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "forecasts" -n 3 -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-4-22 0:0:0" -ed "2020-6-29 23:0:0" -s 1234
 
         This test is used to make sure if the simulation start date is earlier
         than the input start dates, then the code will throw some error messages.

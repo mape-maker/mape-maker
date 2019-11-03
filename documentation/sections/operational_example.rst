@@ -16,9 +16,9 @@ Finally, it will return a plot of simulations, and create an output dir called "
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/load_operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "load_operations_example" -s 1234 -t 50
+    python -m mape_maker "mape_maker/samples/based_rts_gmlc/load_operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "load_operations_example" -s 1234 -t 50
 
-* **"mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"**:
+* **"mape_maker/samples/based_rts_gmlc/load_operations_examplecsv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
@@ -54,7 +54,7 @@ the scenario lines tend to overlap in the plot.
 **RTS Wind Operations Examples**
 ---------------------------------
 
-The following command will take the data from *wind_operations_example.csv*, which is a modified version of
+The following command will take the data based on rts gmlc's Wind time series, which is a modified version of
 RTS's *WIND_forecasts_actuals.csv*. We will find the scenarios from forecasts to actuals for the date(s) that have missing actuals.
 
 It will simulate all the dates in the input files, and can use the date(s) with missing actuals for simulation dates.
@@ -67,9 +67,9 @@ Finally, it will return a plot of simulations, and create an output dir called "
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/wind_operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example" -s 1234 -t 50
+    python -m mape_maker "mape_maker/samples/based_rts_gmlc/wind_operations_example.csv" -st "actuals" -n 3 -bp "ARMA" -is "2020-1-1 01:00:00" -ie "2020-12-29 23:00:00" -sd "2020-12-30 00:00:00" -ed "2020-12-31 23:00:00" -o "wind_operations_example" -s 1234 -t 50
 
-* **"mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"**:
+* **"mape_maker/samples/based_rts_gmlc/wind_operations_example.csv.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
