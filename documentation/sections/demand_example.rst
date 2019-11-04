@@ -1,17 +1,16 @@
 Demand data file examples
 =======================
 
-The following command will take the data from *Load_forecasts_actuals.csv*,
-and launch the simulations with n = 3 and seed = 1234 from forecasts to actuals using an ARMA
+The following command will take the data based on rts gmlc's Load time series and launch the simulations with n = 3 and seed = 1234 from forecasts to actuals using an ARMA
 Base Process. It will simulate all the dates in the input files. Finally, it will return a
 plot of simulations, and create an output dir called "load_actuals_ARMA".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
+    python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
 
 
-* **"mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"**:
+* **"mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data

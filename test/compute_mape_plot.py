@@ -12,43 +12,52 @@ dir_sep = '/'
 
 def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenarios):
     """
-    This function will compute average scenario mare and plot all the scenario in the file.
+    This function will compute dataset's mape, average scenario mape, and plot upto 5 the scenario in the input file.
+    :param input_file: file path to RTS_GMLC's aggregrated WIND, LOAD or POWER csv files
+    :param output_file: file path to mape-maker's output for WIND, LOAD or POWER csv files
+    :param scenario_type: simulated_timeseries given as input to mape-maker, "actuals" or "forecasts"
+    :param number_of_scenarios: given as input to mape-maker, integer value
+    :return: prints the mare of the dataset, and the average over the scenarios, and plots upto 5 scenarios;
+             also saved the input and output file as a combined csv in the dir of this script
     """
+
+    # read the files into a dataframe
     output_dataframe = pd.read_csv(output_file, index_col=0)
     input_dataframe = pd.read_csv(input_file, index_col=0)
     input_dataframe.columns = ['actuals', 'forecasts']
     input_dataframe.index = pd.to_datetime(input_dataframe.index)
     frames = [output_dataframe, input_dataframe]
     final_dataframe = pd.concat(frames, axis=1, sort=True)
-    # raise error for missing entries
-    # calculating MAPE (using formula from MapeMaker lines 61-62
-    ares = abs(final_dataframe["actuals"] - final_dataframe["forecasts"] / final_dataframe["actuals"])
+
+    # calculating MAPE of the input dataset
+    ares = abs(final_dataframe["forecasts"] - final_dataframe["actuals"] / final_dataframe["actuals"])
     mare = np.mean(ares)
-    mare =  mare/100
-    print("mare = ", mare)
-    scenario_mare = []
-    # computing mare of the simulated scenarios
+    mape =  mare/100
+    print("The input dataset's mape = ", mape)
+
+    scenario_mape = []
+    # computing mape of the simulated scenarios
     if scenario_type == "actuals":
         for i in range(number_of_scenarios):
             ares = abs(final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["forecasts"] / final_dataframe["forecasts"])
-            mare = np.mean(ares)/100
-            scenario_mare.append(mare)
+            mape = np.mean(ares)/100
+            scenario_mape.append(mape)
     else:
         for i in range(number_of_scenarios):
             ares = abs((final_dataframe["simulation_n_"+str(i+1)] - final_dataframe["actuals"]) / final_dataframe["actuals"])
-            mare = np.mean(ares)/100
-            scenario_mare.append(mare)
+            mape = np.mean(ares)/100
+            scenario_mape.append(mape)
 
-    average_scenario_mare = np.mean(scenario_mare )
-    print("Average scenario mare is ", average_scenario_mare )
-    std_scenario_mare = np.std(scenario_mare)
-    print("Standard deviation of mare in scenarios is ", std_scenario_mare )
+    average_scenario_mape = np.mean(scenario_mare )
+    print("Average scenario mape is ", average_scenario_mape )
+    std_scenario_mape = np.std(scenario_mape)
+    print("Standard deviation of mape in scenarios is ", std_scenario_mape )
 
-    # saving final_dataframe as csv file in current directory
+    # saving the combined final_dataframe as csv file in current directory
     simulation_file_path = os.path.join(file_path, "final_dataframe.csv")
     final_dataframe.to_csv(simulation_file_path)
 
-    # plotting the actuals, forecasts, and the scenarios
+    # plotting the actuals, forecasts, and upto 5 scenarios in one screen
     first = list(final_dataframe.keys())[0]
     screen = 1
     index = final_dataframe[first].iloc[screen*40:(screen+1)*40].index
@@ -64,34 +73,28 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
         ax1.plot(index, final_dataframe["simulation_n_"+ str(j+1)].loc[index], "-", marker="+",
                  color = color_list[j], linewidth=0.5)
 
-    #ax1.plot(index, final_dataframe["simulation_n_2"].loc[index], "-", marker="+", color="green", linewidth=0.5)
-    #ax1.plot(index, final_dataframe["simulation_n_3"].loc[index], "-", marker="+", color="brown", linewidth=0.5)
-    #ax1.plot(index, final_dataframe["simulation_n_4"].loc[index], "-", marker="+", color="purple", linewidth=0.5)
-    #ax1.plot(index, final_dataframe["simulation_n_5"].loc[index], "-", marker="+", color="orange", linewidth=0.5)
-
     plt.legend(loc='best')
+
     # saving plot in current directory
     plot_path = file_path + dir_sep + "scenarios_plot"
     plt.savefig(plot_path)
     return 0
 
+
 def print_usage(msg):
     print(msg)
-    print("Usage: python compute_mape_plot.py input_file_path output_file_path scenario_type")
+    print("Usage: python compute_mape_plot.py input_file_path output_file_path scenario_type num_of_scenarios")
     sys.exit(1)
 
 if __name__ == '__main__':
     # Format for the command line arguements:
     # python compute_mape_plot.py input_file_path output_file_path scenario_type number_of_scenarios
+    # python compute_mape_plot.py "../mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed.file.csv"
+    # python compute_mape_plot.py "../mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed.file.csv"
 
     if len(sys.argv) != 5:
         print_usage("Need five arguments")
 
-    # example:
-    # input_file_path = "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv"
-    # output_file_path = "../load_actuals/load_output.csv"
-    # scenario_type = "actuals"
-    # number_of_scenarios = 3
 
     input_file_path = sys.argv[1]
     output_file_path = sys.argv[2]
@@ -111,5 +114,5 @@ if __name__ == '__main__':
         num_of_scenarios = int(num_of_scenarios)
     except:
         print_usage(num_of_scenarios + " is not a valid input.")
-
+        
     combine_mape_plot(input_file_path, output_file_path, scenario_type, num_of_scenarios )

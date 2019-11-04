@@ -61,13 +61,14 @@ class TestUM(unittest.TestCase):
         print("temporary directory:", self.cwd)
         # path to the RTS wind data
 
-        self.wind_data = file_path + dir_sep + "rts_gmlc" + \
-                         dir_sep + "WIND_forecasts_actuals.csv"
+        self.wind_data = file_path + dir_sep + "based_rts_gmlc" + \
+                         dir_sep + "Wind_rts_gmlc_based" + dir_sep + \
+                         "processed_file.csv"
 
     def test_commmand(self):
         """
         here is the command :
-        python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
+        python -m mape_maker "mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_file.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
         :return:
         """
         print("Running ", str(self.id()).split('.')[2])

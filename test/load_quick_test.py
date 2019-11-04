@@ -40,8 +40,8 @@ class TestUM(unittest.TestCase):
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
         self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
-                         "samples" + dir_sep + "rts_gmlc" + dir_sep + "Load_forecasts_actuals.csv"
-
+                         "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir sep + \
+                         "processed_file.csv"
     def _base_dict(self):
         """
         initialize the parameters
@@ -83,7 +83,7 @@ class TestUM(unittest.TestCase):
 
     def test_load_actuals_iid(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_iid" -s 1234
+        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_iid" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -105,7 +105,7 @@ class TestUM(unittest.TestCase):
                      "skipping the second test")
     def test_load_actuals_ARMA_dates(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_actuals_ARMA" -s 1234
+        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "actuals" -n 2 -bp "ARMA" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_actuals_ARMA" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "actuals"
@@ -126,7 +126,7 @@ class TestUM(unittest.TestCase):
                      "skipping the third test")
     def test_load_actuals_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
+        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "forecasts" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "forecasts"
@@ -145,7 +145,7 @@ class TestUM(unittest.TestCase):
                      "skipping the fourth test")
     def test_load_forecasts_iid_dates(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" -st "forecasts" -n 2 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_forecasts_iid" -s 1234
+        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "forecasts" -n 2 -bp "iid" -is "2020-5-1 1:0:0" -ie "2020-7-30 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "load_forecasts_iid" -s 1234
         parm_dict                           = self._base_dict()
         parm_dict["input_file"]             = self.load_data
         parm_dict["simulated_timeseries"]   = "forecasts"
