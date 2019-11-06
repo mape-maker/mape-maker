@@ -104,6 +104,10 @@ The options of the package are :
      - --verbosity_output
      - TEXT
      - the output file to save the verbosity
+   * -
+     - --help
+     -
+     - Show this message and exit.
 |
 |
 
