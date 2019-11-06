@@ -36,12 +36,38 @@ where
 After running the python script, the write_path will contain all csv and txt files for all the timeseries data files processed by buses, zones, and aggregated together over all the zones.
 The csv files can be used as input to MapeMaker to get the desired scenarios.
 
-Here are some examples.
+3. Some of the rts_gmlc data files entries have a lot more than acceptable errors. If you want to modify the data based on a threshold,
+such that if the absolute relative error for a particular datetime is higher than the threshold, change the forecast so that
+the absolute relative error for that datetime equals threshold. In order to adapt you data file go to:
+
+::
+
+    cd mape_maker/samples/based_rts_gmlc/
+
+Then, you can run the python script as follows:
+
+::
+
+    python process_based_on_RTS_GMLC.py source_path write_path threshold
+
+where
+
+* **source_path**:
+  location of the timeseries_data_files directory (e.g. "RTS-GMLC/RTS_Data/timeseries_data_files/")
+* **write_path**:
+  location of an existing directory you want to store the processed files in (e.g. "adapted_rts_gmlc")
+* **threshold**:
+  the value used to modify the dataset if needed
+
+After running the python script, the write_path will contain the processed csv file that can be used as input
+to MapeMaker to get the desired scenarios.
+
+For convenience, we will use the adapted rts_gmlc data files. Here are some examples.
 
 Example 1 - WIND_forecasts_actuals.csv
 **************************************
 
-The following command will take the data from *WIND_forecasts_actuals.csv*, and launch the
+The following command will take the data from rts_gmlc based Wind data file, and launch the
 simulations with n = 5 and seed = 1234 from forecasts to actuals using an ARMA base process.
 It will compute the distribution from 2020-2-1 00:00:00 to 2020-5-1 00:00:00 and simulate from
 2020-2-2 00:00:00 to 2020-3-2 00:00:00. Finally, it will return a plot of simulations,
@@ -49,9 +75,9 @@ and create an output dir called "wind_forecasts_actuals".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
+    python -m mape_maker "mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_file.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
 
-* **"mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv"**:
+* **"mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_filecsv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-st "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
