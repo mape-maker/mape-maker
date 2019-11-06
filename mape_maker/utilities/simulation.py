@@ -16,7 +16,7 @@ Main functions for simulation :
 """
 
 
-def simulate_multiple_scenarios(x_sid, s_x_tilde, cap=4500, base_process=None, n=1, seeds=None,
+def simulate_multiple_scenarios(logger, x_sid, s_x_tilde, cap=4500, base_process=None, n=1, seeds=None,
                                 curvature_parameters=None):
     """
     For every simulation, simulate the errors with the base_process and the conditional distribution
@@ -36,7 +36,7 @@ def simulate_multiple_scenarios(x_sid, s_x_tilde, cap=4500, base_process=None, n
     simulations = pd.DataFrame()
     for i in range(1, n+1):
         raw_errors = simulate_errors_from_base_process(x_sid, s_x_tilde, base_process=base_process, seed=seeds[i-1])
-        simulation, errors = simulate_output_from_errors(raw_errors, cap=cap, curvature_parameters=curvature_parameters)
+        simulation, errors = simulate_output_from_errors(logger, raw_errors, cap=cap, curvature_parameters=curvature_parameters)
         simulation.name = simulation.name + "_n_{}".format(i)
         simulations = pd.concat([simulations, simulation], axis=1)
     return simulations, errors
@@ -70,7 +70,7 @@ def from_bp_to_errors(row, s_x_tilde=None):
     return beta.ppf(bp, a, b, loc=loc, scale=scale)
 
 
-def simulate_output_from_errors(raw_errors, cap=4500, curvature_parameters=None):
+def simulate_output_from_errors(logger, raw_errors, cap=4500, curvature_parameters=None):
     """
     From the errors generate a sample of output with curvature if specified
     :param raw_errors:
@@ -78,7 +78,7 @@ def simulate_output_from_errors(raw_errors, cap=4500, curvature_parameters=None)
     :param curvature_parameters:
     :return:
     """
-    simulation = raw_errors.apply(from_errors_to_simulated_naive, axis=1, **{"cap": cap})
+    simulation = raw_errors.apply(from_errors_to_simulated_naive, axis=1, **{"logger": logger, "cap": cap})
     simulation.name = "simulation"
     try:
         if curvature_parameters is not None:
@@ -95,7 +95,7 @@ def simulate_output_from_errors(raw_errors, cap=4500, curvature_parameters=None)
     return simulation, raw_errors
 
 
-def from_errors_to_simulated_naive(row, floored=True, simulators=(), floor=0, cap=4500, show_errors=False):
+def from_errors_to_simulated_naive(row, floored=True, simulators=(), floor=0, cap=4500, show_errors=False, logger = None):
     """
     function returning the simulation x in function of the simulated error
     :param row: one line of a dataframe
@@ -110,7 +110,7 @@ def from_errors_to_simulated_naive(row, floored=True, simulators=(), floor=0, ca
     if floored:
         if y < floor or y > cap:
             if show_errors is True :
-                print("Error : y = {} max is {}, \n   {}".format(y, cap, row))
+                logger.error("Error : y = {} max is {}, \n   {}".format(y, cap, row))
             if len(simulators) == 2:
                 while y < floor:
                     y = simulators[0](np.random.uniform(0, 1, 1))[0]
@@ -172,7 +172,7 @@ def score_simulations_from_measures(raw_measures):
     return raw_scores
 
 
-def check_simulation_mare(X, Y, results, r_tilde):
+def check_simulation_mare(X, Y, results, r_tilde, logger):
     """
     computes the MARE over the sid (observed) and over the simulations in results
     :param X: timeseries of input
@@ -188,25 +188,25 @@ def check_simulation_mare(X, Y, results, r_tilde):
     are_hat = re_hat.apply(abs)
     simulation_mares = []
     for c in results.columns:
-        print("\n" + "-" * 60)
-        print("|" + " " * 20 + c + " " * (38 - len(c)) + "|")
-        print("-" * 60)
+        logger.info("\n" + "-" * 60)
+        logger.info("|" + " " * 20 + c + " " * (38 - len(c)) + "|")
+        logger.info("-" * 60)
         simulation = results[c]
         re_tilde = (simulation-x)/x
         re_tilde = re_tilde[x > 0] ## dlw
         re_tilde = re_tilde.dropna()
         are_tilde = re_tilde.apply(abs)
         mare_hat = np.mean(are_hat)
-        print("Mape targeted was {}% and estimated over the sid was {}%".format(round(100*float(r_tilde), 2),
+        logger.info("Mape targeted was {}% and estimated over the sid was {}%".format(round(100*float(r_tilde), 2),
                                                                                 round(100*float(mare_hat), 2)))
-        print("Mape simulated is {}%".format(round(100*float(np.mean(are_tilde)), 2)))
+        logger.info("Mape simulated is {}%".format(round(100*float(np.mean(are_tilde)), 2)))
         simulation_mares.append(np.mean(are_tilde))
 
     title = "Overall mape of the scenario of sets is = {}%, targeted was {}%".format(round(
         100*float(np.mean(simulation_mares)), 2), round(100*float(r_tilde), 2))
-    print("\n" + "-" * 100)
-    print("|" + " " * 10 + title + " " * (88 - len(title)) + "|")
-    print("-" * 100)
+    logger.info("\n" + "-" * 100)
+    logger.info("|" + " " * 10 + title + " " * (88 - len(title)) + "|")
+    logger.info("-" * 100)
 
     return simulation_mares, np.mean(are_hat)
 
