@@ -42,7 +42,9 @@ class TestUM(unittest.TestCase):
                     "mip_gap"               : None,
                     "solver"                : "gurobi",
                     "latex_output"          : False,
-                    "show"                  : True
+                    "show"                  : True,
+                    "verbosity"             : 2,
+                    "verbosity_output"      : None
                     }
 
         return basedict
