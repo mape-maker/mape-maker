@@ -13,3 +13,5 @@ pytz==2019.1
 scipy==1.2.1
 six==1.12.0
 statsmodels==0.9.0
+logging
+verboselogs
