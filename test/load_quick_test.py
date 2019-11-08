@@ -40,7 +40,7 @@ class TestUM(unittest.TestCase):
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
         self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
-                         "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir sep + \
+                         "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir_sep + \
                          "processed_file.csv"
     def _base_dict(self):
         """

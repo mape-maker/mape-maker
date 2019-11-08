@@ -56,7 +56,7 @@ def main(input_file, target_mape, simulated_timeseries, base_process, a, output_
                      curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show, verbosity, verbosity_output)
 
 def set_verbose_level(verbosity, verbosity_output):
-    format = '%(asctime)s - %(levelname)s - %(message)s'
+    format = '%(message)s'
     if verbosity == 2:
         level = logging.INFO
     elif verbosity == 1:
@@ -67,6 +67,10 @@ def set_verbose_level(verbosity, verbosity_output):
         print("{}, Undefined verbosity level".format(verbosity))
         sys.exit(1)
     if verbosity_output is not None:
+        # check whether the output file already exist
+        if os.path.isfile(verbosity_output):
+            # delete the existing file
+            os.remove(verbosity_output)
         logging.basicConfig(filename=verbosity_output, level=level,
                             format=format)
     else:
