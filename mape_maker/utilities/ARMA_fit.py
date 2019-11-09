@@ -172,9 +172,9 @@ def find_best_arma_repr(logger, base_process):
                 best_model = (p, d, q)
                 bic = model_fit.bic
                 # print(p,d,q, " BIC = {}".format(model_fit.bic))
-                logger.info("{} {} {} BIC = {}".format(p,d,q, model_fit.bic))
+                logger.info("{},{},{} BIC = {}".format(p,d,q, model_fit.bic))
         except Exception as e:
-            logger.info("{} {} {} rejected:".format(p,d,q))
+            logger.info("{},{},{} rejected:".format(p,d,q))
             logger.error(e)
             continue
 
