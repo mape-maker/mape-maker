@@ -323,8 +323,8 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
             if j % p == 0:
                 logger.info("     - l_hat and s_hat = {}, {} for m_hat(x) = {} => l_tilde and s_tilde = {}, {} "
                       "for m_tilde = {} < m_max = {}: ".format("%.1f" % loc_nx, "%.1f" % scale_nx, "%.1f" % m_hat[x],
-                                                  "%.1f" % nl, "%.1f" % ns, "%.1f" % m_tilde[x], "%.1f" % m_max[x]),
-                      " {}% done".format((round(100*j / len(datasetsid[:-1]), 3))))
+                                                  "%.1f" % nl, "%.1f" % ns, "%.1f" % m_tilde[x], "%.1f" % m_max[x]))
+                logger.info(" {}% done".format((round(100*j / len(datasetsid[:-1]), 3))))
         except Exception as e:
             if x != 0 and x != cap:  # bounds are equal for these cases
                 nb_errors += 1
