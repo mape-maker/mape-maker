@@ -6,6 +6,7 @@ import os
 import glob
 import pandas as pd
 import shutil
+import logging, verboselogs
 import datetime
 from datetime import datetime
 import shutil
@@ -17,6 +18,7 @@ from collections.abc import Iterable
 quick_test = False
 # whether to run only one example
 skip_all_but_one = False
+
 
 class TestUM(unittest.TestCase):
 

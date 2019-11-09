@@ -55,7 +55,7 @@ def main(input_file, target_mape, simulated_timeseries, base_process, a, output_
                      input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle,
                      curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show, verbosity, verbosity_output)
 
-def set_verbose_level(verbosity, verbosity_output):
+def set_verbose_level(logger, verbosity, verbosity_output):
     format = '%(message)s'
     if verbosity == 2:
         level = logging.INFO
@@ -75,6 +75,7 @@ def set_verbose_level(verbosity, verbosity_output):
                             format=format)
     else:
         logging.basicConfig(level=level, format=format)
+    return logger
 
 def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir):
     """ Check some of the user inputs.
@@ -98,7 +99,8 @@ def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_en
 def main_func(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
               input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle, curvature, time_limit, curvature_target,
          mip, solver, latex_output, show, verbosity, verbosity_output):
-    set_verbose_level(verbosity, verbosity_output)
+    logger = logging.getLogger('mape-maker')
+    logger = set_verbose_level(logger, verbosity, verbosity_output)
     input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir)
     if simulation_start_dt is None and input_start_dt is not None:
         simulation_start_dt = input_start_dt
@@ -157,7 +159,6 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
 
 
 if __name__ == "__main__":
-    logger = logging.getLogger('mape-maker')
     main()
 
 
