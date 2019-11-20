@@ -23,7 +23,7 @@ Function to plot the results :
 """
 
 
-def pre_treat(path: str = "", type_of_simulation: str = "actuals") -> pd.DataFrame:
+def pre_treat(logger, path: str = "", type_of_simulation: str = "actuals") -> pd.DataFrame:
     """
     Verifies the consistency of the data, create the errors columns returns the relative error dataframe, the zero data
     frame and the whole dataframe
@@ -31,24 +31,24 @@ def pre_treat(path: str = "", type_of_simulation: str = "actuals") -> pd.DataFra
     :param type_of_simulation: the target column of the simulation
     :return: df
     """
-    print(("-"*50 + "\n{}\n" + "-"*50).format("1. Importing and Treating the dataframe to get the {}".format(
+    logger.info(("-"*50 + "\n{}\n" + "-"*50).format("1. Importing and Treating the dataframe to get the {}".format(
         type_of_simulation)))
-    df = set_datetime_index(pd.read_csv(path))
+    df = set_datetime_index(logger, pd.read_csv(path))
 
-    print("testing for holes in the dataframe ...")
+    logger.info("testing for holes in the dataframe ...")
     holes, list_of_holes = test_for_holes(df.index)
     if holes:
         for ind_h in list_of_holes:
-            print("     * Holes found in the index between {} and {}".format(df.index[ind_h], df.index[ind_h+1]))
+            logger.info("     * Holes found in the index between {} and {}".format(df.index[ind_h], df.index[ind_h+1]))
     else:
-        print("no holes in the index of the dataset. Good to go.")
+        logger.info("no holes in the index of the dataset. Good to go.")
 
-    df = create_errors_columns(df, type_of_simulation=type_of_simulation)
+    df = create_errors_columns(logger, df, type_of_simulation=type_of_simulation)
     df.index = pd.to_datetime(df.index)
     return df
 
 
-def set_datetime_index(df: pd.DataFrame) -> pd.DataFrame:
+def set_datetime_index(logger, df: pd.DataFrame) -> pd.DataFrame:
     """
     Find correct datetime column and set it as index
     :param df: bunk dataframe
@@ -58,19 +58,19 @@ def set_datetime_index(df: pd.DataFrame) -> pd.DataFrame:
     date_col = df.columns[0]
     for i in range(len(row)):
         if type(row[i]) == str and pd.to_datetime(row[i]):
-            print("Datetime column found : {} replaced by \'datetime\'".format(columns[i]))
+            logger.info("Datetime column found : {} replaced by \'datetime\'".format(columns[i]))
             date_col = columns[i]
             break
     df = df.rename(columns={date_col: "datetime"})
     try:
         df["datetime"] = pd.to_datetime(df["datetime"])
     except ValueError:
-        print("No datetime indicated in the csv")
+        logger.error("No datetime indicated in the csv")
     df = df.set_index("datetime")
     return df
 
 
-def create_errors_columns(df: pd.DataFrame, type_of_simulation: str = "actuals") -> \
+def create_errors_columns(logger, df: pd.DataFrame, type_of_simulation: str = "actuals") -> \
         Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Find columns for forecast and actual and compute the following metrics :
@@ -82,12 +82,12 @@ def create_errors_columns(df: pd.DataFrame, type_of_simulation: str = "actuals")
     :return:
     """
     col_forecasts, col_actuals = df.columns[:2]
-    print("Column for forecasts found : {} replaced by \'forecasts\' "
+    logger.info("Column for forecasts found : {} replaced by \'forecasts\' "
           "\nColumn for actuals found : {} replaced by \'actuals\' ".format(col_forecasts, col_actuals))
     df = df.rename(columns={col_forecasts: "forecasts", col_actuals: "actuals"})
     denominator = "forecasts" if type_of_simulation == "actuals" else "actuals"
     numerator = "actuals" if type_of_simulation == "actuals" else "forecasts"
-    df = repair_nan_zeros.replace_negative(df, denominator)
+    df = repair_nan_zeros.replace_negative(logger, df, denominator)
     df["errors"] = df[numerator] - df[denominator]
     return df
 
@@ -129,7 +129,7 @@ def test_for_holes(index: List[datetime.datetime], hour_gap: int = 1) -> Tuple[b
     return holes, list_of_holes
 
 
-def plot_from_date(X, Y, screen, results=None, title: str = "",
+def plot_from_date(logger, X, Y, screen, results=None, title: str = "",
                    target_mare=None, ending_features: str = "",
                    x_legend: str = ""):
     """
@@ -158,17 +158,17 @@ def plot_from_date(X, Y, screen, results=None, title: str = "",
         try:
             ax1.plot(index, Y.loc[index], '--', marker=".", label=ending_features)
         except:
-            print ("**** Y Plot failed ****")
-            print ("dump of Y.loc[index]")
-            print (Y.loc[index])
-            print ("end dump")
+            logger.error ("**** Y Plot failed ****")
+            logger.error ("dump of Y.loc[index]")
+            logger.error (Y.loc[index])
+            logger.error ("end dump")
     try:
         ax1.plot(index, X.loc[index], "-", marker="o", color="black",
                  label=x_legend, linewidth=0.5)
     except:
-        print ("********* WARNING: Plot failed for", x_legend)
-        print ("dumping data: {}".format(X.loc[index]))
-        print ("****** end WARNING ******")
+        logger.warning ("********* WARNING: Plot failed for", x_legend)
+        logger.warning ("dumping data: {}".format(X.loc[index]))
+        logger.warning ("****** end WARNING ******")
     if results is not None:
         for r in results:
             simulations = results[r]
@@ -177,7 +177,7 @@ def plot_from_date(X, Y, screen, results=None, title: str = "",
                     ax1.plot(index, simulations[c].loc[index], marker=".",
                              linewidth=0.5, label=r+" s_{}".format(i))
                 except:
-                    print ("******* WARNING: Plot failed for simulation {}"\
+                    logger.warning ("******* WARNING: Plot failed for simulation {}"\
                            .format(c))
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.legend()
@@ -189,5 +189,5 @@ def plot_from_date(X, Y, screen, results=None, title: str = "",
     name = "{}\nForecasts, actuals and simulation of {}".format(title, ending_features)
     plt.title(name)
     plt.savefig("mmFinalFig.png")
-    print ("plot saved to mmFinalFig.png")
+    logger.info("plot saved to mmFinalFig.png")
     #plt.show()

@@ -22,7 +22,7 @@ class MapeMaker:
     specific mare
     """
 
-    def __init__(self, path="", name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
+    def __init__(self, logger, path="", name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
                  input_start_dt=None, input_end_dt=None):
         """
 
@@ -37,6 +37,7 @@ class MapeMaker:
         :param seed: seed used for simulation if none will be random
         :param a: percent/2 of data used for the estimation sample
         """
+        self.logger = logger
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
         if ending_feature == "actuals":
@@ -65,10 +66,10 @@ class MapeMaker:
         Creations of errors, relative errors columns,
         Zero_df Vs all_df
         """
-        full_df = pre_treat(path=path, type_of_simulation=ending_feature)
+        full_df = pre_treat(self.logger, path=path, type_of_simulation=ending_feature)
         self.operations = False
         if len(full_df[full_df[self.y].isna()]) > 0:
-            print("-"*60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y))
+            self.logger.info("-"*60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y))
             index_not_na = full_df[~full_df[self.y].isna()].index
             df = full_df.loc[index_not_na]
             self.operations = True
@@ -83,7 +84,7 @@ class MapeMaker:
         ares = abs(self.errors)/self.x_timeseries
         max_ares = max(ares[df[xname]!=0])
         if max_ares > 100:
-            print ("WARNING: the maximum relative error in the input is {}%".\
+            self.logger.warning ("WARNING: the maximum relative error in the input is {}%".\
                    format(round(100*max_ares),1))
         self.mare = np.mean(ares[df[xname]!=0])
         self.cap = max(self.x_timeseries)
@@ -94,36 +95,36 @@ class MapeMaker:
         if load_pickle:
             try:
                 self.pload()
-                print(loading_bar + "\nEstimation parameters for xbar have been loaded")
+                self.logger.info(loading_bar + "\nEstimation parameters for xbar have been loaded")
             except Exception as e:
-                print(e)
-                print(loading_bar + "\nCouldn't load - Estimation parameters for xbar are being computed")
+                self.logger.error(e)
+                self.logger.error(loading_bar + "\nCouldn't load - Estimation parameters for xbar are being computed")
                 self.s_x_a = fitting_distribution.get_s_hat_datasetx_a(self.x_timeseries, self.datasetx, self.errors,
-                                                                       self.cap, a=a)
-                print("We save those parameters")
+                                                                       self.cap, self.logger, a=a)
+                self.logger.error("We save those parameters")
                 self.save()
         else:
-            print(loading_bar + "\nEstimation parameters for xbar are being computed")
+            self.logger.info(loading_bar + "\nEstimation parameters for xbar are being computed")
             self.s_x_a = fitting_distribution.get_s_hat_datasetx_a(self.x_timeseries,
-                                                                   self.datasetx, self.errors, self.cap, a=a)
-            print("We save those parameters")
+                                                                   self.datasetx, self.errors, self.cap, self.logger, a=a)
+            self.logger.info("We save those parameters")
             self.save()
-        print(loading_bar + "\nEstimation parameters for x in datasetx are being infered")
-        self.s_x = fitting_distribution.get_s_x(self.s_x_a, self.datasetx)
+        self.logger.info(loading_bar + "\nEstimation parameters for x in datasetx are being infered")
+        self.s_x = fitting_distribution.get_s_x(self.s_x_a, self.datasetx, logger)
         self.first_estimated_x = list(self.s_x_a.keys())[0]
         p = np.where(np.array(self.datasetx) > self.first_estimated_x)[0][0]/len(self.datasetx)
-        print("The first parameters have been estimated at {}, thus {}% of the low power data have "
+        self.logger.info("The first parameters have been estimated at {}, thus {}% of the low power data have "
               "the same conditional distribution".format(self.first_estimated_x, '%.1f' % (100*p)))
         """
         Estimation of the weight function
         """
-        print(loading_bar + "\nEstimation of the target function m_hat and of the maximum target function m_max")
+        self.logger.info(loading_bar + "\nEstimation of the target function m_hat and of the maximum target function m_max")
         # we could think of storing m_max which requires a time of computation
-        self.m_hat, self.m_max = fitting_distribution.get_maes_from_parameters(self.s_x, self.cap)
+        self.m_hat, self.m_max = fitting_distribution.get_maes_from_parameters(self.s_x, self.cap, self.logger)
         self.r_m_hat = fitting_distribution.get_r_from_m_hat(self.m_hat)
         self.r_m_max = fitting_distribution.get_r_from_m_hat(self.m_max)
-        print(loading_bar + "\nMax attainable for full dataset {}%".format("%2.f" % (100*self.r_m_max)))
-        print(loading_bar + "\nEstimation of the weight function om_X")
+        self.logger.info(loading_bar + "\nMax attainable for full dataset {}%".format("%2.f" % (100*self.r_m_max)))
+        self.logger.info(loading_bar + "\nEstimation of the weight function om_X")
         self.om_x = fitting_distribution.create_weight_function(self.m_hat, self.r_m_hat)
 
         """
@@ -135,7 +136,7 @@ class MapeMaker:
         """
         Getting the simulation functions
         """
-        print(loading_bar + "\nInitializing the simulation functions with the estimations")
+        self.logger.info(loading_bar + "\nInitializing the simulation functions with the estimations")
         self.datasetsid = self.datasetx
         self.x_timeseries_sid = self.full_df[self.x]
         self.m_tilde = self.m_hat
@@ -145,7 +146,7 @@ class MapeMaker:
         self.s_x_tilde = self.s_x
         self.r_tilde = None   ##self.r_m_hat
         self.start_date, self.end_date = self.x_timeseries.index[0], self.x_timeseries.index[-1]
-        print("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
+        self.logger.info("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
 
         """
         Curvature parameters
@@ -162,10 +163,10 @@ class MapeMaker:
         estimate the base process and create a solver object to find the ARMA coefficients
         :return:
         """
-        print(loading_bar + "\nEstimation of the base process")
+        self.logger.info(loading_bar + "\nEstimation of the base process")
         self.Z_hat = ARMA_fit.estimate_base_process(self.x_timeseries, self.errors, self.s_x)
-        print(loading_bar)
-        self.solver_arma = ARMA_fit.SolverARMA(self.Z_hat, self.name)
+        self.logger.info(loading_bar)
+        self.solver_arma = ARMA_fit.SolverARMA(self.Z_hat, self.name, self.logger)
 
     def save(self):
         with open(self.outfile_estimation_parameters, 'wb') as f:
@@ -204,11 +205,11 @@ class MapeMaker:
         :param x_timeseries_sid:
         :return: s_x_tilde
         """
-        print(loading_bar + "\nDetermination of the weight function om_tilde")
+        self.logger.info(loading_bar + "\nDetermination of the weight function om_tilde")
         self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid)
-        print(loading_bar + "\nDetermination of the maximum of mare attainable")
+        self.logger.info(loading_bar + "\nDetermination of the maximum of mare attainable")
         self.r_tilde_max = fitting_distribution.infer_r_tilde_max(self.m_max, self.om_tilde)
-        print(loading_bar + "\nDetermination of the Plausability score and the r_tilde_max")
+        self.logger.info(loading_bar + "\nDetermination of the Plausability score and the r_tilde_max")
         flag_error = False
         if abs(self.e_score - 1) < 0.1:
             s = " == 1, the SID is balanced like the datasetx"
@@ -224,21 +225,21 @@ class MapeMaker:
                 s += "\nWARNING YOU ASKED FOR A TOO STRONG R TILDE"
                 s += "\n     => Either change your r_tilde"
                 s += "\n     => Either change your SID so the e_score increases"
-        print("Plausibility score = {} ".format('%.3f' % self.e_score) + s)
+        self.logger.info("Plausibility score = {} ".format('%.3f' % self.e_score) + s)
         if flag_error:
             return None
-        print(loading_bar + "\nDetermination of the target function m_tilde")
-        self.m_tilde = fitting_distribution.get_maes_from_weight_target(self.om_tilde, r_tilde, self.m_max)
-        print(loading_bar + "\nComputation of the new simulation parameters")
+        self.logger.info(loading_bar + "\nDetermination of the target function m_tilde")
+        self.m_tilde = fitting_distribution.get_maes_from_weight_target(self.om_tilde, r_tilde, self.m_max, self.logger)
+        self.logger.info(loading_bar + "\nComputation of the new simulation parameters")
         self.s_x_tilde, nb_errors = fitting_distribution.get_s_tilde_sid(self.s_x, self.m_tilde, self.m_hat, self.m_max,
-                                                                         self.cap)
-        print(loading_bar + "\n{} simulation distributions did not suceed, the plausibility score "
+                                                                         self.cap, self.logger)
+        self.logger.info(loading_bar + "\n{} simulation distributions did not suceed, the plausibility score "
               "is : {}".format(nb_errors, '%.3f' % self.e_score))
         closest_zero = list(self.s_x_tilde.keys())[1]
-        print(loading_bar + "\nApplying continuity to the parameters on 0, with closest x value = {}".format(
+        self.logger.info(loading_bar + "\nApplying continuity to the parameters on 0, with closest x value = {}".format(
             "%.2f" % closest_zero))
         self.s_x_tilde[0] = self.s_x_tilde[closest_zero]
-        print(loading_bar)
+        self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
     def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
@@ -291,11 +292,11 @@ class MapeMaker:
 
         s_ = "*" * 30 + "*" * len(" PREPROCESSING DONE - READY TO SIMULATE ") + "*" * 30
         n_s = len(s_)
-        print(s_)
+        self.logger.info(s_)
         s = "Simulating from {} to {}".format(list_of_date_ranges[0][0], list_of_date_ranges[0][1])
         s = "*" + " " * ((n_s - 2 - len(s)) // 2) + s + " " * ((n_s - 2 - len(s)) // 2) + "*"
-        print(s)
-        print(s_ + "\n")
+        self.logger.info(s)
+        self.logger.info(s_ + "\n")
 
         if self.seed is not None:
             seeds = [self.seed+i for i in range(n)]
@@ -328,7 +329,7 @@ class MapeMaker:
                     self.compute_second_dif()
                     curvature_parameters["curvature_target"] = self.d
                 self.curvature_parameters = curvature_parameters
-            results, errors = simulation.simulate_multiple_scenarios(self.x_timeseries_sid,
+            results, errors = simulation.simulate_multiple_scenarios(self.logger, self.x_timeseries_sid,
                                                                      self.s_x_tilde, cap=self.cap, n=n,
                                                                      base_process=base_process, seeds=seeds,
                                                                      curvature_parameters=curvature_parameters)
@@ -339,7 +340,7 @@ class MapeMaker:
                 self.saved_scores[name_simul] = simulation.score_simulations_from_measures(
                                                             self.measures_simulations(results, params_simul))
             if latex:
-                print("Latex output not supported for now")
+                self.logger.error("Latex output not supported for now")
                 # to_latex.generate_unique(self.saved_scores, results, 0.01)
 
         return self.saved_scores, nb_errors
@@ -375,7 +376,7 @@ class MapeMaker:
         :return:
         """
         if output_file is not None:
-            print("-" * 30 + "storing the output for {} in {}".\
+            self.logger.info("-" * 30 + "storing the output for {} in {}".\
                   format(name_simul, output_file) + "-" * 30)
             # delete this line file_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
             # delete this line path = os.path.join(file_path, "output/" + output_file)
@@ -412,7 +413,7 @@ class MapeMaker:
         :return:
         """
         result_mares, observed_mare = simulation.check_simulation_mare(self.x_timeseries, self.y_timeseries,
-                                                                       results, self.r_tilde)
+                                                                       results, self.r_tilde, self.logger)
         auto_cor_simul, auto_cor_real = simulation.check_simulation_auto_correlation(self.x_timeseries, self.errors,
                                                                                      results)
         d_simuls, observed_second_differences = simulation.check_simulation_curvature(self.y_timeseries, results)
@@ -442,19 +443,17 @@ class MapeMaker:
                 y = None
             else:
                 y = self.y_timeseries
-            plot_from_date(self.x_timeseries_sid, y, screen,
+            plot_from_date(self.logger, self.x_timeseries_sid, y, screen,
                            results=self.results, title=title,
                            target_mare=self.r_tilde, ending_features=self.y,
                            x_legend=self.x)
             return True
         else:
-            print(loading_bar + "\nno results to plot\n" + loading_bar)
+            self.logger.error(loading_bar + "\nno results to plot\n" + loading_bar)
             return False
 
 
 if __name__ == "__main__":
-    print("main")
-
     """
     Showing all the options for the creation of the object
     """

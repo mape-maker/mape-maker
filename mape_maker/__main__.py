@@ -4,6 +4,7 @@ import click
 #import MapeMaker as MapeMaker
 from mape_maker import MapeMaker 
 from datetime import datetime as dt
+import logging, verboselogs
 
 
 def click_callback(f):
@@ -17,7 +18,6 @@ def check_date(s):
         msg = "Not a valid date: '{0}'.".format(s)
         raise Exception(msg)
     except TypeError:
-        print("")
         return None
 
 
@@ -44,12 +44,38 @@ def check_date(s):
 ###@click.option('--full_dataset', '-fd', default=False, type=bool, help="simulation over all the dataset")
 @click.option('--latex_output', '-lo', default=False, type=bool, help="write results in latex file")
 @click.option('--show', '-sh', default=True, type=bool, help="plot simulations")
+@click.option('--verbosity', '-v', default=2, type=int, help="verbosity level")
+@click.option('--verbosity_output', '-vo', default=None, help="the output file to save the verbosity")
+
+
 def main(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
          input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle, curvature, time_limit, curvature_target,
-         mip_gap, solver, latex_output, show):
+         mip_gap, solver, latex_output, show, verbosity, verbosity_output):
     return main_func(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations,
                      input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle,
-                     curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show)
+                     curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show, verbosity, verbosity_output)
+
+def set_verbose_level(logger, verbosity, verbosity_output):
+    format = '%(message)s'
+    if verbosity == 2:
+        level = logging.INFO
+    elif verbosity == 1:
+        level = logging.WARNING
+    elif verbosity == 0:
+        level = logging.ERROR
+    else:
+        print("{}, Undefined verbosity level".format(verbosity))
+        sys.exit(1)
+    if verbosity_output is not None:
+        # check whether the output file already exist
+        if os.path.isfile(verbosity_output):
+            # delete the existing file
+            os.remove(verbosity_output)
+        logging.basicConfig(filename=verbosity_output, level=level,
+                            format=format)
+    else:
+        logging.basicConfig(level=level, format=format)
+    return logger
 
 def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir):
     """ Check some of the user inputs.
@@ -72,8 +98,9 @@ def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_en
 
 def main_func(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
               input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle, curvature, time_limit, curvature_target,
-         mip, solver, latex_output, show):
-
+         mip, solver, latex_output, show, verbosity, verbosity_output):
+    logger = logging.getLogger('mape-maker')
+    logger = set_verbose_level(logger, verbosity, verbosity_output)
     input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir)
     if simulation_start_dt is None and input_start_dt is not None:
         simulation_start_dt = input_start_dt
@@ -81,12 +108,14 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
         simulation_end_dt = input_end_dt
     full_dataset = simulation_start_dt is None and simulation_end_dt is None
         
-    mare_embedder = MapeMaker.MapeMaker(path=input_file,
+    mare_embedder = MapeMaker.MapeMaker(logger,
+                                        path=input_file,
                                         ending_feature=simulated_timeseries,
                                         load_pickle=load_pickle,
                                         seed=seed,
                                         input_start_dt=input_start_dt,
-                                        input_end_dt=input_end_dt)
+                                        input_end_dt=input_end_dt
+                                        )
     if curvature:
         pyomo_parameters = {
                 "MIP": mip,
@@ -119,7 +148,7 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
                                                           number_simulations, mare_embedder.start_date.strftime("%Y-%m-%d"),
                                                           mare_embedder.end_date.strftime("%Y-%m-%d"))
 
-    print(text)
+    logger.info(text)
 
     mare_embedder.save_all_outputs(output_dir)
     if output_dir is not None:

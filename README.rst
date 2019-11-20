@@ -127,6 +127,8 @@ The options of the package are :
       -so, --solver TEXT              solver
       -lo, --latex_output BOOLEAN     write results in latex file
       -sh, --show BOOLEAN             plot simulations
+      -v, --verbosity                 verbosity level
+      -vo --verbosity_output          the output file to save the verbosity
       --help                          Show this message and exit.
 
 
@@ -168,6 +170,9 @@ By Default-options
 * **solver** : gurobi.
 * **latex_output** : False, not supported yet.
 * **show** : True.
+* **verbosity** : 2, which will set the logging level to INFO
+* **verbosity_output** : None, the output will be shown on the terminal
+
 
 
 Examples
