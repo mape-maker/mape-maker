@@ -63,7 +63,7 @@ def find_parameters(x_, x_timeseries, datasetx, errors, cap=4500, a=1):
     return x_bar, [a, b, lower, upper], [mean, var]
 
 
-def get_s_hat_datasetx_a(x_timeseries, datasetx, errors, cap, a=4, return_sequence=False):
+def get_s_hat_datasetx_a(x_timeseries, datasetx, errors, cap, logger, a=4, return_sequence=False):
     """
     loop over a grid of uniformally distributed real between 0 and cap and return S_hat_dataset_a
     :param datasetx:
@@ -86,13 +86,13 @@ def get_s_hat_datasetx_a(x_timeseries, datasetx, errors, cap, a=4, return_sequen
         x_bar[int(k)] = new_x
         index_plot.append(new_x)
         if k % 50 == 0:
-            print("{}% of the dataset fit".format(round(100*k/len_s_hat, 2)))
+            logger.info("{}% of the dataset fit".format(round(100*k/len_s_hat, 2)))
     if return_sequence:
         return index_search, x_bar
     return dict([(index_plot[i], parameters[i]) for i in range(len(index_plot))])
 
 
-def get_s_x(parameters, datasetx):
+def get_s_x(parameters, datasetx, logger):
     """
     For all x in datasetx find the closest parameters in the dic parameters
     :param parameters:
@@ -108,8 +108,8 @@ def get_s_x(parameters, datasetx):
         nx = index_parameters[i]
         test_parameters[x] = parameters[nx]
         if j % p == 0:
-            print("     - Closest xbar for x = {} is {},  ".format("%.3f" % x, "%.3f" % nx),
-                  " {}% done".format((round(100*j / len(datasetx[:-1]), 3))))
+            logger.info("     - Closest xbar for x = {} is {},  {}% done"
+                        .format("%.3f" % x, "%.3f" % nx, (round(100 * j / len(datasetx[:-1]), 3))))
     return test_parameters
 
 
@@ -140,7 +140,7 @@ def make_datasetx(x):
     return datasetx
 
 
-def get_maes_from_parameters(s_x, cap):
+def get_maes_from_parameters(s_x, cap, logger):
     """
     Get the Mean absolute error of each distribution with parameters in s_x
     :param s_x:
@@ -154,12 +154,12 @@ def get_maes_from_parameters(s_x, cap):
         try:
             sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
         except:
-            print ("******* WARNING!! **********")
-            print (" beta rvs failed at i={},x={}; a={}, b={}, l_={}, s_={}".format(i,x,a,b,l_,s_))
+            logger.warning ("******* WARNING!! **********")
+            logger.warning (" beta rvs failed at i={},x={}; a={}, b={}, l_={}, s_={}".format(i,x,a,b,l_,s_))
             if lastgood is None:
                 raise
             else:
-                print (" Using last good beta parameters.")
+                logger.warning (" Using last good beta parameters.")
                 a, b, l_, s_ = lastgood
                 sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
         lastgood = (a, b, l_, s_)
@@ -168,8 +168,8 @@ def get_maes_from_parameters(s_x, cap):
         m_max[x] = max(-opt.fun, ((cap-x)*a)/(a+b))
         stored_l, stored_s = opt.x
         if i % p == 0:
-            print("{}% of the m_max computed".format("%.1f" % (100 * i / len(list(s_x.keys())))))
-            print("     - for input {}, m_max = {} for l {} and s {}".format("%.3f" % x, "%.3f" % m_max[x],
+            logger.info(" {}% of the m_max computed".format("%.1f" % (100 * i / len(list(s_x.keys())))))
+            logger.info(" - for input {}, m_max = {} for l {} and s {}".format("%.3f" % x, "%.3f" % m_max[x],
                                                                           "%.3f" % stored_l, "%.3f" % stored_s))
         m_hat[x] = np.mean(abs(sample))
     return m_hat, m_max
@@ -232,7 +232,7 @@ def create_sid_weight_function(om_x, x_sid):
     return om_sid, e
 
 
-def get_maes_from_weight_target(om_tilde, r_tilde, m_max):
+def get_maes_from_weight_target(om_tilde, r_tilde, m_max, logger):
     """
     Infer the mae to get from each conditionnal distribution for the simulation
     :param om_tilde:
@@ -246,13 +246,13 @@ def get_maes_from_weight_target(om_tilde, r_tilde, m_max):
         if m_tilde[x] > m_max[x]:
             nb_bound_exceptions += 1
             if nb_bound_exceptions < 10:
-                print("Anticipating bound exception...  \n" + " "*5 + "- MAE targeted {},\n".format("%.2f" % m_tilde[x]) +
+                logger.info("Anticipating bound exception...  \n" + " "*5 + "- MAE targeted {},\n".format("%.2f" % m_tilde[x]) +
                       " "*5 + "- MAE max obtainable {}".format("%.2f" % m_max[x]))
             m_tilde[x] = m_max[x]
     if nb_bound_exceptions == 0:
-        print("There was no bound exceptions anticipated")
+        logger.info("There was no bound exceptions anticipated")
     else:
-        print("There were {} bound exceptions anticipated".format(nb_bound_exceptions))
+        logger.info("There were {} bound exceptions anticipated".format(nb_bound_exceptions))
     return m_tilde
 
 
@@ -291,7 +291,7 @@ def find_intersections(x, target=0, a=0, b=0, verbose=False):
     return [integrate_a_mean_2d(x[0], x[1], a=a, b=b, verbose=verbose) - target, 0]
 
 
-def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap):
+def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
     """
     Get the correct parameters for the simulation functions
     :param s_x:
@@ -321,19 +321,19 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap):
                                    args=(m_tilde[x], a, b, False),
                                    ftol=1e-3, method="dogbox").x
             if j % p == 0:
-                print("     - l_hat and s_hat = {}, {} for m_hat(x) = {} => l_tilde and s_tilde = {}, {} "
-                      "for m_tilde = {} < m_max = {}: ".format("%.1f" % loc_nx, "%.1f" % scale_nx, "%.1f" % m_hat[x],
-                                                  "%.1f" % nl, "%.1f" % ns, "%.1f" % m_tilde[x], "%.1f" % m_max[x]),
-                      " {}% done".format((round(100*j / len(datasetsid[:-1]), 3))))
+                logger.info("     - l_hat and s_hat = {}, {} for m_hat(x) = {} => l_tilde and s_tilde = {}, {} "
+                      "for m_tilde = {} < m_max = {}: {}% done".format("%.1f" % loc_nx, "%.1f" % scale_nx, "%.1f" % m_hat[x],
+                                                  "%.1f" % nl, "%.1f" % ns, "%.1f" % m_tilde[x], "%.1f" % m_max[x],
+                                                                       (round(100*j / len(datasetsid[:-1]), 3))))
         except Exception as e:
             if x != 0 and x != cap:  # bounds are equal for these cases
                 nb_errors += 1
                 if m_tilde[x] > m_max[x]:
-                    print("     * The MAE target {} is greater than the maximum target {}".format(round(m_tilde[x]),
+                    logger.error("     * The MAE target {} is greater than the maximum target {}".format(round(m_tilde[x]),
                                                                                              round(m_max[x])))
-                print("     * For x = {}, infeasible to meet the target exactly.".format(x))
-                print("    ", e)
+                logger.error(" * For x = {}, infeasible to meet the target exactly.".format(x))
+                logger.error(" {}".format(e))
             nl, ns = loc_nx, scale_nx
-            
+
         s_x_sid[x] = [a, b, nl, ns]
     return s_x_sid, nb_errors

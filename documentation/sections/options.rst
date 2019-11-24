@@ -96,6 +96,14 @@ The options of the package are :
      - --show
      - BOOLEAN
      - plot simulations
+   * - -v
+     - --verbosity
+     - INTEGER
+     - verbosity level
+   * - -vo
+     - --verbosity_output
+     - TEXT
+     - the output file to save the verbosity
    * -
      - --help
      -
@@ -349,6 +357,32 @@ Options with More Details
 
  If this option is not given, it will save the simulation plot by default.
 |
+* **--verbosity INTEGER**:
+ We have 3 options to choose: 2(logging.INFO), 1(logging.WARNING), 0(logging.ERROR).
+ logging.INFO will output info, error, and warning messages.
+ logging.WARNING will output error and warning messages.
+ logging.ERROR will only output error messages.
+
+  The following are two ways to specify the verbosity level:
+
+ ``--verbosity 2``
+
+ ``-v 2``
+
+ If this option is not given, the verbosity level will set logging.INFO as default.
+|
+* **--verbosity_output TEXT**:
+ The name of the verbosity output file
+
+ The following are two ways to specify the verbosity level:
+
+ ``--verbosity_output "output.log"``
+
+ ``-vo "output.log"``
+
+ If this option is not given, the output will be shown on terminal.
+
+
 By Default-options
 ------------------
 

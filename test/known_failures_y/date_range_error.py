@@ -13,10 +13,6 @@ import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
 from collections.abc import Iterable
-# whether to skip the last two tests
-quick_test = False
-# whether to run only one example
-skip_all_but_one = False
 
 class TestUM(unittest.TestCase):
 
@@ -55,21 +51,28 @@ class TestUM(unittest.TestCase):
                     }
         return basedict
 
-    def test_wind_actuals_ARMA_with_dates(self):
+
+    def test_for_single_date_ranges(self):
+        """
+        The user needs to set the input dates, otherwise the test will
+        ends with errors
+        :return:
+        """
         print("Running ", str(self.id()).split('.')[2])
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
-        parm_dict["seed"] = 1134
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=6, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=6, day=30, hour=0, minute=0, second=0)
         parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        # the function should get an error message
+        with self.assertRaises(TypeError) as context:
+            mapemain.main_func(*parm_list)
+            self.assertTrue(isinstance(context, Iterable))
+            self.assertTrue("'<' not supported between instances of"
+                            " 'datetime.datetime' and 'NoneType'" in context)
+
 
 if __name__ == "__main__":
     unittest.main()

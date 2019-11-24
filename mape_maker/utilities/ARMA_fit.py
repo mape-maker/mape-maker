@@ -37,13 +37,14 @@ class SolverARMA:
     """
     filename = os.path.join(os.path.abspath(os.path.dirname(__file__)), "stored_ARTA_coef/ar_coeffs.json")
 
-    def __init__(self, base_process_hat, name):
+    def __init__(self, base_process_hat, name, logger):
         """
         :param base_process_hat: the estimation of the base process over the errors timeseries
         :param name: name of the simulation - used to store the coeffs
         """
-        print("\n"+"*"*50 + "{}".format("Solver ARMA") + "*"*50 + "\n")
+        logger.info("\n"+"*"*50 + "{}".format("Solver ARMA") + "*"*50 + "\n")
         self.name = name
+        self.logger = logger
         self.arma_order = None
         self.model = None
         self.init_tools(base_process_hat)
@@ -51,17 +52,17 @@ class SolverARMA:
     def init_tools(self, base_process):
         pgq = self.init_arma_order()
         if pgq is None:
-            pgq = find_best_arma_repr(base_process)
+            pgq = find_best_arma_repr(self.logger, base_process)
             self.save_arma_order(pgq)
         model = ARIMA(base_process, order=pgq)
         self.model = model.fit(disp=0)
-        print(self.model.summary())
-        print("-"*60 + "\nSetting up the correct std for the error so that V[Z] = 1")
+        self.logger.info(self.model.summary())
+        self.logger.info("-"*60 + "\nSetting up the correct std for the error so that V[Z] = 1")
         n_sigma = setting_correct_sigma(self.model.arparams, self.model.maparams)
         before = self.model.sigma2
         self.model.sigma2 = n_sigma
-        print("The sigma2 of the estimated model was {} and is now {}".format(before, self.model.sigma2))
-        print("Testing ...")
+        self.logger.info("The sigma2 of the estimated model was {} and is now {}".format(before, self.model.sigma2))
+        self.logger.info("Testing ...")
         self.simulate_base_process_arma(index=[i for i in range(50000)])
 
     def simulate_base_process_arma(self, index=None, seed=None):
@@ -78,8 +79,8 @@ class SolverARMA:
             i += 1
         testing_estimation = pd.DataFrame(index=index, columns=["base_process"], data=simulations)
         simulations = norm.cdf(simulations)
-        print("Checking assumptions. Variance simulated should be close to 1 and is {} \n"
-              "Mean simulated should be close to 0 and is {}".format('%.1f' % np.std(testing_estimation)**2,
+        self.logger.info("Checking assumptions. Variance simulated should be close to 1 and is {} \n"
+                         "Mean simulated should be close to 0 and is {}".format('%.1f' % np.std(testing_estimation)**2,
                                               '%.1f' % np.mean(testing_estimation)**2))
         simulation = pd.DataFrame(index=index, columns=["base_process"], data=simulations)
         return simulation
@@ -154,7 +155,7 @@ def estimate_base_process(x, errors, s_x):
     return base_process
 
 
-def find_best_arma_repr(base_process):
+def find_best_arma_repr(logger, base_process):
     """
     find the best arma representation for the base_process timeseries according to the BIC criterion
     :param base_process:
@@ -162,7 +163,7 @@ def find_best_arma_repr(base_process):
     """
     ps, ds, qs = list(range(5)), [0], list(range(5))
     best_model, bic = None, np.inf
-    print ("Start search for ARMA parameters:")
+    logger.info("Start search for ARMA parameters:")
     for p, d, q in itertools.product(ps, ds, qs):
         model = ARIMA(base_process, order=(p, d, q))
         try:
@@ -170,12 +171,13 @@ def find_best_arma_repr(base_process):
             if model_fit.bic < bic:
                 best_model = (p, d, q)
                 bic = model_fit.bic
-                print(p, d, q, " BIC = {}".format(model_fit.bic))
+                # print(p,d,q, " BIC = {}".format(model_fit.bic))
+                logger.info("{},{},{} BIC = {}".format(p,d,q, model_fit.bic))
         except Exception as e:
-            print (p,d,q, "rejected:")
-            print(e)
+            logger.info("{},{},{} rejected:".format(p,d,q))
+            logger.error(e)
             continue
 
-    print ("End search for ARMA parameters.")    
+    logger.info("End search for ARMA parameters.")
     return best_model
 

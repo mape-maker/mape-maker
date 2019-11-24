@@ -39,9 +39,13 @@ class TestUM(unittest.TestCase):
         self.cwd = os.getcwd()
         print("temporary directory:", self.cwd)
         # path to the RTS Load data
-        self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
-                         "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir sep + \
-                         "processed_file.csv"
+        # self.load_data = file_path + dir_sep + ".." + dir_sep + ".." + dir_sep + "mape_maker" + dir_sep + \
+        #                  "samples" + dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc"+ dir_sep + \
+        #                  "processed_file.csv"
+        self.load_data = mape_maker_path + dir_sep + "samples" + \
+                         dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc_based" \
+                         + dir_sep + "processed_file.csv"
+
     def _base_dict(self):
         """
         initialize the parameters
@@ -67,7 +71,9 @@ class TestUM(unittest.TestCase):
                     "mip_gap"               : None,
                     "solver"                : "gurobi",
                     "latex_output"          : False,
-                    "show"                  : True
+                    "show"                  : True,
+                    "verbosity"             : 2,
+                    "verbosity_output"      : None
                     }
 
         return basedict
