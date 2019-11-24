@@ -18,7 +18,7 @@ def process_rts_using_threshold(source, write, threshold):
 
     # read the file into a dataframe
     source_data = pd.read_csv(source, index_col=0)
-    source_data.columns = ['actuals', 'forecasts']
+    source_data.columns = ['forecasts', 'actuals']
     source_data.index = pd.to_datetime(source_data.index)
     frame = [source_data]
     final_dataframe = pd.concat(frame, axis=1, sort=True)
@@ -64,8 +64,8 @@ def print_usage(msg):
 if __name__ == '__main__':
     # Format for the command line arguements:
     # python process_based_on_rts_gmlc.py source_path write_path threshold
-    # example: python process_based_on_rts_gmlc.py "../rts_gmlc/Load_forecasts_actuals.csv" "Load_rts_gmlc_based" 10
-    # example: python process_based_on_rts_gmlc.py "../rts_gmlc/WIND_forecasts_actuals.csv" "Wind_rts_gmlc_based" 10
+    # example: python3 process_based_on_rts_gmlc.py "../rts_gmlc/Load_forecasts_actuals.csv" "Load_rts_gmlc_based" 10
+    # example: python3 process_based_on_rts_gmlc.py "../rts_gmlc/WIND_forecasts_actuals.csv" "Wind_rts_gmlc_based" 10
     if len(sys.argv) != 4:
         print_usage("Need four arguments")
 
