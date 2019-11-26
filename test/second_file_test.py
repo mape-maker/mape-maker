@@ -101,7 +101,7 @@ class TestUM(unittest.TestCase):
         parm_dict["second_input_file"]      = self.second_input_data
         parm_dict["simulated_timeseries"]   = "forecasts"
         parm_dict["number_simulations"]     = 2
-        parm_dict["base-process"]           = "ARMA"
+        parm_dict["base-process"]           = "iid"  # ARMA
         parm_dict["output_dir"]             = "second_sim_forecasts"
         parm_dict["simulation_start_dt"]    = datetime(year=2020, month=1, day=1,  hour=1,   minute=0, second=0)
         parm_dict["simulation_end_dt"]      = datetime(year=2020, month=9, day=30, hour=23,  minute=0, second=0)

@@ -2,6 +2,7 @@ import datetime
 from mape_maker.utilities import simulation, fitting_distribution, ARMA_fit
 from mape_maker.utilities.df_utilities import pre_treat, find_longest_index_sequence, plot_from_date
 import numpy as np
+import pandas as pd
 import os.path
 #from latex_outputer import to_latex
 import pickle
@@ -11,11 +12,14 @@ loading_bar = "-"*60
 
 
 class MapeMaker:
-    __version__ = "0.91"
+    __version__ = "0.92"
+    """
     path_to_test = {
         "BPA": "samples/2012-2013_BPA_forecasts_actuals.csv",
         "CAISO": "samples/wind_total_forecast_actual_070113_063015.csv",
     }
+    deleled by DLW, Nov 2019; remove after Jan 202
+    """
 
     """
     Class embeding the mare_embedder_frame, the results and the main function needed to create scenarios based on a
@@ -39,11 +43,9 @@ class MapeMaker:
         """
         self.logger = logger
         if path == "":
+            raise RuntimeError ("You must specify a data path")
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
-        if second_path == None:
-            self.second_path = None
-        else:
-            self.second_path = second_path
+        self.second_path = second_path
         if ending_feature == "actuals":
             self.y = "actuals"
             self.x = "forecasts"
@@ -246,7 +248,7 @@ class MapeMaker:
         self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, second_path = None, target_mare=None, base_process=None, n=1, full_dataset=False,
+    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
                  output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
@@ -270,8 +272,8 @@ class MapeMaker:
         :param latex: create a tex document with table of scores
         :return:
         """
-        if second_path is not None:
-            sim_data = pd.readcsv(second_path, index_col=0)
+        if self.second_path is not None:
+            sim_data = pd.readcsv(self.second_path, index_col=0)
             sim_data.index = pd.to_datetime(sim_data.index)
             frames = [sim_data]
             full_sim_df = pd.concat(frames, axis=1, sort=True)
@@ -331,8 +333,11 @@ class MapeMaker:
             ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
+            print ("x_sim",self.x_sim)
             self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
+            print ("x_timeseries_sid",self.x_timeseries_sid)
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
+            quit()
             self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
             if self.s_x_tilde is None:
                 return False, None
@@ -494,7 +499,7 @@ if __name__ == "__main__":
         "forecasts": [None, 2],
     }
 
-    scores,nb_errors = mare_embedder.simulate(second_path=second_input_file, target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
+    scores,nb_errors = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
                                     full_dataset=False, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
