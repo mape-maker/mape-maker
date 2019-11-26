@@ -22,7 +22,7 @@ class MapeMaker:
     specific mare
     """
 
-    def __init__(self, logger, path="", second_path= "", name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
+    def __init__(self, logger, path="", second_path= None, name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
                  input_start_dt=None, input_end_dt=None):
         """
 
@@ -40,8 +40,8 @@ class MapeMaker:
         self.logger = logger
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
-        if second_path == "":
-            self.second_path = ""
+        if second_path == None:
+            self.second_path = None
         else:
             self.second_path = second_path
         if ending_feature == "actuals":
@@ -246,7 +246,7 @@ class MapeMaker:
         self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, second_path = "", target_mare=None, base_process=None, n=1, full_dataset=False,
+    def simulate(self, second_path = None, target_mare=None, base_process=None, n=1, full_dataset=False,
                  output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
@@ -270,7 +270,7 @@ class MapeMaker:
         :param latex: create a tex document with table of scores
         :return:
         """
-        if second_path != "":
+        if second_path is not None:
             sim_data = pd.readcsv(second_path, index_col=0)
             sim_data.index = pd.to_datetime(sim_data.index)
             frames = [sim_data]
