@@ -1,8 +1,9 @@
 import datetime
 from mape_maker.utilities import simulation, fitting_distribution, ARMA_fit
-from mape_maker.utilities.df_utilities import pre_treat, find_longest_index_sequence, plot_from_date
+from mape_maker.utilities.df_utilities import pre_treat, find_longest_index_sequence, plot_from_date, set_datetime_index #sk: added set_datetime_index
 import numpy as np
 import os.path
+import pandas as pd
 #from latex_outputer import to_latex
 import pickle
 
@@ -22,7 +23,7 @@ class MapeMaker:
     specific mare
     """
 
-    def __init__(self, logger, path="", name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
+    def __init__(self, logger, path="", second_input_file = "", name="", ending_feature="actuals", load_pickle=False, seed=None, a=4,
                  input_start_dt=None, input_end_dt=None):
         """
 
@@ -38,6 +39,7 @@ class MapeMaker:
         :param a: percent/2 of data used for the estimation sample
         """
         self.logger = logger
+        self.ending_feature = ending_feature #sk
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
         if ending_feature == "actuals":
@@ -242,7 +244,7 @@ class MapeMaker:
         self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
+    def simulate(self, second_input_file=None, target_mare=None, base_process=None, n=1, full_dataset=False,
                  output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
@@ -266,6 +268,24 @@ class MapeMaker:
         :param latex: create a tex document with table of scores
         :return:
         """
+        #sk: adding if statements to take into account second file if given
+        if second_input_file is not None:
+            self.logger.info(("-"*50 + "\n{}\n" + "-"*50).format("1. Importing and Treating the dataframe to get the {}".format(
+                self.ending_feature)))
+            full_sim_df = set_datetime_index(self.logger, pd.read_csv(second_input_file))
+            """
+            sim_data = pd.read_csv(second_input_file, index_col=0)
+            sim_data.columns = [self.x]
+            sim_data.index = pd.to_datetime(sim_data.index)
+            frames = [sim_data]
+            full_sim_df = pd.concat(frames, axis=1, sort=True)
+            """
+            self.x_sim = full_sim_df
+            self.x_sim_timeseries = full_sim_df[self.x]
+        else:
+            self.x_sim = self.full_df #full data set
+            self.x_sim_timeseries = self.x_timeseries #x timeseries
+        ##
         if target_mare is None:
             tg = " of the empirical dataset"
             # We take the last target used to prevent from recomputing all the weights
@@ -279,15 +299,15 @@ class MapeMaker:
         if seed is None:
             seed = self.seed
         if full_dataset:
-            list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+            list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
         else:
             if list_of_date_ranges is None:
-                list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+                list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
             elif len(np.array(list_of_date_ranges).shape) == 1:
                 list_of_date_ranges = [list_of_date_ranges]
             elif len(np.array(list_of_date_ranges).shape) == 2 and list_of_date_ranges[0][0] is None:
-                start_ind = find_longest_index_sequence(self.x_timeseries.index, 150 * 24)
-                start_date, end_date = self.x_timeseries.index[start_ind], self.x_timeseries.index[start_ind + 150*24]
+                start_ind = find_longest_index_sequence(self.x_sim_timeseries.index, 150 * 24)
+                start_date, end_date = self.x_sim_timeseries.index[start_ind], self.x_sim_timeseries.index[start_ind + 150*24]
                 list_of_date_ranges = [[start_date, end_date]]
 
         s_ = "*" * 30 + "*" * len(" PREPROCESSING DONE - READY TO SIMULATE ") + "*" * 30
@@ -315,28 +335,30 @@ class MapeMaker:
             ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
-            self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
+            self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
             self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
             if self.s_x_tilde is None:
                 return False, None
             ### end if
             if curvature_parameters is not None:
-                curvature_parameters["Y"] = self.full_df[self.y][self.start_date:self.end_date]
+                curvature_parameters["Y"] = self.x_sim[self.y][self.start_date:self.end_date]
                 curvature_parameters["x"] = self.x_timeseries_sid
                 curvature_parameters["name"] = self.name
                 if "curvature_target" not in curvature_parameters or curvature_parameters["curvature_target"] is None:
                     self.compute_second_dif()
                     curvature_parameters["curvature_target"] = self.d
                 self.curvature_parameters = curvature_parameters
+                #sk: results with NaN are asigned by simulate_multiple_scenarios
             results, errors = simulation.simulate_multiple_scenarios(self.logger, self.x_timeseries_sid,
                                                                      self.s_x_tilde, cap=self.cap, n=n,
                                                                      base_process=base_process, seeds=seeds,
                                                                      curvature_parameters=curvature_parameters)
             params_simul = self.create_parameters_simulation(n, base_process, curvature_parameters, output_dir)
-            self.results[name_simul] = results
+            self.results[name_simul] = results ###
             self.simulated_errors[name_simul] = errors
             if self.operations is False:
+                #sk: results are also a parameter
                 self.saved_scores[name_simul] = simulation.score_simulations_from_measures(
                                                             self.measures_simulations(results, params_simul))
             if latex:
@@ -408,10 +430,11 @@ class MapeMaker:
             * MARE
             * Auto-correlation
             * Second-difference
-        :param results:
+        :param results: have a few NaNs
         :param params_simul:
         :return:
         """
+        #sk: results are also a parameter
         result_mares, observed_mare = simulation.check_simulation_mare(self.x_timeseries, self.y_timeseries,
                                                                        results, self.r_tilde, self.logger)
         auto_cor_simul, auto_cor_real = simulation.check_simulation_auto_correlation(self.x_timeseries, self.errors,
@@ -478,8 +501,8 @@ if __name__ == "__main__":
         "actuals": [None, 0.2],
         "forecasts": [None, 2],
     }
-
-    scores,nb_errors = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
+    
+    scores,nb_errors = mare_embedder.simulate(second_input_file = second_input_file, ending_feature=simulated_timeseries, target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
                                     full_dataset=False, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
@@ -491,3 +514,4 @@ if __name__ == "__main__":
 
     mare_embedder.plot_example()
 
+#sk: added second input as a parameter in lines 25, 245, 482

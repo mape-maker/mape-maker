@@ -52,6 +52,7 @@ class TestUM(unittest.TestCase):
         :return: basedict
         """
         basedict = {"input_file"            : "",
+                    "second_input_file"     : None,
                     "target_mape"           : None,
                     "simulated_timeseries"  : "",
                     "base-process"          : "",

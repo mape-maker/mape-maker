@@ -30,15 +30,21 @@ def simulate_multiple_scenarios(logger, x_sid, s_x_tilde, cap=4500, base_process
     :param curvature_parameters:
     :return:
     """
+    print("here")
+    print("In simulate_multiple_scenarios")
     global errors
     if seeds is None:
         seeds = [None] * n
     simulations = pd.DataFrame()
     for i in range(1, n+1):
+        #sk: raw_errors also NaN
         raw_errors = simulate_errors_from_base_process(x_sid, s_x_tilde, base_process=base_process, seed=seeds[i-1])
+        print("raw_errors")
+        print(raw_errors)
         simulation, errors = simulate_output_from_errors(logger, raw_errors, cap=cap, curvature_parameters=curvature_parameters)
         simulation.name = simulation.name + "_n_{}".format(i)
         simulations = pd.concat([simulations, simulation], axis=1)
+    #sk: simulations are results with NaN
     return simulations, errors
 
 
@@ -57,14 +63,28 @@ def simulate_errors_from_base_process(x_sid, s_x_tilde, base_process=None, seed=
         np.random.seed(seed=seed)
         base_process = pd.Series(index=simulation.index, data=np.random.uniform(0, 1, len(simulation.index)))
     else:
+        print("base process is not None")
+        #sk: simulate_base_process_arma is in ARMA_fit.py
         base_process = base_process.simulate_base_process_arma(index=simulation.index, seed=seed)
+        #sk: base_process is fine
     simulation["base_process"] = base_process
+    #sk: errors also have NaN
+    #sk: simulation has 2 cols - errors and x; errors have NaN values that need to be fixed
     simulation["errors"] = simulation.apply(from_bp_to_errors, axis=1, **{"s_x_tilde": s_x_tilde})
+    print("simulation[errors]")
+    print(simulation["errors"])
     return simulation
 
 
 def from_bp_to_errors(row, s_x_tilde=None):
+    #sk: row is simulation from last function
+    print("row = ")
+    print(row)
+    print("here")
     x = row["x"]
+    print("in from_bp_to_errors")
+    print("x = ")
+    print("here")
     bp = row["base_process"]
     a, b, loc, scale = s_x_tilde[x]
     return beta.ppf(bp, a, b, loc=loc, scale=scale)
@@ -181,6 +201,14 @@ def check_simulation_mare(X, Y, results, r_tilde, logger):
     :param r_tilde: target_mare
     :return:
     """
+    print("here")
+    print("X = ", X)
+    print("here")
+    print("Y = ", Y)
+    print("here")
+    print("results = ", results)
+    print("here")
+    
     x, y = X.loc[results.index], Y.loc[results.index]
     re_hat = (y - x) / x
     re_hat = re_hat[x > 0] ## dlw 
