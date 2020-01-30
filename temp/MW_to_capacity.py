@@ -1,8 +1,6 @@
 import sys
-import os.path
 import os
 import pandas as pd
-import numpy as np
 
 def compute_capacity_percentage(input_file, capacity_file):
     input_df = pd.read_csv(input_file, index_col=0)
@@ -55,9 +53,11 @@ if __name__ == '__main__':
     capacity_file = sys.argv[2]
 
     if not os.path.exists(input_file):
-        print_usage(input_file + " does not exist.")
+        print(input_file + " does not exist.")
+        sys.exit(1)
 
     if not os.path.exists(capacity_file):
-        print_usage(capacity_file + " does not exist.")
+        print(capacity_file + " does not exist.")
+        sys.exit(1)
 
     compute_capacity_percentage(input_file, capacity_file)
