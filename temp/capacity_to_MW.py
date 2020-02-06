@@ -4,10 +4,11 @@ import pandas as pd
 import logging
 from mape_maker.utilities.df_utilities import plot_from_date, pre_treat
 
+
 def compute_megawatt(input_file, capacity_file):
     # generate csv files
     input_df = pd.read_csv(input_file, index_col=0)
-    capacity_df = pd.read_csv(capacity_file, index_col=0,)
+    capacity_df = pd.read_csv(capacity_file, index_col=0, )
     if input_df.shape[0] != capacity_df.shape[0]:
         print("Number of rows unmatched")
         print("Input file has", input_df.shape[0], "rows")
@@ -19,6 +20,7 @@ def compute_megawatt(input_file, capacity_file):
     input_df.to_csv("solar_megawatt.csv")
     print("saved as solar_megawatt.csv")
     return input_df
+
 
 def plot_megawatt_simulation(mw_input, orig_file, name_simul, target_mare, st):
     # initialize logger
@@ -45,6 +47,7 @@ def plot_megawatt_simulation(mw_input, orig_file, name_simul, target_mare, st):
                    target_mare=target_mare, ending_features=st,
                    x_legend=sf)
 
+
 if __name__ == '__main__':
     if len(sys.argv) != 5:
         print("Need five arguments")
@@ -55,7 +58,6 @@ if __name__ == '__main__':
     orig_file = sys.argv[3]
     name_simul = sys.argv[4]
     target = sys.argv[5]
-
 
     if not os.path.exists(input_file):
         print(input_file + " does not exist.")
@@ -70,4 +72,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     mw_input = compute_megawatt(input_file, capacity_file)
+    print("mw_input")
+    print(mw_input)
     plot_megawatt_simulation(mw_input, orig_file, name_simul, 13.2, target)
