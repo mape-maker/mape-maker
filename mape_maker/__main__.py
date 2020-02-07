@@ -157,6 +157,7 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
     if show:
         mare_embedder.plot_example(title=title)
 
+    return mare_embedder
 
 if __name__ == "__main__":
     main()

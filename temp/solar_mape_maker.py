@@ -74,15 +74,15 @@ def main(input_file, capacity_file, target_mape, simulated_timeseries, base_proc
     temp_file = "solar_output" + dir_sep + "*.csv"
     mape_output = glob.glob(temp_file)
     # convert the simulation file back into MW
-    mw_df = compute_megawatt(capacity_file)
+    mw_df = compute_megawatt(capacity_file, output_dir)
     # reset plt
     plt.clf()
     plot_megawatt_simulation(mw_df, input_file, "", round(100 * t, 2), simulated_timeseries)
 
 
-def compute_megawatt(capacity_file):
+def compute_megawatt(capacity_file, output_dir):
     # grab the simulation file
-    temp_file = "solar_output" + dir_sep + "*.csv"
+    temp_file = output_dir + dir_sep + "*.csv"
     mape_output = glob.glob(temp_file)
     input_file = mape_output[0]
     # generate csv files
