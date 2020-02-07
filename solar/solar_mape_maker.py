@@ -70,9 +70,6 @@ def main(input_file, capacity_file, target_mape, simulated_timeseries, base_proc
                                        curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show,
                                        verbosity, verbosity_output)
     t = mare_embedder.r_tilde * 100
-    # grab the simulation file
-    temp_file = "solar_output" + dir_sep + "*.csv"
-    mape_output = glob.glob(temp_file)
     # convert the simulation file back into MW
     mw_df = compute_megawatt(capacity_file, output_dir)
     # reset plt
