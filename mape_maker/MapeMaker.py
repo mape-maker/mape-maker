@@ -37,6 +37,7 @@ class MapeMaker:
         :param seed: seed used for simulation if none will be random
         :param a: percent/2 of data used for the estimation sample
         """
+        self.ending_feature = ending_feature
         self.logger = logger
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
@@ -205,6 +206,7 @@ class MapeMaker:
         :param x_timeseries_sid:
         :return: s_x_tilde
         """
+        print(r_tilde)
         self.logger.info(loading_bar + "\nDetermination of the weight function om_tilde")
         self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid)
         self.logger.info(loading_bar + "\nDetermination of the maximum of mare attainable")
@@ -242,7 +244,7 @@ class MapeMaker:
         self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
+    def simulate(self, second_file=None, target_mare=None, base_process=None, n=1, full_dataset=False,
                  output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
@@ -266,6 +268,19 @@ class MapeMaker:
         :param latex: create a tex document with table of scores
         :return:
         """
+        if second_file is not None:
+            full_sim_df = pre_treat(self.logger, path=second_file, type_of_simulation=self.ending_feature)
+            if len(full_sim_df[full_sim_df[self.y].isna()]) > 0:
+                self.logger.info("-" * 60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y))
+                index_not_na = full_sim_df[~full_sim_df[self.y].isna()].index
+                df = full_sim_df.loc[index_not_na]
+            else:
+                df = full_sim_df
+            self.x_sim = full_sim_df
+            self.x_sim_timeseries = df[self.x]
+        else:
+            self.x_sim = self.full_df
+            self.x_sim_timeseries = self.x_timeseries
         if target_mare is None:
             tg = " of the empirical dataset"
             # We take the last target used to prevent from recomputing all the weights
@@ -279,15 +294,15 @@ class MapeMaker:
         if seed is None:
             seed = self.seed
         if full_dataset:
-            list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+            list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
         else:
             if list_of_date_ranges is None:
-                list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+                list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
             elif len(np.array(list_of_date_ranges).shape) == 1:
                 list_of_date_ranges = [list_of_date_ranges]
             elif len(np.array(list_of_date_ranges).shape) == 2 and list_of_date_ranges[0][0] is None:
-                start_ind = find_longest_index_sequence(self.x_timeseries.index, 150 * 24)
-                start_date, end_date = self.x_timeseries.index[start_ind], self.x_timeseries.index[start_ind + 150*24]
+                start_ind = find_longest_index_sequence(self.x_sim_timeseries.index, 150 * 24)
+                start_date, end_date = self.x_sim_timeseries.index[start_ind], self.x_sim_timeseries.index[start_ind + 150*24]
                 list_of_date_ranges = [[start_date, end_date]]
 
         s_ = "*" * 30 + "*" * len(" PREPROCESSING DONE - READY TO SIMULATE ") + "*" * 30
@@ -315,14 +330,13 @@ class MapeMaker:
             ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
-            self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
+            self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
             self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
             if self.s_x_tilde is None:
                 return False, None
             ### end if
             if curvature_parameters is not None:
-                curvature_parameters["Y"] = self.full_df[self.y][self.start_date:self.end_date]
                 curvature_parameters["x"] = self.x_timeseries_sid
                 curvature_parameters["name"] = self.name
                 if "curvature_target" not in curvature_parameters or curvature_parameters["curvature_target"] is None:
@@ -479,7 +493,7 @@ if __name__ == "__main__":
         "forecasts": [None, 2],
     }
 
-    scores,nb_errors = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
+    scores,nb_errors = mare_embedder.simulate(second_file="", target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
                                     full_dataset=False, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
