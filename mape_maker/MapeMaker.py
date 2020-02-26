@@ -11,7 +11,7 @@ loading_bar = "-"*60
 
 
 class MapeMaker:
-    __version__ = "0.91"
+    __version__ = "0.92"
     path_to_test = {
         "BPA": "samples/2012-2013_BPA_forecasts_actuals.csv",
         "CAISO": "samples/wind_total_forecast_actual_070113_063015.csv",
@@ -147,6 +147,7 @@ class MapeMaker:
         self.s_x_tilde = self.s_x
         self.r_tilde = None   ##self.r_m_hat
         self.start_date, self.end_date = self.x_timeseries.index[0], self.x_timeseries.index[-1]
+        self.cfx_cache = dict() # for efficiency in cfx
         self.logger.info("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
 
         """
@@ -159,6 +160,28 @@ class MapeMaker:
         """
         self.results, self.simulated_errors, self.saved_scores = {}, {}, {}
 
+    ######## Index Utility #######
+    def cfx(self.x):
+        """ Closest fitting x (maybe the x comes from SID, maybe fitting)
+        Args:
+            x (float): the x we want to match in the fitting data
+        Returns:
+            fx (float): the x in the fitting data
+        NOTE:
+            updates or uses self.cfx_cache for speed improvement
+        """
+        
+        if x in self.cfx_cache:
+            return self.cfx_cache[x]
+        elif x in self.x_timeseries.values:
+            self.cfx_cache[x] = x
+        else:
+            index_parameters = np.array(list(self.x_timeseries.values[x]))
+            i = np.argmin(abs(index_parameters - x))
+            self.cfx_cache[x] = index_parameters[i]
+        return self.cfx_cache[x]
+
+    ### arma ###
     def create_arma_process(self):
         """
         estimate the base process and create a solver object to find the ARMA coefficients

@@ -144,7 +144,7 @@ def get_maes_from_parameters(s_x, cap, logger):
     """
     Get the Mean absolute error of each distribution with parameters in s_x
     :param s_x:
-    :return: m_hat
+    :return: m_hat, m_max
     """
     lastgood = None # deal with failure to get good beta parameters
     m_hat, m_max = {}, {}
@@ -235,8 +235,9 @@ def create_sid_weight_function(om_x, x_sid):
 def get_maes_from_weight_target(om_tilde, r_tilde, m_max, logger):
     """
     Infer the mae to get from each conditionnal distribution for the simulation
-    :param om_tilde:
-    :param r_tilde:
+    :param om_tilde: from simulation data
+    :param r_tilde: from simulation data
+    :param m_max: indexes from fitting data
     :return: m_tilde_sid
     """
     m_tilde = {}
