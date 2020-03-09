@@ -231,44 +231,6 @@ def create_sid_weight_function(om_x, x_sid):
             om_sid[x] = 0
     return om_sid, e
 
-
-def get_maes_from_weight_target(om_tilde, r_tilde, m_max, logger):
-    """
-    Infer the mae to get from each conditionnal distribution for the simulation
-    :param om_tilde: from simulation data
-    :param r_tilde: from simulation data
-    :param m_max: indexes from fitting data
-    :return: m_tilde_sid
-    """
-    m_tilde = {}
-    nb_bound_exceptions = 0
-    for x in om_tilde.keys():
-        m_tilde[x] = r_tilde*x*om_tilde[x]
-        if m_tilde[x] > m_max[x]:
-            nb_bound_exceptions += 1
-            if nb_bound_exceptions < 10:
-                logger.info("Anticipating bound exception...  \n" + " "*5 + "- MAE targeted {},\n".format("%.2f" % m_tilde[x]) +
-                      " "*5 + "- MAE max obtainable {}".format("%.2f" % m_max[x]))
-            m_tilde[x] = m_max[x]
-    if nb_bound_exceptions == 0:
-        logger.info("There was no bound exceptions anticipated")
-    else:
-        logger.info("There were {} bound exceptions anticipated".format(nb_bound_exceptions))
-    return m_tilde
-
-
-def infer_r_tilde_max(m_max, om_tilde):
-    max_r_tilde_list = []
-    index_parameters = np.array(list(m_max.keys()))
-    for x in om_tilde:
-        if x != 0:
-            if x not in m_max:
-                i = np.argmin(abs(index_parameters - x))
-                m_max[x] = index_parameters[i]
-            max_r_tilde_list.append(m_max[x]/(x*om_tilde[x]))
-    return min(max_r_tilde_list)
-
-
 """
 Main functions for getting the simulation parameters of the conditional distribution:
     * get_s_tilde_sid calling find_intersections calling integrate_a_mean_2d 
@@ -288,8 +250,12 @@ def integrate_a_mean_1d(x, a=0, b=0, verbose=False):
     return -integrate_a_mean_2d(l_, x_, a=a, b=b, verbose=verbose)
 
 
-def find_intersections(x, target=0, a=0, b=0, verbose=False):
-    return [integrate_a_mean_2d(x[0], x[1], a=a, b=b, verbose=verbose) - target, 0]
+def find_intersections(x, target=0, a=0, b=0, l_hat=0, s_hat=0, oh=0, verbose=False):
+    # x is a list, x[0] is l and x[1] is s
+    # this is not exactly what is in the paper
+    sqarg = integrate_a_mean_2d(x[0], x[1], a=a, b=b, verbose=verbose) - target \
+            + abs((x[0] - l_hat)/oh) + abs((x[1] - s_hat)/oh)
+    return [sqarg, 0]
 
 
 def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
@@ -300,6 +266,7 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
     :param m_hat:
     :param cap:
     :return: s_tilde_sid
+    note: l_hat is loc_nx, s_hat is scale_nx
     """
     datasetsid = list(m_tilde.keys())
     index_parameters = np.array(list(s_x.keys()))
@@ -314,13 +281,22 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
         try:
             loc_nx = -x if loc_nx < -x else loc_nx
             scale_nx = cap - x if scale_nx > cap - x else scale_nx
+            oh = max(abs(loc_nx), abs(scale_nx), m_tilde[x])
             # bounds are ([lower, lower], [upper,upper])
             # NOTE: the upper bound for s should be cap - x - l
             nl, ns = least_squares(find_intersections,
                                    x0=(min(loc_nx+5,-x/2), scale_nx),
                                    bounds=([-x, 0], [0, cap-x]),
-                                   args=(m_tilde[x], a, b, False),
+                                   args=(m_tilde[x], a, b, loc_nx, scale_nx, oh, False),
                                    ftol=1e-3, method="dogbox").x
+            if ns == 0:
+                print("ns == 0 set by least square")
+                print("a, b, nl, ns:", a, b, nl, ns)
+                print("    loc_nx, scale_nx", loc_nx, scale_nx)
+                print("         sid x, fitting nx", x, nx)
+                print("             m_tilde[x]", m_tilde[x])
+                print("HORRIBLE HACK!!!!!")
+                ns = scale_nx
             if j % p == 0:
                 logger.info("     - l_hat and s_hat = {}, {} for m_hat(x) = {} => l_tilde and s_tilde = {}, {} "
                       "for m_tilde = {} < m_max = {}: {}% done".format("%.1f" % loc_nx, "%.1f" % scale_nx, "%.1f" % m_hat[x],
@@ -335,6 +311,5 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
                 logger.error(" * For x = {}, infeasible to meet the target exactly.".format(x))
                 logger.error(" {}".format(e))
             nl, ns = loc_nx, scale_nx
-
         s_x_sid[x] = [a, b, nl, ns]
     return s_x_sid, nb_errors

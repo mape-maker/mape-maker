@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import beta
 import pandas as pd
+from datetime import datetime as dt
 import mape_maker.utilities.curvature_correction as curvature
 from statsmodels.tsa.stattools import acf
 
@@ -53,21 +54,24 @@ def simulate_errors_from_base_process(x_sid, s_x_tilde, base_process=None, seed=
     """
     simulation = pd.DataFrame(index=x_sid.index, columns=["errors"])
     simulation.loc[x_sid.index, "x"] = x_sid
+    # print(simulation)  ## errors x None num
     if base_process is None:
         np.random.seed(seed=seed)
         base_process = pd.Series(index=simulation.index, data=np.random.uniform(0, 1, len(simulation.index)))
     else:
         base_process = base_process.simulate_base_process_arma(index=simulation.index, seed=seed)
     simulation["base_process"] = base_process
-    simulation["errors"] = simulation.apply(from_bp_to_errors, axis=1, **{"s_x_tilde": s_x_tilde})
+    simulation_index = simulation.index
+    simulation["errors"] = simulation.apply(from_bp_to_errors, axis=1, **{"s_x_tilde": s_x_tilde, "index": simulation_index}) # simulation now is non NAN
     return simulation
 
 
-def from_bp_to_errors(row, s_x_tilde=None):
-    x = row["x"]
+def from_bp_to_errors(row, s_x_tilde=None, index=None):
+    x = row["x"] # row has three rows : error, x, bp, and set datetime as columns
     bp = row["base_process"]
     a, b, loc, scale = s_x_tilde[x]
-    return beta.ppf(bp, a, b, loc=loc, scale=scale)
+    simulated_error = beta.ppf(bp, a, b, loc=loc, scale=scale) # scale = 0 cause NAN
+    return simulated_error
 
 
 def simulate_output_from_errors(logger, raw_errors, cap=4500, curvature_parameters=None):

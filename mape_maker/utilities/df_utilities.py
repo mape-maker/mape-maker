@@ -31,8 +31,6 @@ def pre_treat(logger, path: str = "", type_of_simulation: str = "actuals") -> pd
     :param type_of_simulation: the target column of the simulation
     :return: df
     """
-    print("here")
-    print(path)
     logger.info(("-"*50 + "\n{}\n" + "-"*50).format("1. Importing and Treating the dataframe to get the {}".format(
         type_of_simulation)))
     df = set_datetime_index(logger, pd.read_csv(path))
