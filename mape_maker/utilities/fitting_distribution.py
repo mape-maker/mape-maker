@@ -287,6 +287,7 @@ def get_s_tilde_sid(s_x, m_tilde, m_hat, m_max, cap, logger):
             nl, ns = least_squares(find_intersections,
                                    x0=(min(loc_nx+5,-x/2), scale_nx),
                                    bounds=([-x, 0], [0, cap-x]),
+                                   # args=(m_tilde[x], a, b, loc_nx, scale_nx, oh, False),
                                    args=(m_tilde[x], a, b, loc_nx, scale_nx, oh, False),
                                    ftol=1e-3, method="dogbox").x
             if ns == 0:

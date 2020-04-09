@@ -198,13 +198,13 @@ class MapeMaker:
         """
         self.m_tilde = {}
         nb_bound_exceptions = 0
-        print("self.om_tilde.keys()")
-        print(self.om_tilde.keys())
-        print("self.m_max.keys()")
-        print(self.m_max.keys())
+        # print("self.om_tilde.keys()")
+        # print(self.om_tilde.keys())
+        # print("self.m_max.keys()")
+        # print(self.m_max.keys())
         for x in self.om_tilde.keys():
-            print("x, cfx(x)")
-            print(x, self.cfx(x))
+            # print("x, cfx(x)")
+            # print(x, self.cfx(x))
             self.m_tilde[x] = self.r_tilde * x * self.om_tilde[x]
             if self.m_tilde[x] > self.m_max[self.cfx(x)]:
                 nb_bound_exceptions += 1
@@ -393,6 +393,7 @@ class MapeMaker:
             self.r_tilde = target_mare
             self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
+            # self.s_x_tilde comes from the second file, nb_errors is an int
             self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
             if self.s_x_tilde is None:
                 return False, None
@@ -404,10 +405,22 @@ class MapeMaker:
                     self.compute_second_dif()
                     curvature_parameters["curvature_target"] = self.d
                 self.curvature_parameters = curvature_parameters
+            self.logger.info("-----------------------------------------------------")
+            self.logger.info("base process")
+            self.logger.info(base_process)
+            self.logger.info("self.x_timeseries_sid")
+            self.logger.info(self.x_timeseries_sid)
+            self.logger.info("self.cap")
+            self.logger.info(self.cap)
+            self.logger.info("self.s_x_tilde")
+            self.logger.info(self.s_x_tilde)
+            self.logger.info("-----------------------------------------------------")
             results, errors = simulation.simulate_multiple_scenarios(self.logger, self.x_timeseries_sid,
                                                                      self.s_x_tilde, cap=self.cap, n=n,
                                                                      base_process=base_process, seeds=seeds,
                                                                      curvature_parameters=curvature_parameters)
+            print("results")
+            print(results)
             params_simul = self.create_parameters_simulation(n, base_process, curvature_parameters, output_dir)
             self.results[name_simul] = results
             self.simulated_errors[name_simul] = errors
