@@ -40,8 +40,9 @@ class TestUM(unittest.TestCase):
 
     def _basic_dict(self):
         basedict = {"input_file": "",
+                    "second_file": None,
                     "target_mape": None,
-                    "simulated_timeseries": "forecasts",
+                    "simulated_timeseries": "actuals",
                     "base-process": "ARMA",
                     "a": 4,
                     "output_dir": None,
@@ -53,7 +54,7 @@ class TestUM(unittest.TestCase):
                     "title": None,
                     "seed": None,
                     "load_pickle": False,
-                    "curvature": False,
+                    "curvature": None,
                     "time_limit": 3600,
                     "curvature_target": None,
                     "mip_gap": 0.3,

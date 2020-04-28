@@ -203,30 +203,40 @@ def create_weight_function(m, r_m):
     return om_x
 
 
-def create_sid_weight_function(om_x, x_sid):
+def create_sid_weight_function(om_x, x_sid, logger):
     """
     Create the weight function for the sid from the distribution of the sid and the estimated weight function
-    :param om_x:
+    :param om_x: omega for the fitting data
     :param x_sid:
     :return: om_x_sid
     """
+    # see if the x are very different tbd improve this
+    index_parameters = np.array(list(om_x.keys()))
+    max_x = np.max(index_parameters)
+    min_x = np.min(index_parameters)
+    min_sid = min(x_sid)
+    max_sid = max(x_sid)
+    if min_sid > max_x or max_sid < min_x:
+        raise RuntimeError("x values in SID completely outside fitting x values")
     e = 0
     length_of_non_zeros = 0
-    index_parameters = np.array(list(om_x.keys()))
+    fitting_x = {}
     for x in x_sid:
         if x != 0:
             length_of_non_zeros += 1
             if x not in om_x:
                 i = np.argmin(abs(index_parameters - x))
-                om_x[x] = index_parameters[i]
-            e += om_x[x]
+                fitting_x[x] = index_parameters[i]
+            else:
+                fitting_x[x] = x
+            e += om_x[fitting_x[x]]
     if length_of_non_zeros == 0:
         raise RuntimeError("No non-zeros in simulation X (maybe bad dates?)")
     e = e/length_of_non_zeros
     om_sid = {}
     for x in x_sid:
         if x != 0:
-            om_sid[x] = om_x[x]/e
+            om_sid[x] = om_x[fitting_x[x]] / e
         else:
             om_sid[x] = 0
     return om_sid, e

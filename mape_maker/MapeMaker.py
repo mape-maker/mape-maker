@@ -127,13 +127,13 @@ class MapeMaker:
         self.logger.info(loading_bar + "\nMax attainable for full dataset {}%".format("%2.f" % (100*self.r_m_max)))
         self.logger.info(loading_bar + "\nEstimation of the weight function om_X")
         self.om_x = fitting_distribution.create_weight_function(self.m_hat, self.r_m_hat)
-
+        # self.logger.info("self.om_x")
+        # self.logger.info(self.om_x)
         """
         Estimating the Base Process then ARMA process
         """
         self.Z_hat = None
         self.solver_arma = None
-
         """
         Getting the simulation functions
         """
@@ -149,7 +149,6 @@ class MapeMaker:
         self.start_date, self.end_date = self.x_timeseries.index[0], self.x_timeseries.index[-1]
         self.cfx_cache = {} # for efficiency in cfx
         self.logger.info("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
-
         """
         Curvature parameters
         """
@@ -257,7 +256,7 @@ class MapeMaker:
     def has_artafit(self):
         return self.solver_arma is not None
 
-    def get_simulation_parameters(self, r_tilde, x_timeseries_sid):
+    def get_simulation_parameters(self, r_tilde, x_timeseries_sid, logger):
         """
         from the target mare and the dataset_SID :
             * find the target MAE to get from each of the conditional distributions
@@ -267,9 +266,15 @@ class MapeMaker:
         :return: s_x_tilde
         """
         self.logger.info(loading_bar + "\nDetermination of the weight function om_tilde")
-        self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid)
+        self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid, logger)
+        self.logger.info("self.om_tilde")
+        self.logger.info(self.om_tilde)
+        self.logger.info("self.e_score")
+        self.logger.info(self.e_score)
         self.logger.info(loading_bar + "\nDetermination of the maximum of mare attainable")
         self.r_tilde_max = self.infer_r_tilde_max()
+        self.logger.info("self.r_tilde_max")
+        self.logger.info(self.r_tilde_max)
         self.logger.info(loading_bar + "\nDetermination of the Plausability score and the r_tilde_max")
         flag_error = False
         if abs(self.e_score - 1) < 0.1:
@@ -283,9 +288,10 @@ class MapeMaker:
                        inequality + "target {}".format("%.2f" % r_tilde)
             if r_tilde > self.r_tilde_max:
                 flag_error = True
-                s += "\nWARNING YOU ASKED FOR A TOO STRONG R TILDE"
-                s += "\n     => Either change your r_tilde"
-                s += "\n     => Either change your SID so the e_score increases"
+                s += "\nWARNING requested r_tilde is too high"
+                s += "\n     => Either change your requested mape to be less than {}".format(self.r_tilde_max * 100)
+                s += "\n     => Or change your SID so the e_score increases"
+                raise RuntimeError(s)
         self.logger.info("Plausibility score = {} ".format('%.3f' % self.e_score) + s)
         if flag_error:
             return None
@@ -352,6 +358,8 @@ class MapeMaker:
         name_simul = "target mape {}, base_process {} ".format(tg, base_process)
         if curvature_parameters is not None:
             name_simul += "+ curvature"
+        # self.logger.info("name_simul")
+        # self.logger.info(name_simul)
         if seed is None:
             seed = self.seed
         if full_dataset:
@@ -365,7 +373,6 @@ class MapeMaker:
                 start_ind = find_longest_index_sequence(self.x_sim_timeseries.index, 150 * 24)
                 start_date, end_date = self.x_sim_timeseries.index[start_ind], self.x_sim_timeseries.index[start_ind + 150*24]
                 list_of_date_ranges = [[start_date, end_date]]
-
         s_ = "*" * 30 + "*" * len(" PREPROCESSING DONE - READY TO SIMULATE ") + "*" * 30
         n_s = len(s_)
         self.logger.info(s_)
@@ -391,10 +398,16 @@ class MapeMaker:
             ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
+            # self.logger.info("self.r_tilde")
+            # self.logger.info(self.r_tilde)
             self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
             # self.s_x_tilde comes from the second file, nb_errors is an int
-            self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
+            self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid, self.logger)
+            self.logger.info("self.s_x_tilde")
+            self.logger.info(self.s_x_tilde)
+            self.logger.info("nb_errors")
+            self.logger.info(nb_errors)
             if self.s_x_tilde is None:
                 return False, None
             ### end if
@@ -406,10 +419,6 @@ class MapeMaker:
                     curvature_parameters["curvature_target"] = self.d
                 self.curvature_parameters = curvature_parameters
             self.logger.info("-----------------------------------------------------")
-            self.logger.info("base process")
-            self.logger.info(base_process)
-            self.logger.info("self.x_timeseries_sid")
-            self.logger.info(self.x_timeseries_sid)
             self.logger.info("self.cap")
             self.logger.info(self.cap)
             self.logger.info("self.s_x_tilde")
@@ -419,8 +428,8 @@ class MapeMaker:
                                                                      self.s_x_tilde, cap=self.cap, n=n,
                                                                      base_process=base_process, seeds=seeds,
                                                                      curvature_parameters=curvature_parameters)
-            print("results")
-            print(results)
+            self.logger.info("results")
+            self.logger.info(results)
             params_simul = self.create_parameters_simulation(n, base_process, curvature_parameters, output_dir)
             self.results[name_simul] = results
             self.simulated_errors[name_simul] = errors

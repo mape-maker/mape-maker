@@ -50,8 +50,9 @@ class TestUM(unittest.TestCase):
 
     def _basic_dict(self):
         basedict = {"input_file": "",
+                    "second_file": None,
                     "target_mape": None,
-                    "simulated_timeseries": "forecasts",
+                    "simulated_timeseries": "actuals",
                     "base-process": "ARMA",
                     "a": 4,
                     "output_dir": None,

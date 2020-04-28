@@ -48,31 +48,31 @@ class TestUM(unittest.TestCase):
         initialize the parameters
         :return: basedict
         """
-        basedict = {"input_file"            : "",
-                    "target_mape"           : None,
-                    "simulated_timeseries"  : "actuals",
-                    "base-process"          : "",
-                    "a"                     : None,
-                    "output_dir"            : "result",
-                    "number_simulations"    : 2,
-                    "input_start_dt"        : None,
-                    "input_end_dt"          : None,
-                    "simulation_start_dt"   : None,
-                    "simulation_end_dt"     : None,
-                    "title"                 : "",
-                    "seed"                  : 1234,
-                    "load_pickle"           : False,
-                    "curvature"             : False,
-                    "time_limit"            : 1,
-                    "curvature_target"      : None,
-                    "mip_gap"               : None,
-                    "solver"                : "gurobi",
-                    "latex_output"          : False,
-                    "show"                  : True,
-                    "verbosity"             : 2,
-                    "verbosity_output"      : None
+        basedict = {"input_file": "",
+                    "second_file": None,
+                    "target_mape": None,
+                    "simulated_timeseries": "actuals",
+                    "base-process": "ARMA",
+                    "a": 4,
+                    "output_dir": None,
+                    "number_simulations": 1,
+                    "input_start_dt": None,
+                    "input_end_dt": None,
+                    "simulation_start_dt": None,
+                    "simulation_end_dt": None,
+                    "title": None,
+                    "seed": None,
+                    "load_pickle": False,
+                    "curvature": None,
+                    "time_limit": 3600,
+                    "curvature_target": None,
+                    "mip_gap": 0.3,
+                    "solver": "gurobi",
+                    "latex_output": False,
+                    "show": True,
+                    "verbosity": 2,
+                    "verbosity_output": None
                     }
-
         return basedict
 
     def create_temp_dir(self):
