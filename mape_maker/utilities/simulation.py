@@ -54,7 +54,6 @@ def simulate_errors_from_base_process(x_sid, s_x_tilde, base_process=None, seed=
     """
     simulation = pd.DataFrame(index=x_sid.index, columns=["errors"])
     simulation.loc[x_sid.index, "x"] = x_sid
-    # print(simulation)  ## errors x None num
     if base_process is None:
         np.random.seed(seed=seed)
         base_process = pd.Series(index=simulation.index, data=np.random.uniform(0, 1, len(simulation.index)))

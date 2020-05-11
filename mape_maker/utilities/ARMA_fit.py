@@ -122,6 +122,7 @@ def setting_correct_sigma(ar, ma):
     np.random.seed(11111)
 
     def sigma(sig):
+        # sig is really the variance
         sig = abs(sig)
         errors = np.random.normal(scale=np.sqrt(sig), size=n)
         i = len(ar)
@@ -171,7 +172,6 @@ def find_best_arma_repr(logger, base_process):
             if model_fit.bic < bic:
                 best_model = (p, d, q)
                 bic = model_fit.bic
-                # print(p,d,q, " BIC = {}".format(model_fit.bic))
                 logger.info("{},{},{} BIC = {}".format(p,d,q, model_fit.bic))
         except Exception as e:
             logger.info("{},{},{} rejected:".format(p,d,q))
