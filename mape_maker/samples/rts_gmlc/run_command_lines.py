@@ -17,7 +17,7 @@ Example 1: process_RTS_GMLC_data_s.py
     and update the paths relative to the python script
     The write_path must be an existing directory
 '''
-python process_RTS_GMLC_data_s.py "RTS-GMLC/RTS_Data/timeseries_data_files/" "RTS-GMLC/RTS_Data/SourceData/" "prescient_rts_gmlc/timeseries_data_files_noerror/"
+###python process_RTS_GMLC_data_s.py "RTS-GMLC/RTS_Data/timeseries_data_files/" "RTS-GMLC/RTS_Data/SourceData/" "prescient_rts_gmlc/timeseries_data_files_noerror/"
 
 ###############################################################################
 '''
@@ -32,4 +32,4 @@ Example 2: compute_mape_plot.py
     and update the paths relative to the python script
     Right now the code works 1 to 5 scenarios only, but can be updates for more scenarios.
 '''
-python compute_mape_plot.py "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" "../load_actuals_iid/load_scenarios_3.csv" "actuals" 3
+###python compute_mape_plot.py "../mape_maker/samples/rts_gmlc/Load_forecasts_actuals.csv" "../load_actuals_iid/load_scenarios_3.csv" "actuals" 3
