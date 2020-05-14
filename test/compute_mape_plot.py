@@ -29,7 +29,7 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
     frames = [output_dataframe, input_dataframe]
     final_dataframe = pd.concat(frames, axis=1, sort=True)
 
-    # calculating MAPE of the input dataset
+    # calculate MAPE of the input dataset
     ares = abs(final_dataframe["forecasts"] - final_dataframe["actuals"] / final_dataframe["actuals"])
     mare = np.mean(ares)
     mape =  mare/100
