@@ -166,8 +166,8 @@ def find_best_arma_repr(logger, base_process):
     best_model, bic = None, np.inf
     logger.info("Start search for ARMA parameters:")
     for p, d, q in itertools.product(ps, ds, qs):
-        model = ARIMA(base_process, order=(p, d, q))
         try:
+            model = ARIMA(base_process, order=(p, d, q))
             model_fit = model.fit(disp=0)
             if model_fit.bic < bic:
                 best_model = (p, d, q)
