@@ -48,7 +48,7 @@ def combine_mape_plot(input_file, output_file, scenario_type, number_of_scenario
             mape = np.mean(ares)/100
             scenario_mape.append(mape)
 
-    average_scenario_mape = np.mean(scenario_mare )
+    average_scenario_mape = np.mean(scenario_mape )
     print("Average scenario mape is ", average_scenario_mape )
     std_scenario_mape = np.std(scenario_mape)
     print("Standard deviation of mape in scenarios is ", std_scenario_mape )
