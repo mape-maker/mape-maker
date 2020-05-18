@@ -231,8 +231,3 @@ Guillaume Goujard, Jean-Paul Watson, and David L. Woodruff,
 [2] "Fitting Time-Series Input Processes for Simulation", Bahar Biller, Barry L. Nelson, OPERATIONS RESEARCH
 Vol. 53, No. 3, May–June 2005, pp. 549–559
 
-Travis Status
-#############
-
-.. image:: https://travis-ci.org/mape-maker/mape-maker.svg?branch=master
-    :target: https://travis-ci.org/mape-maker/mape-maker
