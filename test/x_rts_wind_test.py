@@ -3,12 +3,8 @@ import pyutilib.th as unittest
 import sys
 import os.path
 import os
-import glob
-import pandas as pd
-import shutil
 import datetime
 from datetime import datetime
-import shutil
 import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
@@ -64,9 +60,7 @@ class TestUM(unittest.TestCase):
         print("temporary directory:", self.cwd)
         # path to the RTS wind data
 
-        self.wind_data = file_path + dir_sep + "based_rts_gmlc" + \
-                         dir_sep + "Wind_rts_gmlc_based" + dir_sep + \
-                         "processed_file.csv"
+        self.wind_data = file_path + dir_sep + "rts_gmlc" + dir_sep + "WIND_forecasts_actuals.csv"
 
     def test_commmand(self):
         """
