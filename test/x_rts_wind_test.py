@@ -8,7 +8,6 @@ from datetime import datetime
 import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
-dir_sep = "/"
 p = str(mape_maker.__path__)
 l = p.find("'")
 r = p.find("'", l+1)
