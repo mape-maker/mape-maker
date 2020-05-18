@@ -1,8 +1,4 @@
-import tempfile
 import pyutilib.th as unittest
-import sys
-import os.path
-import os
 import shutil
 import datetime
 from datetime import datetime
@@ -87,8 +83,6 @@ class TestUM(unittest.TestCase):
         mapemain.main_func(*parm_list)
         shutil.move("mmFinalFig.png", parm_dict["output_dir"] + dir_sep + "mmFinalFig.png")
 
-    @unittest.skipIf(test_with_error,
-                     "skipping the test with error")
     def test_third(self):
         """
         here is the command : python -m mape_maker "mape_maker/samples/rts_gmlc/WIND_forecasts_actuals.csv" -s 1234

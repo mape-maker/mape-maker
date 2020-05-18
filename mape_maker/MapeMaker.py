@@ -382,8 +382,6 @@ class MapeMaker:
             ### if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
-            # self.logger.info("self.r_tilde")
-            # self.logger.info(self.r_tilde)
             self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
             # self.s_x_tilde comes from the second file, nb_errors is an int
