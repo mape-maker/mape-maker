@@ -23,6 +23,7 @@ def check_date(s):
 
 @click.command()
 @click.argument('input_file')
+@click.option('--second_file', "-sf", default=None, help = 'second input file with one timeseries only (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)')
 @click.option('--target_mape', "-t",  default=None, type=float, help='mape you want in return otherwise will take the mape of the dataset')
 @click.option('--simulated_timeseries','-st', default="actuals", help="feature you want to simulate 'actuals' or 'forecasts'")
 @click.option('--base_process', '-bp', default="ARMA", help="method used to this end 'iid' or 'ARMA")
@@ -48,10 +49,10 @@ def check_date(s):
 @click.option('--verbosity_output', '-vo', default=None, help="the output file to save the verbosity")
 
 
-def main(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
+def main(input_file, second_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
          input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle, curvature, time_limit, curvature_target,
          mip_gap, solver, latex_output, show, verbosity, verbosity_output):
-    return main_func(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations,
+    return main_func(input_file, second_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations,
                      input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle,
                      curvature, time_limit, curvature_target, mip_gap, solver, latex_output, show, verbosity, verbosity_output)
 
@@ -77,7 +78,7 @@ def set_verbose_level(logger, verbosity, verbosity_output):
         logging.basicConfig(level=level, format=format)
     return logger
 
-def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir):
+def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir, second_file):
     """ Check some of the user inputs.
         TBD: get better date handling; delete this comment after Dec 2019
     """
@@ -91,17 +92,21 @@ def input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_en
             ("You must give both or neither of the simulation dates")
     if simulation_start_dt is not None\
        and input_start_dt is not None\
-       and simulation_start_dt < input_start_dt:
+       and simulation_start_dt < input_start_dt\
+       and second_file is None:
         raise RuntimeError ("Simulation must start after input start")
     if output_dir is not None and os.path.exists(output_dir):
         raise RuntimeError ("Output directory={} already exists".format(output_dir))
+    if second_file is not None:
+        if simulation_start_dt is None or simulation_end_dt is None:
+            raise RuntimeError("You must give both the simulation dates for the second file")
 
-def main_func(input_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
+def main_func(input_file, second_file, target_mape, simulated_timeseries, base_process, a, output_dir, number_simulations, input_start_dt,
               input_end_dt, simulation_start_dt, simulation_end_dt, title, seed, load_pickle, curvature, time_limit, curvature_target,
          mip, solver, latex_output, show, verbosity, verbosity_output):
     logger = logging.getLogger('mape-maker')
     logger = set_verbose_level(logger, verbosity, verbosity_output)
-    input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir)
+    input_check(input_start_dt, input_end_dt, simulation_start_dt, simulation_end_dt, output_dir, second_file)
     if simulation_start_dt is None and input_start_dt is not None:
         simulation_start_dt = input_start_dt
     if simulation_end_dt is None and input_end_dt is not None:
@@ -129,7 +134,7 @@ def main_func(input_file, target_mape, simulated_timeseries, base_process, a, ou
     tmare = target_mape/100 if target_mape is not None else None
 
     list_of_date_ranges = [[simulation_start_dt, simulation_end_dt]]
-    scores = mare_embedder.simulate(target_mare=tmare, base_process=base_process, n=number_simulations,
+    scores = mare_embedder.simulate(second_file=second_file, target_mare=tmare, base_process=base_process, n=number_simulations,
                                     full_dataset=full_dataset, output_dir=output_dir,
                                     list_of_date_ranges=list_of_date_ranges, curvature_parameters=pyomo_parameters,
                                     latex=latex_output)

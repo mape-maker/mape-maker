@@ -1,7 +1,7 @@
 Infeasible_example
 ===================
 
-For any requested MAPE, the distributions of errors computed should close enough to the input
+For any requested MAPE, the distributions of errors computed should be close enough to the input
 error distributions while meeting the target MAPE. During the process, we compute the mean absolute error of
 a conditional beta distribution with fixed alpha and beta to satisfy the target MAPE so that it keeps the same shape
 parameters(denoted by alpha and beta) as the original distribution. If it's hard to meet the target MAPE, then it

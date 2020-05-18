@@ -11,7 +11,7 @@ loading_bar = "-"*60
 
 
 class MapeMaker:
-    __version__ = "0.91"
+    __version__ = "0.92"
     path_to_test = {
         "BPA": "samples/2012-2013_BPA_forecasts_actuals.csv",
         "CAISO": "samples/wind_total_forecast_actual_070113_063015.csv",
@@ -37,6 +37,7 @@ class MapeMaker:
         :param seed: seed used for simulation if none will be random
         :param a: percent/2 of data used for the estimation sample
         """
+        self.ending_feature = ending_feature
         self.logger = logger
         if path == "":
             path = os.path.join(file_path, MapeMaker.path_to_test[name])
@@ -126,13 +127,11 @@ class MapeMaker:
         self.logger.info(loading_bar + "\nMax attainable for full dataset {}%".format("%2.f" % (100*self.r_m_max)))
         self.logger.info(loading_bar + "\nEstimation of the weight function om_X")
         self.om_x = fitting_distribution.create_weight_function(self.m_hat, self.r_m_hat)
-
         """
         Estimating the Base Process then ARMA process
         """
         self.Z_hat = None
         self.solver_arma = None
-
         """
         Getting the simulation functions
         """
@@ -146,8 +145,8 @@ class MapeMaker:
         self.s_x_tilde = self.s_x
         self.r_tilde = None   ##self.r_m_hat
         self.start_date, self.end_date = self.x_timeseries.index[0], self.x_timeseries.index[-1]
+        self.cfx_cache = {} # for efficiency in cfx
         self.logger.info("\n"+"*"*30 + " PREPROCESSING DONE - READY TO SIMULATE " + "*"*30 + "\n")
-
         """
         Curvature parameters
         """
@@ -158,6 +157,59 @@ class MapeMaker:
         """
         self.results, self.simulated_errors, self.saved_scores = {}, {}, {}
 
+    ### Index Utility ###
+    def cfx(self, x):
+        """ Closest fitting x (maybe the x comes from SID, maybe fitting)
+        Args:
+            x (float): the x we want to match in the fitting data
+        Returns:
+            fx (float): the x in the fitting data
+        NOTE:
+            updates or uses self.cfx_cache for speed improvement
+        """
+        index_parameters = np.array(list(self.x_timeseries.values))
+        if x in self.cfx_cache:
+            return self.cfx_cache[x]
+        elif x in self.x_timeseries.values:
+            self.cfx_cache[x] = x
+        else:
+            i = np.argmin(abs(index_parameters - x))
+            self.cfx_cache[x] = index_parameters[i]
+        return self.cfx_cache[x]
+
+    ### fitting distribution ###
+    def infer_r_tilde_max(self):
+        max_r_tilde_list = []
+        index_parameters = np.array(list(self.m_max.keys()))
+        for x in self.om_tilde:
+            if x != 0:
+                if x not in self.m_max:
+                    i = np.argmin(abs(index_parameters - x))
+                    self.m_max[x] = index_parameters[i]
+                max_r_tilde_list.append(self.m_max[x] / (x * self.om_tilde[x]))
+        return min(max_r_tilde_list)
+
+    def get_maes_from_weight_target(self):
+        """
+        Infer the mae to get from each conditionnal distribution for the simulation
+        """
+        self.m_tilde = {}
+        nb_bound_exceptions = 0
+        for x in self.om_tilde.keys():
+            self.m_tilde[x] = self.r_tilde * x * self.om_tilde[x]
+            if self.m_tilde[x] > self.m_max[self.cfx(x)]:
+                nb_bound_exceptions += 1
+                if nb_bound_exceptions < 10:
+                    self.logger.info("Anticipating bound exception...  \n" + " " * 5 + "- MAE targeted {},\n".format(
+                        "%.2f" % self.m_tilde[x]) +
+                                " " * 5 + "- MAE max obtainable {}".format("%.2f" % self.m_max[x]))
+                self.m_tilde[x] = self.m_max[x]
+        if nb_bound_exceptions == 0:
+            self.logger.info("There was no bound exceptions anticipated")
+        else:
+            self.logger.info("There were {} bound exceptions anticipated".format(nb_bound_exceptions))
+
+    ### arma ###
     def create_arma_process(self):
         """
         estimate the base process and create a solver object to find the ARMA coefficients
@@ -196,7 +248,7 @@ class MapeMaker:
     def has_artafit(self):
         return self.solver_arma is not None
 
-    def get_simulation_parameters(self, r_tilde, x_timeseries_sid):
+    def get_simulation_parameters(self, r_tilde, x_timeseries_sid, logger):
         """
         from the target mare and the dataset_SID :
             * find the target MAE to get from each of the conditional distributions
@@ -206,9 +258,9 @@ class MapeMaker:
         :return: s_x_tilde
         """
         self.logger.info(loading_bar + "\nDetermination of the weight function om_tilde")
-        self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid)
+        self.om_tilde, self.e_score = fitting_distribution.create_sid_weight_function(self.om_x, x_timeseries_sid, logger)
         self.logger.info(loading_bar + "\nDetermination of the maximum of mare attainable")
-        self.r_tilde_max = fitting_distribution.infer_r_tilde_max(self.m_max, self.om_tilde)
+        self.r_tilde_max = self.infer_r_tilde_max()
         self.logger.info(loading_bar + "\nDetermination of the Plausability score and the r_tilde_max")
         flag_error = False
         if abs(self.e_score - 1) < 0.1:
@@ -222,14 +274,15 @@ class MapeMaker:
                        inequality + "target {}".format("%.2f" % r_tilde)
             if r_tilde > self.r_tilde_max:
                 flag_error = True
-                s += "\nWARNING YOU ASKED FOR A TOO STRONG R TILDE"
-                s += "\n     => Either change your r_tilde"
-                s += "\n     => Either change your SID so the e_score increases"
+                s += "\nWARNING requested r_tilde is too high"
+                s += "\n     => Either change your requested mape to be less than {}".format(self.r_tilde_max * 100)
+                s += "\n     => Or change your SID so the e_score increases"
+                raise RuntimeError(s)
         self.logger.info("Plausibility score = {} ".format('%.3f' % self.e_score) + s)
         if flag_error:
             return None
         self.logger.info(loading_bar + "\nDetermination of the target function m_tilde")
-        self.m_tilde = fitting_distribution.get_maes_from_weight_target(self.om_tilde, r_tilde, self.m_max, self.logger)
+        self.get_maes_from_weight_target()
         self.logger.info(loading_bar + "\nComputation of the new simulation parameters")
         self.s_x_tilde, nb_errors = fitting_distribution.get_s_tilde_sid(self.s_x, self.m_tilde, self.m_hat, self.m_max,
                                                                          self.cap, self.logger)
@@ -242,7 +295,7 @@ class MapeMaker:
         self.logger.info(loading_bar)
         return self.s_x_tilde, nb_errors
 
-    def simulate(self, target_mare=None, base_process=None, n=1, full_dataset=False,
+    def simulate(self, second_file=None, target_mare=None, base_process=None, n=1, full_dataset=False,
                  output_dir=None, seed=None, list_of_date_ranges=None,
                  curvature_parameters=None, latex=False):
         """
@@ -266,6 +319,21 @@ class MapeMaker:
         :param latex: create a tex document with table of scores
         :return:
         """
+        if second_file is not None:
+            full_sim_df = pre_treat(self.logger, path=second_file, type_of_simulation=self.ending_feature)
+            if len(full_sim_df[full_sim_df[self.y].isna()]) > 0:
+                self.logger.info("-" * 60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y))
+                index_not_na = full_sim_df[~full_sim_df[self.y].isna()].index
+                df = full_sim_df.loc[index_not_na]
+            else:
+                df = full_sim_df
+            self.x_sim = full_sim_df
+            self.x_sim_timeseries = df[self.x]
+            self.y_sim_timeseries = df[self.y]
+        else:
+            self.x_sim = self.full_df
+            self.x_sim_timeseries = self.x_timeseries
+            self.y_sim_timeseries = self.y_timeseries
         if target_mare is None:
             tg = " of the empirical dataset"
             # We take the last target used to prevent from recomputing all the weights
@@ -279,17 +347,16 @@ class MapeMaker:
         if seed is None:
             seed = self.seed
         if full_dataset:
-            list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+            list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
         else:
             if list_of_date_ranges is None:
-                list_of_date_ranges = [[self.x_timeseries.index[0], self.x_timeseries.index[-1]]]
+                list_of_date_ranges = [[self.x_sim_timeseries.index[0], self.x_sim_timeseries.index[-1]]]
             elif len(np.array(list_of_date_ranges).shape) == 1:
                 list_of_date_ranges = [list_of_date_ranges]
             elif len(np.array(list_of_date_ranges).shape) == 2 and list_of_date_ranges[0][0] is None:
-                start_ind = find_longest_index_sequence(self.x_timeseries.index, 150 * 24)
-                start_date, end_date = self.x_timeseries.index[start_ind], self.x_timeseries.index[start_ind + 150*24]
+                start_ind = find_longest_index_sequence(self.x_sim_timeseries.index, 150 * 24)
+                start_date, end_date = self.x_sim_timeseries.index[start_ind], self.x_sim_timeseries.index[start_ind + 150*24]
                 list_of_date_ranges = [[start_date, end_date]]
-
         s_ = "*" * 30 + "*" * len(" PREPROCESSING DONE - READY TO SIMULATE ") + "*" * 30
         n_s = len(s_)
         self.logger.info(s_)
@@ -312,17 +379,19 @@ class MapeMaker:
         for l in list_of_date_ranges:
             start_date, end_date = l
             # DLW: try to get the efficiency back (this could be skipped for all data)
-            ###if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
+            ### if target_mare != self.r_tilde or (start_date != self.start_date) or (end_date != self.end_date):
             self.start_date, self.end_date = start_date, end_date
             self.r_tilde = target_mare
-            self.x_timeseries_sid = self.full_df[self.x][self.start_date:self.end_date]
+            # self.logger.info("self.r_tilde")
+            # self.logger.info(self.r_tilde)
+            self.x_timeseries_sid = self.x_sim[self.x][self.start_date:self.end_date]
             self.datasetsid = fitting_distribution.make_datasetx(self.x_timeseries_sid)
-            self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid)
+            # self.s_x_tilde comes from the second file, nb_errors is an int
+            self.s_x_tilde, nb_errors = self.get_simulation_parameters(target_mare, self.datasetsid, self.logger)
             if self.s_x_tilde is None:
                 return False, None
             ### end if
             if curvature_parameters is not None:
-                curvature_parameters["Y"] = self.full_df[self.y][self.start_date:self.end_date]
                 curvature_parameters["x"] = self.x_timeseries_sid
                 curvature_parameters["name"] = self.name
                 if "curvature_target" not in curvature_parameters or curvature_parameters["curvature_target"] is None:
@@ -412,11 +481,11 @@ class MapeMaker:
         :param params_simul:
         :return:
         """
-        result_mares, observed_mare = simulation.check_simulation_mare(self.x_timeseries, self.y_timeseries,
+        result_mares, observed_mare = simulation.check_simulation_mare(self.x_sim_timeseries, self.y_sim_timeseries,
                                                                        results, self.r_tilde, self.logger)
-        auto_cor_simul, auto_cor_real = simulation.check_simulation_auto_correlation(self.x_timeseries, self.errors,
+        auto_cor_simul, auto_cor_real = simulation.check_simulation_auto_correlation(self.x_sim_timeseries, self.errors,
                                                                                      results)
-        d_simuls, observed_second_differences = simulation.check_simulation_curvature(self.y_timeseries, results)
+        d_simuls, observed_second_differences = simulation.check_simulation_curvature(self.y_sim_timeseries, results)
         raw_measures = {
             "params_simulation": params_simul,
             "mares": {
@@ -442,7 +511,7 @@ class MapeMaker:
             if self.operations:
                 y = None
             else:
-                y = self.y_timeseries
+                y = self.y_sim_timeseries
             plot_from_date(self.logger, self.x_timeseries_sid, y, screen,
                            results=self.results, title=title,
                            target_mare=self.r_tilde, ending_features=self.y,
@@ -479,7 +548,7 @@ if __name__ == "__main__":
         "forecasts": [None, 2],
     }
 
-    scores,nb_errors = mare_embedder.simulate(target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
+    scores,nb_errors = mare_embedder.simulate(second_file="", target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
                                     full_dataset=False, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
