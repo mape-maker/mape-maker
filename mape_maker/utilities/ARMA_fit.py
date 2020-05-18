@@ -126,7 +126,16 @@ def setting_correct_sigma(ar, ma):
         sig = abs(sig)
         errors = np.random.normal(scale=np.sqrt(sig), size=n)
         i = len(ar)
+        print("ma[::-1]")
+        print(ma[::-1])
+        print("errors[i - len(ma):i]")
+        print(errors[i - len(ma):i])
+        print("i")
+        print(i)
+        print("len(ma)")
+        print(len(ma))
         while i < n:
+            # sometimes errors[i - len(ma):i] is 0
             simulations[i] = np.inner(ar[::-1], simulations[i - len(ar):i]) + np.inner(ma[::-1], errors[i - len(ma):i]) \
                              + errors[i]
             i += 1
@@ -166,12 +175,13 @@ def find_best_arma_repr(logger, base_process):
     best_model, bic = None, np.inf
     logger.info("Start search for ARMA parameters:")
     for p, d, q in itertools.product(ps, ds, qs):
+        model = ARIMA(base_process, order=(p, d, q))
         try:
-            model = ARIMA(base_process, order=(p, d, q))
             model_fit = model.fit(disp=0)
             if model_fit.bic < bic:
                 best_model = (p, d, q)
                 bic = model_fit.bic
+                # print(p,d,q, " BIC = {}".format(model_fit.bic))
                 logger.info("{},{},{} BIC = {}".format(p,d,q, model_fit.bic))
         except Exception as e:
             logger.info("{},{},{} rejected:".format(p,d,q))
