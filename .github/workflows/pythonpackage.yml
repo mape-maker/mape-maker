@@ -39,7 +39,7 @@ jobs:
     - name: Test with pytest and create codecov report
       run: |
         pytest --cov=./ --cov-report=xml
-	sleep 0.01
+        sleep 0.01
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
