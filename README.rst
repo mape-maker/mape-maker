@@ -234,4 +234,6 @@ Vol. 53, No. 3, May–June 2005, pp. 549–559
 Github action badge
 ###################
 
-https://github.com/mape-maker/mape-maker/workflows/mape-maker/badge.svg
+Github test test is |githubaction|
+
+.. |githubaction| image:: https://github.com/mape-maker/mape-maker/workflows/mape-maker/badge.svg
