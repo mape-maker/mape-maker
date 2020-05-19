@@ -4,8 +4,8 @@ mape_maker
    :width: 200px
    :align: right
 
-This package can be used to simulate scenarios of wind power forecasts from actuals or from actuals
-to forecasts. It has been implemented so that a generalization to any type of dataframe providing
+This package can be used to simulate scenarios of wind power forecasts from actuals or wind power actuals
+from forecasts. It has been implemented so that a generalization to any type of dataframe providing
 actuals and forecasts, is possible.
 
 |
