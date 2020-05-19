@@ -6,9 +6,8 @@ actuals and forecasts, is possible.
 
 The main inputs of the package are :
 
-* an input dataset giving forecasts and actuals for specified datetimes as a csv file.
-* a simulation input dataset (sid) giving at least one of the two columns (forecasts or actuals) for specified datetimes as
-a csv file. It can also be a subset of the input dataset, specified by a start and end-date. By default, the sid is the input dataset (see more at :ref:`Options`).
+* an input dataset giving forecasts and actuals for specified datetimes as a csv file (see more at :ref:`Input`).
+* a simulation input dataset (sid) giving at least one of the two columns (forecasts or actuals) for specified datetimes as a csv file. It can also be a subset of the input dataset, specified by a start and end-date. By default, the sid is the input dataset (see more at :ref:`Options`).
 * r_tilde : a desired MAPE (i.e mean absolute percent error see more at :ref:`Percent Errors and MAPEs`) for the simulations in output
 * user-specified technical parameters (see more at :ref:`Options`).
 
@@ -38,7 +37,7 @@ Plausibility objectives
 ***********************
 
 A scenario set is said to be "plausible" if :
-    - the shape of the error distribution for the scenarios is close to the shape of the empirical distribution of errors;
+    - the shape of the distribution of the scenarios errors is close to the shape of the empirical distribution of errors;
     - the computed auto-correlation coefficients for the set are close the empirical values;
     - the computed curvature for the set is close to the empirical value, especially when the scenarios are forecasts.
 

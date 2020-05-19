@@ -9,7 +9,7 @@ The options of the package are :
     python mape_maker --help
 
 .. list-table::
-   :widths: 25 25 25 50
+   :widths: 20 35 15 50
    :header-rows: 1
 
    * - Options
@@ -23,7 +23,7 @@ The options of the package are :
    * - -sf
      - \\-\\-second_file
      - TEXT
-     - path to a simulation input dataset with one timeseries only (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)
+     - path to a simulation input dataset with one or two timeseries (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)
    * - -st
      - \\-\\-simulated_timeseries
      - TEXT
@@ -128,7 +128,7 @@ Options with More Details
 * **\\-\\-second_file TEXT**:
  The path to a simulation input dataset (sid) with one or two timeseries (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)
 
-The following loads "sid.csv" located under the current directory :
+ The following loads "sid.csv" located under the current directory :
 
  ``--second_file "sid.csv"``
 
@@ -152,9 +152,8 @@ The following loads "sid.csv" located under the current directory :
 |
 * **\\-\\-base_process TEXT**:
 
- The base process is a timeseries of random variables with marginal law following a gaussian of mean 0 and variance 1. The
-base process can either be independent and identically distributed ("iid"), or simulated via an ARMA process ("ARMA"). In
-the last case, the base process will be correlated. We then apply a transformation to the base process to retrieve the simulated errors.
+ The base process is a timeseries of random variables with marginal law following a normal law of mean 0 and variance 1.
+ We then apply a transformation to the base process to retrieve the simulated errors. The base process can either be independent and identically distributed ("iid"), or simulated via an ARMA process ("ARMA"). In the last case, the base process will be correlated, hence the errors will have a stronger correlation than with an "iid" base process.
 
  The following are the two ways to specify that base process is iid:
 
@@ -188,8 +187,8 @@ the last case, the base process will be correlated. We then apply a transformati
  If this option is not given, the output directory is assumed to be None. No output directory
  will be created.
 
-.. note:: If the output directory is not given, then the only output will be a png image of the plot showing the scenarios and saved under the current directory.
-.. warning:: If the output directory already exists, the program will terminate and issue messages. It won't overwrite an existing directory.
+ .. note:: If the output directory is not given, then the only output will be a png image of the plot showing the scenarios and saved under the current directory.
+ .. warning:: If the output directory already exists, the program will terminate and issue messages. It won't overwrite an existing directory.
 |
 * **\\-\\-number_simulations INTEGER**:
  The number of scenarios to create.
@@ -211,7 +210,7 @@ the last case, the base process will be correlated. We then apply a transformati
 
  ``-sd "2020-1-3 00:00:00"``
 
-.. note:: The user need to set both "simulation_start_dt" and "simulation_end_dt".
+ .. note:: The user need to set both "simulation_start_dt" and "simulation_end_dt".
  If this option is not given, then it will use "input_start_dt" as the simulation start date.
  If "input_start_dt" is None, then it will use the first date of the input file as the simulation start date.
  The "simulation_start_dt" must be on or after the input start date for the simulations.
@@ -238,7 +237,7 @@ the last case, the base process will be correlated. We then apply a transformati
 
   ``-is "2020-1-3 00:00:00"``
 
- .. note:: The user need to set both "input_start_dt" and "input_end_dt"..
+  .. note:: The user need to set both "input_start_dt" and "input_end_dt"..
  If this option is not given, then it will use the first date of the input file as the start date for the computation of the distributions.
 |
 * **\\-\\-input_end_dt TEXT**:
@@ -277,17 +276,18 @@ the last case, the base process will be correlated. We then apply a transformati
 |
 * **\\-\\-load_pickle**:
 
- This will load the pickle file for the input dataset instead of estimating the parameters for the conditional beta distribution.
- Every run will create the pickle file or update the existing pickle file for that input dataset. The pickle file contains
- the parameters of the conditional beta distributions in the stored_vectors subdirectory in the utilities directory.
- This command can be used to call the pickle file containing the values for the parameters for the same input dataset and for the same output feature.
+ This will load the pickle file of the estimated parameters for the input dataset and the output feature instead of re-estimating the parameters for the conditional beta distributions.
+
+ This command can be used to improve the speed of the program by skipping the estimation part. However, it can only happen if a previous run was made for the same input dataset and for the same output feature.
 
  The following are two ways to specify that mape-maker should load the estimated parameters if they exist:
+
  ``--load_pickle True``
 
  ``-lp True``
 
-If the pickle file does not exist or if this option is not given, then the parameters for the beta distributions are computed.
+ .. note:: Every run of mape-maker will create a new pickle file or update the existing one for that specific input dataset and output feature. The file is stored in the stored_vectors subdirectory in the utilities directory.
+ If the pickle file does not exist or if this option is not given, then the parameters for the beta distributions are computed.
 |
 * **\\-\\-curvature BOOLEAN**:
  True if the user wants to optimize the scenarios curvature.
@@ -304,7 +304,7 @@ If the pickle file does not exist or if this option is not given, then the param
  If this option is not given, the curvature is assumed to be False
 |
 * **\\-\\-time_limit INTEGER**:
- Time limit for the optimization of curvature.
+ Time limit for curvature optimization.
 
  The following are two ways to specify that the time limit is 40 seconds:
 
@@ -326,7 +326,7 @@ If the pickle file does not exist or if this option is not given, then the param
  If this option is not given, the target of the second difference is assumed to be the mean of the second difference of the dataset.
 |
 * **\\-\\-mip_gap FLOAT**:
-Mip gap for the curvature optimization
+ Mip gap for curvature optimization
 
  The following are two ways to specify that the mip gap is 0.1:
 
@@ -360,12 +360,12 @@ Mip gap for the curvature optimization
  If this option is not given, it will save the simulation plot by default.
 |
 * **\\-\\-verbosity INTEGER**:
- We have 3 options to choose: 2(logging.INFO), 1(logging.WARNING), 0(logging.ERROR).
- logging.INFO will output info, error, and warning messages.
- logging.WARNING will output error and warning messages.
- logging.ERROR will only output error messages.
+ We have 3 options to choose:
+    - 2 (logging.INFO), will output info, error, and warning messages.
+    - 1 (logging.WARNING), will output error and warning messages.
+    - 0 (logging.ERROR), will only output error messages.
 
-  The following are two ways to specify the verbosity level:
+ The following are two ways to specify the verbosity level:
 
  ``--verbosity 2``
 
