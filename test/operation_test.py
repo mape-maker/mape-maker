@@ -101,8 +101,9 @@ class TestUM(unittest.TestCase):
         parm_dict["simulation_start_dt"] = datetime(year=2020, month=11, day=1, hour=0, minute=0, second=0)
         parm_dict["simulation_end_dt"] = datetime(year=2020, month=11, day=7, hour=0, minute=0, second=0)
         parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-        shutil.move("mmFinalFig.png", parm_dict["output_dir"] + dir_sep + "mmFinalFig.png")
+        with self.assertRaises(RuntimeError) as context:
+            mapemain.main_func(*parm_list)
+        self.assertTrue('< 1, there is a prevalence of high power input in the SID' in str(context.exception))
 
 if __name__ == "__main__":
     unittest.main()
