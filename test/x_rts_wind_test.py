@@ -50,13 +50,6 @@ class TestUM(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        # make a temp dir
-        self.temp_dir = tempfile.mkdtemp()
-        sys.path.insert(1, self.temp_dir)
-        # change to the temp directory
-        os.chdir(self.temp_dir)
-        self.cwd = os.getcwd()
-        print("temporary directory:", self.cwd)
         # path to the RTS wind data
 
         self.wind_data = file_path + dir_sep + "rts_gmlc" + dir_sep + "WIND_forecasts_actuals.csv"

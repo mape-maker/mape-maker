@@ -47,13 +47,6 @@ class TestUM(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        # make a temp dir; to print temp_dir path use print(self.temp_dir)
-        self.temp_dir = tempfile.mkdtemp()
-        sys.path.insert(1, self.temp_dir)
-        # change to the temp directory
-        os.chdir(self.temp_dir)
-        self.cwd = os.getcwd()
-        print("the output dir will be saved to:", self.cwd)
         # path to Bus_220_Load_zone2
         self.load_data = file_path + dir_sep + "rts_gmlc" + dir_sep + \
                          "Bus_220_Load_zone2_forecasts_actuals.csv"
