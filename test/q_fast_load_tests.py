@@ -3,15 +3,11 @@ import pyutilib.th as unittest
 import sys
 import os.path
 import os
-import glob
-import pandas as pd
-import shutil
 import datetime
 from datetime import datetime
 import shutil
 import mape_maker
 from mape_maker import __main__ as mapemain
-from collections.abc import Iterable
 dir_sep = "/"
 p = str(mape_maker.__path__)
 l = p.find("'")

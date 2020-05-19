@@ -1,15 +1,6 @@
-import tempfile
 import pyutilib.th as unittest
-import sys
-import os.path
-import os
-import glob
-import pandas as pd
-import shutil
-import logging, verboselogs
 import datetime
 from datetime import datetime
-import shutil
 import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
@@ -18,6 +9,7 @@ from collections.abc import Iterable
 quick_test = False
 # whether to run only one example
 skip_all_but_one = False
+
 
 
 class TestUM(unittest.TestCase):
