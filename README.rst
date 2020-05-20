@@ -234,6 +234,6 @@ Vol. 53, No. 3, May–June 2005, pp. 549–559
 Github action badge
 ###################
 
-Github test test is |githubaction|
+Github test status is |githubaction|
 
 .. |githubaction| image:: https://github.com/mape-maker/mape-maker/workflows/mape-maker/badge.svg
