@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Tuple, List, Sequence
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# # matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import datetime
 from pandas.plotting import register_matplotlib_converters
@@ -146,6 +146,7 @@ def plot_from_date(logger, X, Y, screen, results=None, title: str = "",
     """
     first = list(results.keys())[0]
     index = results[first].iloc[screen*40:(screen+1)*40].index
+
     fig, ax1 = plt.subplots(figsize=(15, 6), dpi=80, facecolor='w', edgecolor='k',
                             num="MapeMaker - Plot of simulations from {} to {}".format(
                                 index[0].strftime("%Y-%m-%d"),
@@ -156,14 +157,14 @@ def plot_from_date(logger, X, Y, screen, results=None, title: str = "",
     ax1.set_ylabel('Power', color=color)  # we already handled the x-label with ax1
     if Y is not None:
         try:
-            ax1.plot(index, Y.loc[index], '--', marker=".", label=ending_features)
+            ax1.plot(index, Y.loc[index].values, '--', marker=".", label=ending_features)
         except:
             logger.error ("**** Y Plot failed ****")
             logger.error ("dump of Y.loc[index]")
             logger.error (Y.loc[index])
             logger.error ("end dump")
     try:
-        ax1.plot(index, X.loc[index], "-", marker="o", color="black",
+        ax1.plot(index, X.loc[index].values, "-", marker="o", color="black",
                  label=x_legend, linewidth=0.5)
     except:
         logger.warning ("********* WARNING: Plot failed for", x_legend)
@@ -174,12 +175,12 @@ def plot_from_date(logger, X, Y, screen, results=None, title: str = "",
             simulations = results[r]
             for i, c in enumerate(simulations.columns):
                 try:
-                    ax1.plot(index, simulations[c].loc[index], marker=".",
-                             linewidth=0.5, label=r+" s_{}".format(i))
+                    ax1.plot(index, simulations[c].loc[index].values, marker=".",
+                             linewidth=0.5) #label=r+" s_{}".format(i)
                 except:
                     logger.warning ("******* WARNING: Plot failed for simulation {}"\
                            .format(c))
-    ax1.tick_params(axis='y', labelcolor=color)
+    # ax1.tick_params(axis='y', labelcolor=color)
     ax1.legend()
 
     if title is None:

@@ -3,6 +3,8 @@ from mape_maker.utilities import simulation, fitting_distribution, ARMA_fit
 from mape_maker.utilities.df_utilities import pre_treat, find_longest_index_sequence, plot_from_date
 import numpy as np
 import os.path
+import logging, verboselogs
+import sys
 #from latex_outputer import to_latex
 import pickle
 
@@ -521,13 +523,39 @@ class MapeMaker:
 
 
 if __name__ == "__main__":
+    def set_verbose_level(logger, verbosity, verbosity_output):
+        format = '%(message)s'
+        if verbosity == 2:
+            level = logging.INFO
+        elif verbosity == 1:
+            level = logging.WARNING
+        elif verbosity == 0:
+            level = logging.ERROR
+        else:
+            print("{}, Undefined verbosity level".format(verbosity))
+            sys.exit(1)
+        if verbosity_output is not None:
+            # check whether the output file already exist
+            if os.path.isfile(verbosity_output):
+                # delete the existing file
+                os.remove(verbosity_output)
+            logging.basicConfig(filename=verbosity_output, level=level,
+                                format=format)
+        else:
+            logging.basicConfig(level=level, format=format)
+        return logger
+
     """
     Showing all the options for the creation of the object
     """
+    logger = logging.getLogger('mape-maker')
+    logger = set_verbose_level(logger, 2, None)
+
     paths = ["samples/wind_total_forecast_actual_070113_063015.csv", "samples/2012-2013_BPA_forecasts_actuals.csv",
              "samples/operations_example.csv"]
     ending_features = ["actuals", "forecasts"]
-    mare_embedder = MapeMaker(path=paths[2], ending_feature=ending_features[0], load_pickle=False, seed=None)
+    mare_embedder = MapeMaker(logger, path=paths[2], ending_feature=ending_features[0], load_pickle=True, seed=None)
+
 
     """
     Showing all the options for the simulation
@@ -546,8 +574,9 @@ if __name__ == "__main__":
         "forecasts": [None, 2],
     }
 
-    scores,nb_errors = mare_embedder.simulate(second_file="", target_mare=target_mares[mare_embedder.y][0], base_process=base_processes[1], n=10,
-                                    full_dataset=False, output_dir=None, seed=None,
+
+    scores,nb_errors = mare_embedder.simulate(second_file=None, target_mare=None, base_process=base_processes[1], n=10,
+                                    full_dataset=True, output_dir=None, seed=None,
                                     list_of_date_ranges=list_of_date_ranges,
                                     curvature_parameters=curvature_parameters[1],
                                     latex=False)
@@ -558,3 +587,17 @@ if __name__ == "__main__":
 
     mare_embedder.plot_example()
 
+    # import sys, importlib
+    #
+    # importlib.reload(sys.modules['mape_maker.utilities.df_utilities'])
+    # from mape_maker.utilities.df_utilities import pre_treat, find_longest_index_sequence, plot_from_date
+    # y = mare_embedder.y_sim_timeseries
+    # plot_from_date(mare_embedder.logger, mare_embedder.x_timeseries_sid, y, 0,
+    #                results=mare_embedder.results, title="",
+    #                target_mare=mare_embedder.r_tilde, ending_features=mare_embedder.y,
+    #                x_legend=mare_embedder.x)
+    #
+    # import matplotlib.pyplot as plt
+    # plt.figure()
+    # plt.plot([0,1], [0,1])
+    # plt.show()

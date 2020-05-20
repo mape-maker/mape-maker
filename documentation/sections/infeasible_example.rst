@@ -12,15 +12,18 @@ Example 1
 
 ::
 
-python mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -sd "2014-6-17 01:00:00" -ed "2014-6-30 00:00:00" -s 1234
+    python mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -sd "2014-6-17 01:00:00" -ed "2014-6-30 00:00:00" -s 1234
 
 This command line will fail with an error, showing the following output:
-Determination of the Plausability score and the r_tilde_max
-Plausibility score = 0.508  < 1, there is a prevalence of high power input in the SID
-Maximum of mare attainable with this score is 0.34 < target 0.42
-WARNING YOU ASKED FOR A TOO STRONG R TILDE
-     => Either change your r_tilde
-     => Either change your SID so the e_score increases
+
+::
+
+    RuntimeError:  < 1, there is a prevalence of high power input in the SID
+    Maximum of mare attainable with this score is 0.31 < target 0.45
+    WARNING requested r_tilde is too high
+         => Either change your requested mape to be less than 31.094306227274455
+         => Or change your SID so the e_score increases
+
 
 
 The plausibility score should be close to 1, meaning that the error distribution for the set is close to the empirical distribution of errors.
@@ -33,7 +36,7 @@ Example 2
 
 ::
 
-python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-15 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
+    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-15 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
 
 This command line will fail with an error, showing the following output during the running process:
 ******* WARNING!! **********
