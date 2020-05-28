@@ -187,7 +187,7 @@ class MapeMaker:
             if x != 0:
                 if x not in self.m_max:
                     i = np.argmin(abs(index_parameters - x))
-                    self.m_max[x] = index_parameters[i]
+                    self.m_max[x] = self.m_max[index_parameters[i]]
                 max_r_tilde_list.append(self.m_max[x] / (x * self.om_tilde[x]))
         return min(max_r_tilde_list)
 
