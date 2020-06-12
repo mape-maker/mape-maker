@@ -34,7 +34,7 @@ an output dir called "wind_actuals_iid" in your current working directory.
  The end date of the simulation is "2014-7-31 00:00:00"
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
- * **-o "wind_actuals_iid"**:
+* **-o "wind_actuals_iid"**:
  Create an output directory called "wind_actuals_iid", in which will store the simulation output file.
 
 After running the command line, you should see a similar plot like this:
