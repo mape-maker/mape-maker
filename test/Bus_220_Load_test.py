@@ -56,6 +56,7 @@ class TestUM(unittest.TestCase):
         print("Running ", str(self.id()).split('.')[2])
         parm_dict = self._base_dict()
         parm_dict["input_file"] = self.load_data
+        parm_dict["second_file"] = self.load_data
         parm_dict["simulated_timeseries"] = "actuals"
         parm_dict["number_simulations"] = 1
         parm_dict["base-process"] = "ARMA"
@@ -76,8 +77,8 @@ class TestUM(unittest.TestCase):
         parm_dict["base-process"] = "ARMA"
         parm_dict["input_start_dt"] = datetime(year=2020, month=1, day=10, hour=0, minute=0, second=0)
         parm_dict["input_end_dt"] = datetime(year=2020, month=5, day=20, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2020, month=1, day=11, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2020, month=4, day=20, hour=23, minute=0, second=0)
         parm_list = list(parm_dict.values())
         # run the test
         mapemain.main_func(*parm_list)
