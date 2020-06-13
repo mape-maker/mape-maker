@@ -52,12 +52,56 @@ class TestUM(unittest.TestCase):
                     }
         return basedict
 
-    def test_wind_actuals_ARMA_with_dates(self):
+    def test_one(self):
         # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "ARMA" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
         parm_dict = self._basic_dict()
         parm_dict["input_file"] = self.wind_data
         parm_dict["simulated_timeseries"] = "actuals"
+        parm_dict["base-process"] = "ARMA"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
+        parm_dict["seed"] = 1134
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+
+    def test_two(self):
+        # here is the command :
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 1 -bp "iid" -is "2014-1-1 00:00:00" -ie "2014-10-1 00:00:00" -sd "2014-1-2 00:00:00" -ed "2014-9-30 00:00:00" -s 1234
+        parm_dict = self._basic_dict()
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["simulated_timeseries"] = "forecasts"
+        parm_dict["base-process"] = "iid"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0)
+        parm_dict["seed"] = 1134
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+
+    def test_three(self):
+        # here is the command :
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "iid" -is "2014-1-1 00:00:00" -ie "2014-10-1 00:00:00" -sd "2014-1-2 00:00:00" -ed "2014-9-30 00:00:00" -s 1234
+        parm_dict = self._basic_dict()
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["base-process"] = "iid"
+        parm_dict["input_start_dt"] = datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)
+        parm_dict["input_end_dt"] = datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)
+        parm_dict["simulation_start_dt"] = datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)
+        parm_dict["simulation_end_dt"] = datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0)
+        parm_dict["seed"] = 1134
+        parm_list = list(parm_dict.values())
+        mapemain.main_func(*parm_list)
+
+    def test_four(self):
+        # here is the command :
+        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 1 -bp "ARMA" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
+        parm_dict = self._basic_dict()
+        parm_dict["input_file"] = self.wind_data
+        parm_dict["simulated_timeseries"] = "forecasts"
         parm_dict["base-process"] = "ARMA"
         parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
         parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
