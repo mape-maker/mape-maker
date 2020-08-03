@@ -175,8 +175,8 @@ def main(args):
                                      r_tilde=tmare)
 
     x_legend = mare_embedder.xyid.x_name if args.x_legend is None else args.x_legend
-    Scenarios(X=mare_embedder.xyid.x_t,
-              Y=mare_embedder.xyid.y_t,
+    Scenarios(X=mare_embedder.sid.x_t,
+              Y=mare_embedder.sid.y_t,
               results=results,
               target_mare=mare_embedder.sid.SimParams.r_tilde,
               f_mare=mare_embedder.xyid.dataset_info.get("r_m_hat"),

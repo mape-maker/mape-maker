@@ -95,10 +95,13 @@ class MapeMaker:
 
 if __name__ == "__main__":
     import logging
+    from datetime import datetime
     from mape_maker.utilities.Scenarios import Scenarios
     logger = logging.getLogger('make-maker')
     logging.basicConfig(level=logging.INFO, format='%(message)s')
-    mare_embedder = MapeMaker(logger=logger, xyid_path="processed_file.csv", base_process="iid",
+    mare_embedder = MapeMaker(logger=logger, xyid_path="samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv",
+                              input_start_dt=str(datetime(year=2020, month=1, day=10, hour=0, minute=0, second=0)),
+                              input_end_dt=str(datetime(year=2020, month=5, day=20, hour=0, minute=0, second=0)),
                               xyid_load_pickle=True)
     curvature_parameters = [{
         "MIP": 0.05,
@@ -106,10 +109,12 @@ if __name__ == "__main__":
         "curvature_target": None,
         "solver": "gurobi",
     }, None]
-    results = mare_embedder.simulate(n=1, seed=1234)
+    results = mare_embedder.simulate(n=1, sid_file_path="samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv",
+                                     simulation_start_dt=str(datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)),
+                                     simulation_end_dt=str(datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)))
     from mape_maker.utilities.Scenarios import Scenarios
-    Scenarios(logger=logger, X=mare_embedder.xyid.x_t,
-              Y=mare_embedder.xyid.y_t,
+    Scenarios(logger=logger, X=mare_embedder.sid.x_t,
+              Y=mare_embedder.sid.y_t,
               results=results,
               target_mare=mare_embedder.sid.SimParams.r_tilde,
               f_mare=mare_embedder.xyid.dataset_info.get("r_m_hat"))

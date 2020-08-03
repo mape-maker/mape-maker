@@ -180,7 +180,7 @@ class SimParams:
 
         """
         s_x_sid = dict([(key, []) for key in dataset_sid])
-        _, _, l, s = s_x[dataset_sid[0]]
+        _, _, l, s = s_x[list(s_x.keys())[0]]
         p = len(dataset_sid) // 8
         nb_errors = 0
         for j, x in enumerate(dataset_sid):
