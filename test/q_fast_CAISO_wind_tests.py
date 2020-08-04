@@ -4,7 +4,6 @@ from datetime import datetime
 import mape_maker
 dir_sep = '/'
 from mape_maker import __main__ as mapemain
-from collections.abc import Iterable
 # whether to skip the last two tests
 quick_test = False
 # whether to run only one example
@@ -23,93 +22,73 @@ class TestUM(unittest.TestCase):
         mape_maker_path = p[l + 1:r]
         self.wind_data = mape_maker_path + dir_sep + "samples" + \
                            dir_sep + "wind_total_forecast_actual_070113_063015.csv"
+        self.parser = mapemain.make_parser()
 
-    def _basic_dict(self):
-        basedict = {"input_file": "",
-                    "second_file": None,
-                    "target_mape": None,
-                    "simulated_timeseries": "actuals",
-                    "base-process": "ARMA",
-                    "a": 4,
-                    "output_dir": None,
-                    "number_simulations": 1,
-                    "input_start_dt": None,
-                    "input_end_dt": None,
-                    "simulation_start_dt": None,
-                    "simulation_end_dt": None,
-                    "title": None,
-                    "seed": None,
-                    "load_pickle": False,
-                    "curvature": None,
-                    "time_limit": 3600,
-                    "curvature_target": None,
-                    "mip_gap": 0.3,
-                    "solver": "gurobi",
-                    "latex_output": False,
-                    "show": True,
-                    "verbosity": 2,
-                    "verbosity_output": None
-                    }
-        return basedict
+    # def test_CAISO_wind_actuals_ARMA_seed_1234(self):
+    #     parm_dict = {'-xf': self.wind_data, '-s': "1234",
+    #                  '-is': str(datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)),
+    #                  '-ie': str(datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)),
+    #                  '-ss': str(datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)),
+    #                  '-se': str(datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0))}
+    #     parm_list = []
+    #     for i, j in parm_dict.items():
+    #         if j is not None:
+    #             parm_list += [i, j]
+    #         else:
+    #             parm_list += [i]
+    #     # run the test
+    #     args = self.parser.parse_args(parm_list)
+    #     mapemain.main(args)
+    #
+    def test_CAISO_wind_forecasts_iid_seed_1134(self):
+        parm_dict = {"-xf": self.wind_data, "-s": "1134", "-bp": "iid", "-f": "forecasts",
+                     "-is": str(datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)),
+                     "-ie": str(datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)),
+                     "-ss": str(datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)),
+                     "-se": str(datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0))}
+        parm_list = []
+        for i, j in parm_dict.items():
+            if j is not None:
+                parm_list += [i, j]
+            else:
+                parm_list += [i]
+        # run the test
+        args = self.parser.parse_args(parm_list)
+        mapemain.main(args)
 
-    def test_one(self):
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "ARMA" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
-        parm_dict["seed"] = 1134
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
 
-    def test_two(self):
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 1 -bp "iid" -is "2014-1-1 00:00:00" -ie "2014-10-1 00:00:00" -sd "2014-1-2 00:00:00" -ed "2014-9-30 00:00:00" -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["base-process"] = "iid"
-        parm_dict["input_start_dt"] = datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0)
-        parm_dict["seed"] = 1134
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+    # def test_CAISO_wind_actuals_iid_seed_1134(self):
+    #     parm_dict = {"-xf": self.wind_data, "-bp": "iid", "-s": "1134",
+    #                  "-is": str(datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)),
+    #                  "-ie": str(datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)),
+    #                  "-ss": str(datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)),
+    #                  "-se": str(datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0))}
+    #     parm_list = []
+    #     for i, j in parm_dict.items():
+    #         if j is not None:
+    #             parm_list += [i, j]
+    #         else:
+    #             parm_list += [i]
+    #     # run the test
+    #     args = self.parser.parse_args(parm_list)
+    #     mapemain.main(args)
+    #
+    # def test_CAISO_wind_forecasts_ARMA_seed_1234(self):
+    #     parm_dict = {"-xf": self.wind_data, "-f": "forecasts", "-s": "1134",
+    #                  "-is": str(datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)),
+    #                  "-ie": str(datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)),
+    #                  "-ss": str(datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)),
+    #                  "-se": str(datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0))}
+    #     parm_list = []
+    #     for i, j in parm_dict.items():
+    #         if j is not None:
+    #             parm_list += [i, j]
+    #         else:
+    #             parm_list += [i]
+    #     # run the test
+    #     args = self.parser.parse_args(parm_list)
+    #     mapemain.main(args)
 
-    def test_three(self):
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 1 -bp "iid" -is "2014-1-1 00:00:00" -ie "2014-10-1 00:00:00" -sd "2014-1-2 00:00:00" -ed "2014-9-30 00:00:00" -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["base-process"] = "iid"
-        parm_dict["input_start_dt"] = datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=10, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=1, day=2, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=9, day=30, hour=0, minute=0, second=0)
-        parm_dict["seed"] = 1134
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
-
-    def test_four(self):
-        # here is the command :
-        # python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "forecasts" -n 1 -bp "ARMA" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
-        parm_dict = self._basic_dict()
-        parm_dict["input_file"] = self.wind_data
-        parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)
-        parm_dict["seed"] = 1134
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
 
 if __name__ == "__main__":
     unittest.main()
