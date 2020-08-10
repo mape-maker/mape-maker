@@ -49,7 +49,7 @@ class SimParams:
         self.r_tilde_max = 0
         self.s_x_tilde, nb_errors = None, None
         self.m_tilde = None
-
+        self.m_max = None
         self.adjust_distributions(xyid, sid)  #: populates all the instances above
 
     def adjust_distributions(self, xyid, sid):
@@ -67,12 +67,12 @@ class SimParams:
         self.logger.info(loading_bar + "\nDetermination of the weight function om_tilde")
         self.om_tilde, self.e_score = self.create_sid_weight_function(xyid.om, xyid.dataset_x, sid.dataset_x)
         self.logger.info(loading_bar + "\nDetermination of the maximum of mare attainable")
-        self.r_tilde_max = self.infer_r_tilde_max(xyid.m_max, sid.dataset_x)
+        self.m_max, self.r_tilde_max = self.infer_r_tilde_max(xyid.m_max, sid.dataset_x)
         self.check_feasibility()
         self.logger.info(loading_bar + "\nDetermination of the target function m_tilde")
-        self.get_maes_from_weight_target(xyid.m_max, sid.dataset_x)
+        self.get_maes_from_weight_target(sid.dataset_x)
         self.logger.info(loading_bar + "\nComputation of the new simulation parameters")
-        self.s_x_tilde, nb_errors = self.get_s_tilde_sid(sid.dataset_x, xyid.s_x, xyid.m, xyid.m_max)
+        self.s_x_tilde, nb_errors = self.get_s_tilde_sid(sid.dataset_x, xyid.s_x, xyid.m)
 
     def check_feasibility(self):
         if abs(self.e_score - 1) < 0.1:
@@ -135,7 +135,7 @@ class SimParams:
                 self.cfx[x] = dataset_x[i]
         return self.cfx
 
-    def get_maes_from_weight_target(self, m_max, dataset_sid):
+    def get_maes_from_weight_target(self, dataset_sid):
         """
         Infer the mae to get from each conditional distribution for the simulation
         """
@@ -144,14 +144,14 @@ class SimParams:
         nb_bound_exceptions = 0
         for x in dataset_sid:
             self.m_tilde[x] = self.r_tilde * x * self.om_tilde[x]
-            if self.m_tilde[x] > m_max[self.cfx[x]]:
+            if self.m_tilde[x] > self.m_max[self.cfx[x]]:
                 # self.bound_list.append(x)
                 nb_bound_exceptions += 1
                 if nb_bound_exceptions < 10:
                     self.logger.info("Anticipating bound exception...  \n" + " " * 5 + "- MAE targeted {},\n".format(
                         "%.2f" % self.m_tilde[x]) +
-                                " " * 5 + "- MAE max obtainable {}".format("%.2f" % m_max[x]))
-                self.m_tilde[x] = m_max[self.cfx[x]]
+                                " " * 5 + "- MAE max obtainable {}".format("%.2f" % self.m_max[x]))
+                self.m_tilde[x] = self.m_max[self.cfx[x]]
         if nb_bound_exceptions == 0:
             self.logger.info("There were no bound exceptions anticipated")
         else:
@@ -161,12 +161,16 @@ class SimParams:
 
     def infer_r_tilde_max(self, m_max, dataset_sid):
         max_r_tilde_list = []
+        index_parameters = np.array(list(m_max.keys()))
         for x in dataset_sid:
             if x != 0:
+                if x not in m_max:
+                    i = np.argmin(abs(index_parameters - x))
+                    m_max[x] = m_max[index_parameters[i]]
                 max_r_tilde_list.append(m_max[self.cfx[x]] / (x * self.om_tilde[x]))
-        return min(max_r_tilde_list)
+        return m_max, min(max_r_tilde_list)
 
-    def get_s_tilde_sid(self, dataset_sid, s_x, m_hat, m_max):
+    def get_s_tilde_sid(self, dataset_sid, s_x, m_hat):
         """
         Get the correct parameters for the simulation functions
 
@@ -174,7 +178,6 @@ class SimParams:
             dataset_sid:
             s_x:
             m_hat:
-            m_max:
 
         Returns:
 
@@ -202,16 +205,16 @@ class SimParams:
                                 "for m_tilde = {} < m_max = {}: {}% done".format("%.1f" % loc_nx, "%.1f" % scale_nx,
                                                                                  "%.1f" % m_hat[x],
                                                                                  "%.1f" % nl, "%.1f" % ns,
-                                                                                 "%.1f" % self.m_tilde[x], "%.1f" % m_max[x],
+                                                                                 "%.1f" % self.m_tilde[x], "%.1f" % self.m_max[x],
                                                                                  (round(100 * j / len(dataset_sid[:-1]),
                                                                                         3))))
             except Exception as e:
                 if x != 0 and x != self.cap:  # bounds are equal for these cases
                     nb_errors += 1
-                    if self.m_tilde[x] > m_max[self.cfx[x]]:
+                    if self.m_tilde[x] > self.m_max[self.cfx[x]]:
                         self.logger.error(
                             "     * The MAE target {} is greater than the maximum target {}".format(round(self.m_tilde[x]),
-                                                                                                    round(m_max[self.cfx[x]])))
+                                                                                                    round(self.m_max[self.cfx[x]])))
                     self.logger.error(" * For x = {}, infeasible to meet the target exactly".format(x))
                     self.logger.error(" {}".format(e))
                 nl, ns = loc_nx, scale_nx

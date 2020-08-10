@@ -67,11 +67,10 @@ class Dataset:
         if csv_filepath is not None:  #: then this is a sid
             self.name = csv_filepath.split("/")[-1].split(".")[0] + "_to{}".format(self.y_name)
             self.x_t, self.y_t, self.e_t, self.ares_t, self.full_df = self.cut_timeseries(csv_filepath, start_date, end_date)
-            test_holes(self.logger, self.full_df.index)
         else:
             self.name = dataset.name + "_SID"
             self.x_t, self.y_t, self.e_t, self.ares_t = self.get_timeseries_from_dataset(dataset, start_date, end_date)
-            test_holes(self.logger, self.x_t.index)
+        test_holes(self.logger, self.x_t.index)
         self.dataset_x = get_dataset_x(self.x_t)
         self.n_samples = len(self.x_t)
         self.n_different_samples = len(self.dataset_x)
@@ -120,21 +119,23 @@ class Dataset:
             df[self.y_name] = pd.to_numeric(df[self.y_name])
             df = replace_negative(self.logger, df, self.x_name)
             df["errors"] = df[self.y_name] - df[self.x_name]
+            df["ares_t"] = abs(df["errors"]) / df[self.x_name]
+            full_df = df
             df = remove_na(self.logger, self.y_name, df)
             x_t, y_t, e_t, ares_t = df[self.x_name].copy(), df[self.y_name].copy(), \
-                                    df["errors"].copy(), (abs(df["errors"]) / df[self.x_name]).copy()
+                                    df["errors"].copy(), (abs(df["errors"]) / df["ares_t"]).copy()
         elif number_of_columns == 1:
             self.logger.info("Operation mode : One Column for {} found".format(self.x_name))
             df = df.rename(columns={list(df)[0]: self.x_name})
             df[self.x_name] = pd.to_numeric(df[self.x_name])
             df = replace_negative(self.logger, df, self.x_name)
+            full_df = df
             x_t, y_t, e_t, ares_t = df[self.x_name].copy(), None, None, None
         else:
             raise AttributeError("There are more than two columns of data in the dataset")
 
         return slice_timeseries(x_t, start_date, end_date), slice_timeseries(y_t, start_date, end_date), \
-                    slice_timeseries(e_t, start_date, end_date), slice_timeseries(ares_t, start_date, end_date), \
-                    slice_timeseries(df, start_date, end_date)
+               slice_timeseries(e_t, start_date, end_date), slice_timeseries(ares_t, start_date, end_date), full_df
 
     def get_timeseries_from_dataset(self, dataset: 'Dataset', start_date: datetime.datetime, end_date: datetime.datetime) \
             -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -152,10 +153,13 @@ class Dataset:
             ares_t (pd.DataFrame): absolute error timeseries
 
         """
-        x_t, y_t, e_t, ares_t = slice_timeseries(dataset.x_t, start_date, end_date), \
-                                    slice_timeseries(dataset.y_t, start_date, end_date),\
-                                    slice_timeseries(dataset.e_t, start_date, end_date), \
-                                    slice_timeseries(dataset.ares_t, start_date, end_date)
+        x_t, y_t = slice_timeseries(dataset.full_df[dataset.x_name], start_date, end_date), \
+                                    slice_timeseries(dataset.full_df[dataset.y_name], start_date, end_date)
+        if sum(y_t.isna()) == len(y_t):
+            y_t, e_t, ares_t = None, None, None
+        else:
+            e_t = y_t - x_t
+            ares_t = abs(e_t) / x_t
         return x_t, y_t, e_t, ares_t
 
     def load_pickle(self) -> bool:

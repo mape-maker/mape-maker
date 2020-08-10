@@ -62,15 +62,15 @@ class Scenarios:
                                  format(round(100*float(target_mare), 2), s_mape))
             else:
                 self.logger.error("fail to find overall mape")
-            r_tilde = calc_mare(X, Y)
+            r_tilde = calc_mare(X, Y) if Y is not None else None
             if r_tilde is not None:
                 self.logger.info("observed mape of the input data is {}%".format(round(100*float(r_tilde), 2)))
             else:
-                self.logger.error("fail to find observed mape of the input data")
+                self.logger.info("no observed mape of the input data")
             if f_mare is not None:
                 self.logger.info("fitted mape of the inut data is {}%".format(round(100*float(f_mare), 2)))
             else:
-                self.logger.info("fail to find fitted mape of the input data")
+                self.logger.info("no fitted mape of the input data")
         if output_dir is not None:
             self.save_output()
 
@@ -160,8 +160,8 @@ class Scenario:
         """
         self.scenario = result
         self.t_tilde = target_mare
-        self.r_tilde = calc_mare(X, Y)
-        self.s_tilde = calc_mare(X, result)
+        self.r_tilde = calc_mare(X, Y) if Y is not None else None
+        self.s_tilde = calc_mare(X, result) if result is not None else None
         self.logger = logger
 
 

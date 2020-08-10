@@ -39,6 +39,7 @@ class MapeMaker:
 
         """
         self.logger = logger
+        self.ending_feature = ending_feature
         self.xyid: XYID = XYID(a, base_process=base_process, csv_filepath=xyid_path, start_date=input_start_dt,
                                end_date=input_end_dt,  ending_feature=ending_feature, xyid_load_pickle=xyid_load_pickle,
                                logger=logger)  #: step 1: load the XYID, estimate distrib and ARMA
@@ -69,7 +70,7 @@ class MapeMaker:
         #TODO create multiple SID for corresponding start and end date in list of date_ranges
         if list_of_date_ranges is None:
             self.sid = SID(logger=self.logger, csv_filepath=sid_file_path, dataset=self.xyid, start_date=simulation_start_dt,
-                           end_date=simulation_end_dt)  #: initiate the SID from a new csv or from xyid
+                           end_date=simulation_end_dt, ending_feature=self.ending_feature)  #: initiate the SID from a new csv or from xyid
             self.create_save_simparams(**kwargs)  #: create a SimParams object and adjust distributions
             results = self.sid.simulate_multiple_scenarios(output_dir, **kwargs)  #: simulate and store the scenarios
 
@@ -99,9 +100,9 @@ if __name__ == "__main__":
     from mape_maker.utilities.Scenarios import Scenarios
     logger = logging.getLogger('make-maker')
     logging.basicConfig(level=logging.INFO, format='%(message)s')
-    mare_embedder = MapeMaker(logger=logger, xyid_path="samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv",
-                              input_start_dt=str(datetime(year=2020, month=1, day=10, hour=0, minute=0, second=0)),
-                              input_end_dt=str(datetime(year=2020, month=5, day=20, hour=0, minute=0, second=0)),
+    mare_embedder = MapeMaker(logger=logger, ending_feature="forecasts", xyid_path="samples/rts_gmlc/wind_operations_example.csv",
+                              input_start_dt=str(datetime(year=2020, month=2, day=1, hour=0, minute=0, second=0)),
+                              input_end_dt=str(datetime(year=2020, month=8, day=31, hour=23, minute=0, second=0)),
                               xyid_load_pickle=True)
     curvature_parameters = [{
         "MIP": 0.05,
@@ -109,9 +110,9 @@ if __name__ == "__main__":
         "curvature_target": None,
         "solver": "gurobi",
     }, None]
-    results = mare_embedder.simulate(n=1, sid_file_path="samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv",
-                                     simulation_start_dt=str(datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0)),
-                                     simulation_end_dt=str(datetime(year=2020, month=6, day=30, hour=23, minute=0, second=0)))
+    results = mare_embedder.simulate(n=1,
+                                     simulation_start_dt=str(datetime(year=2020, month=11, day=1, hour=0, minute=0, second=0)),
+                                     simulation_end_dt=str(datetime(year=2020, month=11, day=7, hour=0, minute=0, second=0)))
     from mape_maker.utilities.Scenarios import Scenarios
     Scenarios(logger=logger, X=mare_embedder.sid.x_t,
               Y=mare_embedder.sid.y_t,
