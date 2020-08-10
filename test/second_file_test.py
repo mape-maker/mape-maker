@@ -25,15 +25,6 @@ class TestUM(unittest.TestCase):
                      "-ie": str(datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)),
                      "-ss": str(datetime(year=2015, month=6, day=29, hour=0, minute=0, second=0)),
                      "-se": str(datetime(year=2015, month=6, day=30, hour=0, minute=0, second=0))}
-        parm_list = []
-        for i, j in parm_dict.items():
-            if j is not None:
-                parm_list += [i, j]
-            else:
-                parm_list += [i]
-        # run the test
-        args = self.parser.parse_args(parm_list)
-        mapemain.main(args)
 
     def test_bpa_2012_to_2013_actuals_iid_seed_1234(self):
         parm_dict = {"-xf": file_path + dir_sep + "2012-2013_BPA_forecasts_actuals.csv",

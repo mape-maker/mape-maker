@@ -38,7 +38,7 @@ class TestUM(unittest.TestCase):
         # run the test
         args = self.parser.parse_args(parm_list)
         mapemain.main(args)
-    #
+
     def test_CAISO_wind_forecasts_iid_seed_1134(self):
         parm_dict = {"-xf": self.wind_data, "-s": "1134", "-bp": "iid", "-f": "forecasts",
                      "-is": str(datetime(year=2014, month=1, day=1, hour=0, minute=0, second=0)),
