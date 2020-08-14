@@ -13,11 +13,11 @@ an output dir called "wind_actuals_iid" in your current working directory.
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -sd "2014-7-2 00:00:00" -ed "2014-7-31 00:00:00" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 3 -bp "iid" -o "wind_actuals_iid" -is "2014-7-1 00:00:00" -ie "2014-8-1 00:00:00" -ss "2014-7-2 00:00:00" -se "2014-7-31 00:00:00" -s 1234
 
-* **"mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
+* **-xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
-* **-st "actuals"**:
+* **-f "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
 * **-n 3**:
@@ -28,9 +28,9 @@ an output dir called "wind_actuals_iid" in your current working directory.
  The start date for the computation of the distributions is "2014-7-1 00:00:00"
 * **-ie "2014-8-1 00:00:00"**:
  The end date for the computation of the distributions is "2014-8-1 00:00:00"
-* **-sd "2014-7-2 00:00:00"**:
+* **-ss "2014-7-2 00:00:00"**:
  The start date of the simulation is "2014-7-2 00:00:00"
-* **-ed "2014-7-31 00:00:00"**:
+* **-se "2014-7-31 00:00:00"**:
  The end date of the simulation is "2014-7-31 00:00:00"
 * **-s 1234**:
  Set the seed as "1234", so it won't randomly choose a number as the seed.
@@ -54,11 +54,11 @@ plot of simulations, and create an output dir called "wind_actuals_ARMA".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 3 -bp "ARMA" -o "wind_actuals_ARMA" -s 1234
 
-* **"mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
+* **-xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
-* **-st "actuals"**:
+* **-f "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
 * **-n 3**:
