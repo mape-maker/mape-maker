@@ -60,7 +60,6 @@ def make_parser():
                         help='the curvature mip gap',
                         type=float,
                         default=0.3)
-
     parser.add_argument('-n', '--simulations_num',
                         help='number of simulations',
                         type=int,
