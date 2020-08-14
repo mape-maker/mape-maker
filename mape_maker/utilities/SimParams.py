@@ -194,8 +194,8 @@ class SimParams:
                 oh = max(abs(loc_nx), abs(scale_nx), self.m_tilde[x])
                 # NOTE: the upper bound for s should be cap - x - l
                 nl, ns = least_squares(find_intersections,
-                                       x0=(min(loc_nx + 5, -x / 2), scale_nx),
-                                       bounds=([-x, 0], [0, self.cap]),
+                                       x0=(loc_nx, scale_nx),
+                                       bounds=([-x, 0], [loc_nx, self.cap]),
                                        args=(self.m_tilde[x], a, b, loc_nx, scale_nx, oh, False),
                                        ftol=1e-3, method="dogbox").x
                 if ns == 0:
