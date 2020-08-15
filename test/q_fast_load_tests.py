@@ -34,107 +34,76 @@ class TestUM(unittest.TestCase):
         self.load_data = mape_maker_path + dir_sep + "samples" + \
                          dir_sep + "based_rts_gmlc" + dir_sep + "Load_rts_gmlc_based" \
                          + dir_sep + "processed_file.csv"
+        self.parser = mapemain.make_parser()
 
-    def _base_dict(self):
-        """
-        initialize the parameters
-        :return: basedict
-        """
-        basedict = {"input_file": "",
-                    "second_file": None,
-                    "target_mape": None,
-                    "simulated_timeseries": "actuals",
-                    "base-process": "ARMA",
-                    "a": 4,
-                    "output_dir": None,
-                    "number_simulations": 1,
-                    "input_start_dt": None,
-                    "input_end_dt": None,
-                    "simulation_start_dt": None,
-                    "simulation_end_dt": None,
-                    "title": None,
-                    "seed": None,
-                    "load_pickle": False,
-                    "curvature": None,
-                    "time_limit": 3600,
-                    "curvature_target": None,
-                    "mip_gap": 0.3,
-                    "solver": "gurobi",
-                    "latex_output": False,
-                    "show": True,
-                    "verbosity": 2,
-                    "verbosity_output": None
-                    }
-        return basedict
-
-    def test_one(self):
+    def test_load_actuals_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st
-        # "actuals" -n 1 -bp "ARMA" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-1 0:0:0" -ed "2020-2-30
-        # 23:0:0" -s 1234
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.load_data
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 1
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=1, day=1, hour=1, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=3, day=30, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=2, day=10, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=2, day=28, hour=23, minute=0, second=0)
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        parm_dict = {"-xf": self.load_data,
+                     "-is": str(datetime(year=2020, month=1, day=1, hour=1, minute=0, second=0)),
+                     "-ie": str(datetime(year=2020, month=3, day=30, hour=0, minute=0, second=0)),
+                     "-ss": str(datetime(year=2020, month=2, day=10, hour=0, minute=0, second=0)),
+                     "-se": str(datetime(year=2020, month=2, day=28, hour=23, minute=0, second=0))}
+        parm_list = []
+        for i, j in parm_dict.items():
+            if j is not None:
+                parm_list += [i, j]
+            else:
+                parm_list += [i]
+        # run the test
+        args = self.parser.parse_args(parm_list)
+        mapemain.main(args)
 
-    def test_two(self):
+    def test_load_forecasts_ARMA(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rbased_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st
-        # "forecasts" -n 1 -bp "ARMA" -s 1234 -is "2020-2-1 1:0:0" -ie "2020-4-30 0:0:0" -sd "2020-3-1 0:0:0" -ed
-        # "2020-3-30 23:0:0"
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.load_data
-        parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["number_simulations"] = 1
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["base-process"] = "ARMA"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=2, day=1, hour=1, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=4, day=30, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=3, day=10, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=3, day=28, hour=23, minute=0, second=0)
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        parm_dict = {"-xf": self.load_data, "-f": "forecasts",
+                     "-is": str(datetime(year=2020, month=2, day=1, hour=1, minute=0, second=0)),
+                     "-ie": str(datetime(year=2020, month=4, day=30, hour=0, minute=0, second=0)),
+                     "-ss": str(datetime(year=2020, month=3, day=10, hour=0, minute=0, second=0)),
+                     "-se": str(datetime(year=2020, month=3, day=28, hour=23, minute=0, second=0))}
+        parm_list = []
+        for i, j in parm_dict.items():
+            if j is not None:
+                parm_list += [i, j]
+            else:
+                parm_list += [i]
+        # run the test
+        args = self.parser.parse_args(parm_list)
+        mapemain.main(args)
 
-    def test_three(self):
+    def test_load_forecasts_iid(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st
-        # "forecasts" -n 1 -bp "iid" -is "2020-1-1 1:0:0" -ie "2020-3-30 0:0:0" -sd "2020-2-1 0:0:0" -ed "2020-2-30
-        # 23:0:0" -s 1234
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.load_data
-        parm_dict["simulated_timeseries"] = "forecasts"
-        parm_dict["number_simulations"] = 1
-        parm_dict["base-process"] = "iid"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=1, day=1, hour=1, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=3, day=30, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=2, day=10, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=2, day=28, hour=23, minute=0, second=0)
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        parm_dict = {"-xf": self.load_data, "-f": "forecasts", "-bp": "iid",
+                     "-is": str(datetime(year=2020, month=1, day=1, hour=1, minute=0, second=0)),
+                     "-ie": str(datetime(year=2020, month=3, day=30, hour=0, minute=0, second=0)),
+                     "-ss": str(datetime(year=2020, month=2, day=10, hour=0, minute=0, second=0)),
+                     "-se": str(datetime(year=2020, month=2, day=28, hour=23, minute=0, second=0))}
+        parm_list = []
+        for i, j in parm_dict.items():
+            if j is not None:
+                parm_list += [i, j]
+            else:
+                parm_list += [i]
+        # run the test
+        args = self.parser.parse_args(parm_list)
+        mapemain.main(args)
 
-    def test_four(self):
+    def test_load_actuals_iid(self):
         print("Running ", str(self.id()).split('.')[2])
-        # python -m mape_maker "mape_maker/samples/rbased_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st
-        # "actuals" -n 1 -bp "iid" -s 1234 -is "2020-2-1 1:0:0" -ie "2020-4-30 0:0:0" -sd "2020-3-1 0:0:0" -ed
-        # "2020-3-30 23:0:0"
-        parm_dict = self._base_dict()
-        parm_dict["input_file"] = self.load_data
-        parm_dict["simulated_timeseries"] = "actuals"
-        parm_dict["number_simulations"] = 1
-        parm_dict["base-process"] = "iid"
-        parm_dict["input_start_dt"] = datetime(year=2020, month=2, day=1, hour=1, minute=0, second=0)
-        parm_dict["input_end_dt"] = datetime(year=2020, month=4, day=30, hour=0, minute=0, second=0)
-        parm_dict["simulation_start_dt"] = datetime(year=2020, month=3, day=10, hour=0, minute=0, second=0)
-        parm_dict["simulation_end_dt"] = datetime(year=2020, month=3, day=28, hour=23, minute=0, second=0)
-        parm_list = list(parm_dict.values())
-        mapemain.main_func(*parm_list)
+        parm_dict = {"-xf": self.load_data, "-bp": "iid",
+                     "-is": str(datetime(year=2020, month=2, day=1, hour=1, minute=0, second=0)),
+                     "-ie": str(datetime(year=2020, month=4, day=30, hour=0, minute=0, second=0)),
+                     "-ss": str(datetime(year=2020, month=3, day=10, hour=0, minute=0, second=0)),
+                     "-se": str(datetime(year=2020, month=3, day=28, hour=23, minute=0, second=0))}
+        parm_list = []
+        for i, j in parm_dict.items():
+            if j is not None:
+                parm_list += [i, j]
+            else:
+                parm_list += [i]
+        # run the test
+        args = self.parser.parse_args(parm_list)
+        mapemain.main(args)
+
 
 if __name__ == "__main__":
     unittest.main()

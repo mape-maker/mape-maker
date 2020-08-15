@@ -47,8 +47,10 @@ def model_first_second_dif(name, d2, x, delta, cap=4000):
     print("Building model... ")
     for df in [x, delta]:
         if len(df[df.isna()]) > 0:
-            print("na in {}".format(df.columns))
+            print("na in {}".format(df.name))
             print(df[df.isna()])
+
+
     w1, w2 = 1, 1
     model = pyo.ConcreteModel(name=name)
     model.index = range(len(x))
