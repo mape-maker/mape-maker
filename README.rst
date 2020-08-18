@@ -31,46 +31,6 @@ In this regard, the two technical specification to make for each simulation are 
 * Curvature : boolean (This is usually not needed, so the default is FALSE)
 
 
-Skeleton of the project
-########################
-
-::
-
-    .
-    ├── README.rst
-    ├── mape_maker
-    │   ├── __init__.py
-    │   ├── __main__.py
-    │   ├── dataset_easy_fix
-    │   │   ├── __init__.py
-    │   │   └── repair_nan_zeros.py
-    │   ├── latex_outputer
-    │   │   ├── __init__.py
-    │   │   └── to_latex.py
-    │   ├── mape_maker.py
-    │   ├── results_plots.py
-    │   ├── samples
-    │   │   ├── 2012-2013_BPA_forecasts_actuals.csv
-    │   │   └── wind_total_forecast_actual_070113_063015.csv
-    │   └── utilities
-    │       ├── ARMA_fit.py
-    │       ├── curvature_correction.py
-    │       ├── df_utilities.py
-    │       ├── fitting_distribution.py
-    │       ├── simulation.py
-    │       ├── stored_ARTA_coef
-    │       │   └── ar_coeffs.json
-    │       └── stored_vectors
-    │           └── wind_total_forecast_actual_070113_063015_toforecasts_parameters.pkl
-    ├── output
-    │   └── test.csv
-    ├── requirements.txt
-    ├── setup.py
-    └──  slides
-        └── slides_v1.pdf
-
-
-
 Setup
 ########################
 
