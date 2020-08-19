@@ -19,6 +19,8 @@ actuals and forecasts, is possible.
    sections/options.rst
    sections/wind_example.rst
    sections/demand_example.rst
+   sections/operational_example.rst
+   sections/second_file_example.rst
    sections/rts_example.rst
    sections/unittest_example.rst
    sections/infeasible_example.rst

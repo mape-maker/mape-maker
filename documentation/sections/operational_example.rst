@@ -16,9 +16,9 @@ Finally, it will return a plot of simulations, and create an output dir called "
 
 ::
 
-    python -m mape_maker "mape_maker/samples/CAISO_wind_operational_data.csv" -s 1234 -n 5 -bp "ARMA" -o "Wind_Operation1" -is "2013-7-1 00:00:00" -ie "2015-6-30 23:00:00" -sd "2015-6-29 23:00:00" -ed "2015-6-30 23:00:00"
+    python -m mape_maker -xf "mape_maker/samples/CAISO_wind_operational_data.csv" -s 1234 -n 5 -bp "ARMA" -o "Wind_Operation1" -is "2013-7-1 00:00:00" -ie "2015-6-30 23:00:00" -ss "2015-6-29 23:00:00" -se "2015-6-30 23:00:00"
 
-* **"mape_maker/samples/CAISO_wind_operational_data.csv"**:
+* **-xf "mape_maker/samples/CAISO_wind_operational_data.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-n 5**:
  The number of simulations that we want to create is "3". This will create three simulation columns in the output file.
@@ -28,10 +28,10 @@ Finally, it will return a plot of simulations, and create an output dir called "
  The start date for the computation of the distributions is "2013-7-1 00:00:00"
 * **-ie "2015-6-30 23:00:00"**:
  The end date for the computation of the distributions is "2015-6-30 23:00:00"
-* **-sd "2015-6-29 23:00:00"**:
+* **-ss "2015-6-29 23:00:00"**:
  The start date of the simulation is "2015-6-29 23:00:00"
-* **-ed "2015-6-30 23:00:00"**:
- The end date of the simulation is ""2014-2-16 23:00:00"
+* **-se "2015-6-30 23:00:00"**:
+ The end date of the simulation is ""2015-6-30 23:00:00"
 * **-o "Wind_Operation1"**:
  Create an output directory called "Wind_Operation1", in which will store the simulation output file.
 * **-s 1234**:

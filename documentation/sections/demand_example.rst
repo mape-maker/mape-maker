@@ -7,12 +7,12 @@ plot of simulations, and create an output dir called "load_actuals_ARMA".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -st "actuals" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv" -f "actuals" -n 3 -bp "ARMA" -o "load_actuals_ARMA" -s 1234
 
 
-* **"mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv"**:
+* **-xf "mape_maker/samples/based_rts_gmlc/Load_rts_gmlc_based/processed_file.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
-* **-st "actuals"**:
+* **-f "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
 * **-n 3**:

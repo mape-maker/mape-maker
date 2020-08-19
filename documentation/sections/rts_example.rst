@@ -75,11 +75,11 @@ and create an output dir called "wind_forecasts_actuals".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_file.csv" -st "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -sd "2020-2-2 00:00:00" -ed "2020-3-2 00:00:00"
+    python -m mape_maker -xf "mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_file.csv" -f "actuals" -s 1234 -n 5 -bp "ARMA" -o "wind_forecasts_actuals" -is "2020-2-1 00:00:00" -ie "2020-5-1 00:00:00" -ss "2020-2-2 00:00:00" -se "2020-3-2 00:00:00"
 
-* **"mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_filecsv"**:
- The csv file containing forecasts and actuals for specified datetimes.
-* **-st "actuals"**:
+* **-xf "mape_maker/samples/based_rts_gmlc/Wind_rts_gmlc_based/processed_filecsv"**:
+ The csv file containing forecasts and actuals for specified datetime.
+* **-f "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
 * **-n 5**:
@@ -95,9 +95,9 @@ and create an output dir called "wind_forecasts_actuals".
  The start date for the computation of the distributions is "2020-2-1 00:00:00"
 * **-ie "2020-5-1 00:00:00"**:
  The end date for the computation of the distributions is "2020-5-1 00:00:00"
-* **-sd "2020-2-2 00:00:00"**:
+* **-ss "2020-2-2 00:00:00"**:
  The start date of the simulation is "2020-2-2 00:00:00"
-* **-ed "2020-3-2 00:00:00"**:
+* **-se "2020-3-2 00:00:00"**:
  The end date of the simulation is "2020-3-2 00:00:00"
 
 After running the command line, you should see a similar plot like this:
@@ -115,11 +115,11 @@ plot of simulations, and create an output dir called "Bus_220_load".
 
 ::
 
-    python -m mape_maker "mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv" -st "actuals" -n 5 -bp "ARMA" -is "2020-1-10 1:0:0" -ie "2020-7-20 0:0:0" -sd "2020-6-1 0:0:0" -ed "2020-6-30 23:0:0" -o "Bus_220_load" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv" -f "actuals" -n 5 -bp "ARMA" -is "2020-1-10 1:0:0" -ie "2020-7-20 0:0:0" -ss "2020-6-1 0:0:0" -se "2020-6-30 23:0:0" -o "Bus_220_load" -s 1234
 
-* **"mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv"**:
+* **-xf "mape_maker/samples/rts_gmlc/Bus_220_Load_zone2_forecasts_actuals.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
-* **-st "actuals"**:
+* **-f "actuals"**:
  Set up the the target of the simulation as "actuals". So the MapeMaker will simulate the "actuals" data
  according to the "forecasts" data in the input file.
 * **-n 5**:
@@ -130,10 +130,10 @@ plot of simulations, and create an output dir called "Bus_220_load".
  The start date of the input data for processing is "2020-1-10 1:0:0"
 * **-ie "2020-7-20 0:0:0"**:
  The end date of the input data for processing is "2020-7-20 0:0:0"
-* **-sd "2020-6-1 0:0:0"**:
+* **-ss "2020-6-1 0:0:0"**:
  The start date of the scenario simulation is "2020-6-1 0:0:0"
 * **-ed "2020-6-30 23:0:0"**:
- The end date of the scenario simulation is "2020-6-1 0:0:0"
+ The end date of the scenario simulation is "2020-6-30 23:0:0"
 * **-o "Bus_220_load"**:
  Create an output directory called "Bus_220_load", in which will store the simulation output file.
 * **-s 1234**:

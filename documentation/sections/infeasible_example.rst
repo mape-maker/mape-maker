@@ -12,22 +12,21 @@ Example 1
 
 ::
 
-    python mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -sd "2014-6-17 01:00:00" -ed "2014-6-30 00:00:00" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 5 -bp "ARMA" -ss "2014-6-17 01:00:00" -se "2014-6-30 00:00:00" -s 1234
 
 This command line will fail with an error, showing the following output:
 
 ::
 
     RuntimeError:  < 1, there is a prevalence of high power input in the SID
-    Maximum of mare attainable with this score is 0.31 < target 0.45
-    WARNING requested r_tilde is too high
-         => Either change your requested mape to be less than 31.094306227274455
+    The requested r_tilde is too high
+         => Either change your requested mape to be less than 21.473508488457284
          => Or change your SID so the e_score increases
 
 
 
 The plausibility score should be close to 1, meaning that the error distribution for the set is close to the empirical distribution of errors.
-In this example, we can see that the plausibility score is 0.508, which is less than 1. And the maximum mare is less than the target mare.
+In this example, we can see that the maximum mare is less than the target mare.
 In order to make the program run successfully, the user can either change the target mape or adjust the input dataset.
 
 
@@ -36,12 +35,12 @@ Example 2
 
 ::
 
-    python -m mape_maker "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -st "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -sd "2014-6-15 01:00:00" -ed "2014-6-29 00:00:00" -s 1234
+    python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 5 -bp "ARMA" -o "wind_actuals_ARMA_1" -is "2014-6-1 00:00:00" -ie "2014-6-30 00:00:00" -ss "2014-6-15 01:00:00" -se "2014-6-29 00:00:00" -s 1234
 
 This command line will fail with an error, showing the following output during the running process:
 ******* WARNING!! **********
-beta rvs failed at i=691,x=3420.0; a=-0.05177452493780477, b=-0.3897512549813409, l_=-292.78035, s_=359.6603500000001
-Using last good beta parameters.
+ beta rvs failed at i=684,x=3314.9; a=-0.05177452493780477, b=-0.3897512549813409, l_=-292.78035, s_=359.6603500000001
+ Using last good beta parameters.
 
 This error occurs when the program is trying to estimate the maximum target mean absolute error function(called as m_max).
 It fails because the shape parameters(alpha and beta) are negative values.
