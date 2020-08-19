@@ -60,10 +60,6 @@ The options of the package are :
      - \\-\\-mip_gap
      - FLOAT
      - mip gap for curvature optimization
-   * - -bp
-     - \\-\\-base_process
-     - TEXT
-     - base process - 'iid' or 'ARMA'
    * - -n
      - \\-\\-number_simulations
      - INTEGER
