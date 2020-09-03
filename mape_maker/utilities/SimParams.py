@@ -7,6 +7,7 @@ from scipy.optimize import least_squares
 import numpy as np
 loading_bar = "-"*70
 
+
 class SimParams:
     def __init__(self, xyid: XYID, sid: SID, logger: Logger, r_tilde: float = None, base_process: str = None,
                  n: int = 1, full_dataset: bool = False, seed: int = None, list_of_date_ranges: List = None,
@@ -233,9 +234,10 @@ def integrate_a_mean_2d(l_, x_, a=0, b=0, verbose=False):
 def find_intersections(x, target=0, a=0, b=0, l_hat=0, s_hat=0, oh=0, verbose=False):
     # x is a list, x[0] is l and x[1] is s
     # this is not exactly what is in the paper
-    sqarg = integrate_a_mean_2d(x[0], x[1], a=a, b=b, verbose=verbose) - target \
-            + abs((x[0] - l_hat) / oh) + abs((x[1] - s_hat) / oh)
+    sqarg = (integrate_a_mean_2d(x[0], x[1], a=a, b=b, verbose=verbose) - target) ** 2 \
+            + abs((x[0] - l_hat) / oh) ** 2 + abs((x[1] - s_hat) / oh) ** 2
     return [sqarg, 0]
+
 
 def check_curvature_parameters(curvature_parameters, xyid):
     if curvature_parameters is not None:
