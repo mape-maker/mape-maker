@@ -158,7 +158,8 @@ already exists, it will issue an error message. The directory will have a csv fi
 
 The final example is for optimization under uncertainty methodologists
 who just want some scenarios. This example will put two hundred scenarios
-in the directory wind_actuals_ARMA.
+in the directory wind_actuals_ARMA. If that directory
+already exists, it will issue an error message. The directory will have a csv file with output of scenarios based on CAISO data.
 
 ::
 
