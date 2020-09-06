@@ -156,6 +156,15 @@ already exists, it will issue an error message. The directory will have a csv fi
 
     python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 4 -bp "ARMA" -is "2014-6-1 0:0:0" -ie "2014-6-30 23:0:0" --target_mape 30 --output_dir "output"
 
+The final example is for optimization under uncertainty methodologists
+who just want some scenarios. This example will put two hundred scenarios
+in the directory wind_actuals_ARMA.
+
+::
+
+     python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv" -f "actuals" -n 200 -bp "ARMA" -o "wind_actuals_ARMA" -s 1234 -ss "2014-7-12 00:00:00" -se "2014-7-13 00:00:00"
+
+    
 
 Percent Errors and MAPEs
 ########################
