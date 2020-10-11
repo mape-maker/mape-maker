@@ -11,7 +11,7 @@ This package can be used to create simulations of wind power forecasts from actu
 from actuals to forecasts. It has been implemented so that a generalization to any type of dataframe providing
 actuals and forecasts, is possible.
 
-Documentation is available at `readthedocs <https://mape-maker.readthedocs.io/en/latest/>`_ and there is a paper on the `Engergy Systems <http://link.springer.com/article/10.1007/s12667-020-00408-6>`.
+Documentation is available at `readthedocs <https://mape-maker.readthedocs.io/en/latest/>`_ and there is a paper published by `Engergy Systems <http://link.springer.com/article/10.1007/s12667-020-00408-6>`.
 
 The main inputs of the package are :
 
@@ -197,7 +197,7 @@ References
 
 [1] "Mape_Maker: A Scenario Creator"
 Guillaume Goujard, Jean-Paul Watson, and David L. Woodruff,
- arXiv:1909.01919v1, 2019.
+`Engergy Systems <http://link.springer.com/article/10.1007/s12667-020-00408-6>`
 
 
 [2] "Fitting Time-Series Input Processes for Simulation", Bahar Biller, Barry L. Nelson, OPERATIONS RESEARCH
