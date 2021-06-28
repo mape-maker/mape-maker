@@ -47,8 +47,8 @@ class Dataset:
 
         """
         self.logger = logger
+        self.cap = None
         self.scale_by_capacity = scale_by_capacity
-
         self.y_name = ending_feature
         if ending_feature == "actuals":
             self.y_name = ending_feature
@@ -224,7 +224,7 @@ class Dataset:
 
         """
         cap = max(self.x_t)
-
+        self.cap = cap
         if self.y_t is not None:
             y = self.y_t.diff(1).diff(1).dropna()
             d = np.mean(abs(y))
@@ -255,13 +255,13 @@ class Dataset:
     def compute_estimation_statistics(self) -> Dict[str, float]:
         if self.m_max is not None and self.m is not None:
             self.dataset_info["r_m_hat"] = get_mare_from_m_hat(
-                self.m, self.scale_by_capacity)
+                self.m, self.scale_by_capacity, self.cap)
             self.dataset_info["r_m_max"] = get_mare_from_m_hat(
-                self.m_max, self.scale_by_capacity)
+                self.m_max, self.scale_by_capacity, self.cap)
         return self.dataset_info
 
 
-def get_mare_from_m_hat(m, scale_by_capacity):
+def get_mare_from_m_hat(m, scale_by_capacity, cap):
     """
     Get the theorical mare from an error simulated with the estimated distributions
     :param m:
