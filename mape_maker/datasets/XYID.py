@@ -68,7 +68,7 @@ class XYID(Dataset):
         self.get_maes_from_parameters()
         self.compute_estimation_statistics()
         self.logger.info(loading_bar + "\nWeight function is being computed\n")
-        self.create_weight_function()
+        self.create_weight_function(self.dataset_info.get("scale_by_capacity"))
         self.logger.info(
             loading_bar + "\nBase Process {} is being fitted\n".format(base_process))
         self.create_arma_process(
@@ -204,7 +204,7 @@ class XYID(Dataset):
         self.m = m_hat
         self.m_max = m_max
 
-    def create_weight_function(self):
+    def create_weight_function(self, scale_by_capacity):
         """create the weight function from the mean absolute error s and the estimated r
         :return: om_x
         """

@@ -47,6 +47,7 @@ class Dataset:
 
         """
         self.logger = logger
+        self.scale_by_capacity = scale_by_capacity
 
         self.y_name = ending_feature
         if ending_feature == "actuals":
@@ -253,12 +254,14 @@ class Dataset:
 
     def compute_estimation_statistics(self) -> Dict[str, float]:
         if self.m_max is not None and self.m is not None:
-            self.dataset_info["r_m_hat"] = get_mare_from_m_hat(self.m)
-            self.dataset_info["r_m_max"] = get_mare_from_m_hat(self.m_max)
+            self.dataset_info["r_m_hat"] = get_mare_from_m_hat(
+                self.m, self.scale_by_capacity)
+            self.dataset_info["r_m_max"] = get_mare_from_m_hat(
+                self.m_max, self.scale_by_capacity)
         return self.dataset_info
 
 
-def get_mare_from_m_hat(m):
+def get_mare_from_m_hat(m, scale_by_capacity):
     """
     Get the theorical mare from an error simulated with the estimated distributions
     :param m:
@@ -269,7 +272,7 @@ def get_mare_from_m_hat(m):
         if x != 0:
             if scale_by_capacity == None:
                 r_m_hat += m[x] / x
-            elif csv_filepath == 0:
+            elif scale_by_capacity == 0:
                 r_m_hat += m[x] / cap
             else:
                 # TODO: ADD capacity validation
