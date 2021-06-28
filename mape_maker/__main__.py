@@ -160,7 +160,6 @@ def main(args):
                               a=args.a,
                               base_process=args.base_process,
                               scale_by_capacity=args.scale_by_capacity)  # fix sbc in MapeMaker
-    quit()
     if args.curvature:
         pyomo_param = {
             "MIP": args.mip_gap,

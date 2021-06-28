@@ -249,7 +249,7 @@ class Dataset:
             operation = False
 
         self.dataset_info = {"r": mare, "cap": cap,
-                             "operation": operation, "second_differences": d}
+                             "operation": operation, "second_differences": d, "scale_by_capacity": self.scale_by_capacity}
         return self.dataset_info
 
     def compute_estimation_statistics(self) -> Dict[str, float]:

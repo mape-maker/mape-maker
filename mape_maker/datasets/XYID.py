@@ -7,6 +7,7 @@ from scipy import stats
 from scipy.stats import beta
 from scipy import optimize
 import pandas as pd
+import matplotlib.pyplot as plt
 loading_bar = "-"*70
 
 
@@ -209,6 +210,9 @@ class XYID(Dataset):
         :return: om_x
         """
         om = {}
+        omlist = []
+        cap = max(self.dataset_x)
+        print(cap, scale_by_capacity)
         for x in self.dataset_x:
             if x != 0:
                 if scale_by_capacity == None:
@@ -216,11 +220,16 @@ class XYID(Dataset):
                 elif scale_by_capacity == 0:
                     om[x] = self.m[x] / \
                         (self.dataset_info["r_m_hat"]
-                         * self.dataset_info.get("cap"))
+                         * cap)
                 else:
                     om[x] = self.m[x] / \
                         (self.dataset_info["r_m_hat"] * scale_by_capacity)
+            omlist.append(om.get(x))
         self.om = om
+        plt.plot(self.dataset_x, omlist)
+        plt.xlabel('actuals')
+        plt.ylabel('ARE/MARE')
+        plt.savefig('testplot.png')
         return self.om
 
 
