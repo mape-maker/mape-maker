@@ -36,6 +36,8 @@ class MapeMaker:
                 to None.
             a (float): percent of the input dataset to use on the right and left of the conditional distribution
                 coefficient estimation.
+            scale_by_capacity (float): if you want MAPE to be with respect to the capacity, enter the capacity; if you want
+                the capacity to be the max of actuals(x), enter 0. Defaults to None, meaning the MAPE is with respect to actuals
 
         """
         self.logger = logger

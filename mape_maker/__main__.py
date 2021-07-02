@@ -159,7 +159,7 @@ def main(args):
                               input_end_dt=args.input_end_time,
                               a=args.a,
                               base_process=args.base_process,
-                              scale_by_capacity=args.scale_by_capacity)  # fix sbc in MapeMaker
+                              scale_by_capacity=args.scale_by_capacity)
     if args.curvature:
         pyomo_param = {
             "MIP": args.mip_gap,
@@ -194,7 +194,9 @@ def main(args):
               title=args.title,
               x_legend=x_legend,
               ending_feature=args.sid_feature,
-              logger=logger)
+              logger=logger,
+              scale_by_capacity=args.scale_by_capacity,
+              cap=mare_embedder.xyid.dataset_info.get("cap"))
 
 
 if __name__ == '__main__':
