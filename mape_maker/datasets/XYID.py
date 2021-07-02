@@ -212,7 +212,6 @@ class XYID(Dataset):
         om = {}
         omlist = []
         cap = max(self.dataset_x)
-        print(cap, scale_by_capacity)
         for x in self.dataset_x:
             if x != 0:
                 if scale_by_capacity == None:

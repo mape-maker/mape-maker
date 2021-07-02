@@ -27,7 +27,7 @@ class TestUM(unittest.TestCase):
                      '-ie': str(datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)),
                      '-ss': str(datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)),
                      '-se': str(datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)),
-                     '-sb': float(0),
+                     '-sb': "10",
                      '-o': "test_output"}  # output dir
         parm_list = []
         for i, j in parm_dict.items():

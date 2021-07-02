@@ -248,6 +248,14 @@ class Dataset:
         else:
             operation = False
 
+        if self.scale_by_capacity != None and self.scale_by_capacity != 0:
+            if self.scale_by_capacity > 2*cap:
+                self.logger.warning(
+                    "WARNING: Input capacity lager than 2 times max of actuals.")
+            if self.scale_by_capacity < 0.5*cap:
+                self.logger.warning(
+                    "WARNING: Input capacity smaller than 0.5 times max of actuals.")
+
         self.dataset_info = {"r": mare, "cap": cap,
                              "operation": operation, "second_differences": d, "scale_by_capacity": self.scale_by_capacity}
         return self.dataset_info
@@ -275,7 +283,6 @@ def get_mare_from_m_hat(m, scale_by_capacity, cap):
             elif scale_by_capacity == 0:
                 r_m_hat += m[x] / cap
             else:
-                # TODO: ADD capacity validation
                 r_m_hat += m[x] / scale_by_capacity
     r_m_hat = r_m_hat / len(m.keys())
     return r_m_hat
