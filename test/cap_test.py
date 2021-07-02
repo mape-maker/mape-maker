@@ -21,27 +21,26 @@ class TestUM(unittest.TestCase):
         self.parser = mapemain.make_parser()
 
     def test_CAISO_wind_actuals_cap_maxx(self):
+        # 1st run
         parm_dict = {'-xf': self.wind_data, '-s': "1234",
                      '-is': str(datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)),
                      '-ie': str(datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)),
                      '-ss': str(datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)),
                      '-se': str(datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)),
                      '-sb': float(0),
-                     '-o': "test_output"}
+                     '-o': "test_output"}  # output dir
         parm_list = []
         for i, j in parm_dict.items():
             if j is not None:
                 parm_list += [i, j]
             else:
                 parm_list += [i]
-        # run the test
         args = self.parser.parse_args(parm_list)
         mapemain.main(args)
         l = pd.read_csv(
             r'/home/naijing/Desktop/work/mape-maker-Naijing/test/test_output/simulations_of_target_mape_9.2.csv')
-        test_numbers = l.iloc[:, 1]
+        test_numbers = l.iloc[:, 1]  # 2nd column
         single_test_number_1 = test_numbers[1]
-        print(single_test_number_1)
 
         # 2nd run
         parm_dict = {'-xf': self.wind_data, '-s': "1234",
@@ -57,32 +56,13 @@ class TestUM(unittest.TestCase):
                 parm_list += [i, j]
             else:
                 parm_list += [i]
-        # run the test
         args = self.parser.parse_args(parm_list)
         mapemain.main(args)
         l = pd.read_csv(
             r'/home/naijing/Desktop/work/mape-maker-Naijing/test/test_output_another/simulations_of_target_mape_9.2.csv')
         test_numbers = l.iloc[:, 1]
         single_test_number_2 = test_numbers[1]
-        print(single_test_number_2)
         self.assertEqual(single_test_number_1, single_test_number_2)
-
-    # def test_CAISO_wind_actuals_cap_input(self):
-    #     parm_dict = {'-xf': self.wind_data, '-s': "1234",
-    #                  '-is': str(datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)),
-    #                  '-ie': str(datetime(year=2014, month=8, day=1, hour=0, minute=0, second=0)),
-    #                  '-ss': str(datetime(year=2014, month=7, day=2, hour=0, minute=0, second=0)),
-    #                  '-se': str(datetime(year=2014, month=7, day=31, hour=0, minute=0, second=0)),
-    #                  '-sb': float(4000)}  # user input
-    #     parm_list = []
-    #     for i, j in parm_dict.items():
-    #         if j is not None:
-    #             parm_list += [i, j]
-    #         else:
-    #             parm_list += [i]
-    #     run the test
-    #     args = self.parser.parse_args(parm_list)
-    #     mapemain.main(args)
 
 
 if __name__ == "__main__":
