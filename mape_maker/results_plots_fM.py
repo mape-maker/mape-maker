@@ -35,7 +35,7 @@ if __name__ == "__main__":
                            n=M)
 
     # Use this function with the metric you want
-    def plot_results_in_f_M(results, M, metric="mare"):
+    def plot_results_in_f_M(results, Ms, metric="mare"):
         """
 
         :param results:
