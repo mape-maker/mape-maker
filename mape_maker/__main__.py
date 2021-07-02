@@ -187,7 +187,8 @@ def main(args):
               Y=mare_embedder.sid.y_t,
               results=results,
               target_mare=mare_embedder.sid.SimParams.r_tilde,
-              f_mare=mare_embedder.xyid.dataset_info.get("r_m_hat"),
+              f_mare=mare_embedder.xyid.dataset_info.get(
+                  "r_m_hat"),
               plot_start_date=args.plot_start_date,
               output_dir=args.output_dir,
               plot=args.plot,

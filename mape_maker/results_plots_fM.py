@@ -42,7 +42,7 @@ if __name__ == "__main__":
         :param metric: choose between "mare", "", ""
         :return:
         """
-        Ms = [i for i in range(1, M+1)]
+
         fig, ax1 = plt.subplots(figsize=(9, 6), dpi=80,
                                 facecolor='w', edgecolor='k')
         color = 'black'
@@ -66,7 +66,6 @@ if __name__ == "__main__":
         fname = metric+".png"
         plt.savefig(fname)
         print("plot saved to", fname)
-        print(Ms[0:9])  # added for test
 
         # plt.show()
 
