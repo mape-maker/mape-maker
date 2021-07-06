@@ -225,10 +225,10 @@ class XYID(Dataset):
                         (self.dataset_info["r_m_hat"] * scale_by_capacity)
             omlist.append(om.get(x))
         self.om = om
-        plt.plot(self.dataset_x, omlist)
-        plt.xlabel('actuals')
-        plt.ylabel('ARE/MARE')
-        plt.savefig('testplot.png')
+        # plt.plot(self.dataset_x, omlist)
+        # plt.xlabel('actuals')
+        # plt.ylabel('ARE/MARE')
+        # plt.savefig('testplot.png')
         return self.om
 
 
