@@ -23,10 +23,10 @@ class TestUM(unittest.TestCase):
         cls.wind_data = mape_maker_path + dir_sep + "samples" + \
             dir_sep + "wind_total_forecast_actual_070113_063015.csv"
         cls.parser = mapemain.make_parser()
-        cls.output_1 = out_path + dir_sep + "test" + \
-            dir_sep + "test_output"
-        cls.output_2 = out_path + dir_sep + "test" + \
-            dir_sep + "test_output_another"
+        # cls.output_1 = out_path + dir_sep + "test" + \
+        #     dir_sep + "test_output"
+        # cls.output_2 = out_path + dir_sep + "test" + \
+        #     dir_sep + "test_output_another"
 
     def test_CAISO_wind_actuals_cap_maxx(self):
         # 1st run
@@ -44,7 +44,7 @@ class TestUM(unittest.TestCase):
             else:
                 parm_list += [i]
         args = self.parser.parse_args(parm_list)
-        outputpath = self.output_1+'/simulations_of_target_mape_9.2.csv'
+        outputpath = 'test_output/simulations_of_target_mape_9.2.csv'
         mapemain.main(args)
         l = pd.read_csv(outputpath)
         test_numbers = l.iloc[:, 1]  # 2nd column
@@ -65,7 +65,7 @@ class TestUM(unittest.TestCase):
             else:
                 parm_list += [i]
         args = self.parser.parse_args(parm_list)
-        outputpath_2 = self.output_2+'/simulations_of_target_mape_9.2.csv'
+        outputpath_2 = 'test_output_another/simulations_of_target_mape_9.2.csv'
         mapemain.main(args)
         l = pd.read_csv(outputpath_2)
         test_numbers = l.iloc[:, 1]
@@ -75,8 +75,11 @@ class TestUM(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            shutil.rmtree(cls.output_1)
-            shutil.rmtree(cls.output_2)  # delete the output dir
+            shutil.rmtree('test_output')
+        except:
+            pass
+        try:
+            shutil.rmtree('test_output_another')  # delete the output dir
         except:
             pass
 
