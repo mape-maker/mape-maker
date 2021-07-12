@@ -1,0 +1,147 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Infeasible_example &#8212; Mape_Maker 0.9 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Unit Tests" href="unittest_example.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="infeasible-example">
+<h1>Infeasible_example<a class="headerlink" href="#infeasible-example" title="Permalink to this headline">¶</a></h1>
+<p>For any requested MAPE, the distributions of errors computed should be close enough to the input
+error distributions while meeting the target MAPE. During the process, we compute the mean absolute error of
+a conditional beta distribution with fixed alpha and beta to satisfy the target MAPE so that it keeps the same shape
+parameters(denoted by alpha and beta) as the original distribution. If it’s hard to meet the target MAPE, then it
+will throw the error, saying that it’s infeasible to meet the target MAPE.</p>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">mape_maker</span> <span class="o">-</span><span class="n">xf</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">f</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;ARMA&quot;</span> <span class="o">-</span><span class="n">ss</span> <span class="s2">&quot;2014-6-17 01:00:00&quot;</span> <span class="o">-</span><span class="n">se</span> <span class="s2">&quot;2014-6-30 00:00:00&quot;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command line will fail with an error, showing the following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">RuntimeError</span><span class="p">:</span>  <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">prevalence</span> <span class="n">of</span> <span class="n">high</span> <span class="n">power</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">SID</span>
+<span class="n">The</span> <span class="n">requested</span> <span class="n">r_tilde</span> <span class="ow">is</span> <span class="n">too</span> <span class="n">high</span>
+     <span class="o">=&gt;</span> <span class="n">Either</span> <span class="n">change</span> <span class="n">your</span> <span class="n">requested</span> <span class="n">mape</span> <span class="n">to</span> <span class="n">be</span> <span class="n">less</span> <span class="n">than</span> <span class="mf">21.473508488457284</span>
+     <span class="o">=&gt;</span> <span class="n">Or</span> <span class="n">change</span> <span class="n">your</span> <span class="n">SID</span> <span class="n">so</span> <span class="n">the</span> <span class="n">e_score</span> <span class="n">increases</span>
+</pre></div>
+</div>
+<p>The plausibility score should be close to 1, meaning that the error distribution for the set is close to the empirical distribution of errors.
+In this example, we can see that the maximum mare is less than the target mare.
+In order to make the program run successfully, the user can either change the target mape or adjust the input dataset.</p>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">mape_maker</span> <span class="o">-</span><span class="n">xf</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">f</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;ARMA&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_actuals_ARMA_1&quot;</span> <span class="o">-</span><span class="ow">is</span> <span class="s2">&quot;2014-6-1 00:00:00&quot;</span> <span class="o">-</span><span class="n">ie</span> <span class="s2">&quot;2014-6-30 00:00:00&quot;</span> <span class="o">-</span><span class="n">ss</span> <span class="s2">&quot;2014-6-15 01:00:00&quot;</span> <span class="o">-</span><span class="n">se</span> <span class="s2">&quot;2014-6-29 00:00:00&quot;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command line will fail with an error, showing the following output during the running process:
+<strong>***</strong> WARNING!! <strong>******</strong></p>
+<blockquote>
+<div>beta rvs failed at i=684,x=3314.9; a=-0.05177452493780477, b=-0.3897512549813409, l_=-292.78035, s_=359.6603500000001
+Using last good beta parameters.</div></blockquote>
+<p>This error occurs when the program is trying to estimate the maximum target mean absolute error function(called as m_max).
+It fails because the shape parameters(alpha and beta) are negative values.
+.. note:: If there have not been any good beta parameters, the program will terminate, but otherwise, it will continue.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Mape_Maker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wind_example.html">CAISO wind data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demand_example.html">Demand data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational_example.html">Operational Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second_file_example.html">Second File Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rts_example.html">Using rts_gmlc data file as input for MapeMaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittest_example.html">Unit Tests</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Infeasible_example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-1">Example 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-2">Example 2</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="unittest_example.html" title="previous chapter">Unit Tests</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David L. Woodruff, Guillaume Goujard, Yifei Chen, Sukhmandeep Kaur.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/sections/infeasible_example.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

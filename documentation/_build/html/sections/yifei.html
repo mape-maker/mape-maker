@@ -1,0 +1,737 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Yifei &#8212; Mape_Maker 0.9 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="yifei">
+<h1>Yifei<a class="headerlink" href="#yifei" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="options">
+<h1>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
+<p>The options of the package are :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="o">--</span><span class="n">help</span>
+<span class="n">Options</span>   <span class="n">Options</span> <span class="n">Full</span> <span class="n">Name</span>        <span class="n">Types</span>       <span class="n">Details</span>
+  <span class="o">-</span><span class="n">t</span><span class="p">,</span>     <span class="o">--</span><span class="n">target_mape</span>            <span class="n">FLOAT</span>       <span class="n">desired</span> <span class="n">mape</span> <span class="n">otherwise</span> <span class="n">will</span> <span class="n">take</span> <span class="n">the</span> <span class="n">mape</span> <span class="n">of</span> <span class="n">the</span> <span class="n">dataset</span>
+  <span class="o">-</span><span class="n">st</span><span class="p">,</span>    <span class="o">--</span><span class="n">simulated_timeseries</span>   <span class="n">TEXT</span>        <span class="n">feature</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">simulate</span> <span class="s1">&#39;actuals&#39;</span> <span class="ow">or</span> <span class="s1">&#39;forecasts&#39;</span>
+  <span class="o">-</span><span class="n">bp</span><span class="p">,</span>    <span class="o">--</span><span class="n">base_process</span>           <span class="n">TEXT</span>        <span class="n">base</span> <span class="n">procees</span> <span class="n">either</span> <span class="s1">&#39;iid&#39;</span> <span class="ow">or</span> <span class="s1">&#39;ARMA&#39;</span>
+  <span class="o">-</span><span class="n">a</span><span class="p">,</span>     <span class="o">--</span><span class="n">a</span>                      <span class="n">FLOAT</span>       <span class="n">percent</span> <span class="n">of</span> <span class="n">data</span> <span class="n">on</span> <span class="n">the</span> <span class="n">left</span> <span class="ow">or</span> <span class="n">on</span> <span class="n">the</span> <span class="n">right</span> <span class="k">for</span> <span class="n">the</span> <span class="n">estimation</span>
+  <span class="o">-</span><span class="n">o</span><span class="p">,</span>     <span class="o">--</span><span class="n">output_dir</span>             <span class="n">TEXT</span>        <span class="n">path</span> <span class="n">to</span> <span class="nb">dir</span> <span class="n">to</span> <span class="n">create</span> <span class="k">for</span> <span class="n">csv</span> <span class="n">files</span>
+  <span class="o">-</span><span class="n">n</span><span class="p">,</span>     <span class="o">--</span><span class="n">number_simulations</span>     <span class="n">INTEGER</span>     <span class="n">number</span> <span class="n">of</span> <span class="n">simulations</span>
+  <span class="o">-</span><span class="n">sd</span><span class="p">,</span>    <span class="o">--</span><span class="n">start_date</span>             <span class="n">TEXT</span>        <span class="n">start_date</span> <span class="k">for</span> <span class="n">the</span> <span class="n">simulation</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;Y-m-d&#39;</span>
+  <span class="o">-</span><span class="n">ed</span><span class="p">,</span>    <span class="o">--</span><span class="n">end_date</span>               <span class="n">TEXT</span>        <span class="n">end_date</span> <span class="k">for</span> <span class="n">the</span> <span class="n">simulation</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;Y-m-d&#39;</span>
+  <span class="o">-</span><span class="n">ti</span><span class="p">,</span>    <span class="o">--</span><span class="n">title</span>                  <span class="n">TEXT</span>        <span class="n">title</span> <span class="k">for</span> <span class="n">the</span> <span class="n">plot</span>
+  <span class="o">-</span><span class="n">s</span><span class="p">,</span>     <span class="o">--</span><span class="n">seed</span>                   <span class="n">INTEGER</span>     <span class="n">random</span> <span class="n">seed</span>
+  <span class="o">-</span><span class="n">c</span><span class="p">,</span>     <span class="o">--</span><span class="n">curvature</span>              <span class="n">TEXT</span>        <span class="n">curvature</span>
+  <span class="o">-</span><span class="n">tl</span><span class="p">,</span>    <span class="o">--</span><span class="n">time_limit</span>             <span class="n">INTEGER</span>     <span class="n">time</span> <span class="n">limit</span> <span class="k">for</span> <span class="n">the</span> <span class="n">computation</span> <span class="n">of</span> <span class="n">smoothness</span>
+  <span class="o">-</span><span class="n">ct</span><span class="p">,</span>    <span class="o">--</span><span class="n">curvature_target</span>       <span class="n">FLOAT</span>       <span class="n">the</span> <span class="n">target</span> <span class="n">of</span> <span class="n">the</span> <span class="n">second</span> <span class="n">difference</span>
+  <span class="o">-</span><span class="n">m</span><span class="p">,</span>     <span class="o">--</span><span class="n">mip</span>                    <span class="n">FLOAT</span>       <span class="n">the</span> <span class="n">mip</span> <span class="n">gap</span>
+  <span class="o">-</span><span class="n">so</span><span class="p">,</span>    <span class="o">--</span><span class="n">solver</span>                 <span class="n">TEXT</span>        <span class="n">solver</span>
+  <span class="o">-</span><span class="n">fd</span><span class="p">,</span>    <span class="o">--</span><span class="n">full_dataset</span>           <span class="n">BOOLEAN</span>     <span class="n">simulation</span> <span class="n">over</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">dataset</span>
+  <span class="o">-</span><span class="n">lo</span><span class="p">,</span>    <span class="o">--</span><span class="n">latex_output</span>           <span class="n">BOOLEAN</span>     <span class="n">write</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">latex</span> <span class="n">file</span>
+  <span class="o">-</span><span class="n">sh</span><span class="p">,</span>    <span class="o">--</span><span class="n">show</span>                   <span class="n">BOOLEAN</span>     <span class="n">plot</span> <span class="n">simulations</span>
+  <span class="o">--</span><span class="n">help</span>                                    <span class="n">Show</span> <span class="n">this</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="section" id="options-with-more-details">
+<h2>Options with More Details<a class="headerlink" href="#options-with-more-details" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>–target_mape FLOAT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The target MAPE(Mean Absolute Percentage Error) gives the value of the MAPE for the simulated data.</p>
+<p>The following are the two ways to specify that the target MAPE should be 41.1:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--target_mape</span> <span class="pre">41.1</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">41.1</span></code></p>
+<p>If this option is not given, the target MAPE is the MAPE of the input dataset.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>simulated_timeseries(TEXT)</strong>:</li>
+</ul>
+<blockquote>
+<div><p>If the user wants to simulate actuals from forecasts, then the simulated timeseries will be “actuals”.
+On the other hands, if the user wants to simulate forecasts from actuals, then the simulated timeseries
+will be “forecasts”.</p>
+<p>The following are the two ways to specify that simulated timeseries is “actuals”:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--simulated_timeseries</span> <span class="pre">&quot;actuals&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-st</span> <span class="pre">&quot;actuals&quot;</span></code></p>
+<p>If this option is not given, the simulated timeseries is assumed to be “actuals”.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>base_process(TEXT)</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The base process is either “iid” or “ARMA”. When “iid” then the forecast errors
+are assumed to be independent and identically distributed. When “ARMA” is selected
+than an autoregressive time series it used as a base process in simulations
+so the forecast errors are correlated.</p>
+<p>The following are the two ways to specify that base process is iid:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--base_process</span> <span class="pre">&quot;iid&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-bp</span> <span class="pre">&quot;iid&quot;</span></code></p>
+<p>If this option is not given, the base process is assumed to be “ARMA”</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>a(FLOAT)</strong>:</li>
+</ul>
+<blockquote>
+<div><p>Estimate over a sample with a% of data on the left and a% on the right.</p>
+<p>The following are the two ways to specify that the percent of data is 4.3:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--a</span> <span class="pre">4.3</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-a</span> <span class="pre">4.3</span></code></p>
+<p>If this option is not given, the percent of data on the left and on the right for the estimation is assumed to be 4.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>output_dir(TEXT)</strong>:</li>
+</ul>
+<blockquote>
+<div><p>Path to dir to create the simulation output files</p>
+<p>The following are the two ways to specify that the output directory is called “output”:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--output_dir</span> <span class="pre">&quot;output&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">&quot;output&quot;</span></code></p>
+<p>If this option is not given, the output directory is assumed to be None. No output directory
+will be created.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–number_simulations INTEGER</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The number of simulations</p>
+<p>The following are the two ways to specify that the number of simulations is 4:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--number_simulations</span> <span class="pre">4</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">4</span></code></p>
+<p>If this option is not given, the number of simulations is assumed to be 1.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–start_date TEXT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The start date of the simulation, must be between the input file date range.</p>
+<p>The following are two ways to specify that the start date is 2020-1-3:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--start_date</span> <span class="pre">2014-6-30</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-sd</span> <span class="pre">2014-6-30</span></code></p>
+<p>If this option is not given, the start date is assumed to be None, which will simulate the whole dataset.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–end_date TEXT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The end date of the simulation, must be between the input file date range.</p>
+<p>The following are two ways to specify that the end date is 2020-1-3:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--end_date</span> <span class="pre">2014-6-30</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-ed</span> <span class="pre">2014-6-30</span></code></p>
+<p>If this option is not given, the end date is assumed to be None, which will simulate the whole dataset.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–title TEXT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The title of the simulation plot.</p>
+<p>The following are two ways to specify that the title if the simulation plot is called “plot”:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--title</span> <span class="pre">&quot;plot&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">&quot;plot&quot;</span></code></p>
+<p>If this option is not given, the title of the simulation plot is assumed to be None. Therefore, no additional title will be added to the plot.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–seed INTEGER</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The seed used for simulation. If none, the seed will be random.</p>
+<p>The following are two ways to specify that the title if the seed is set as “1234”:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--seed</span> <span class="pre">1234</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-s</span> <span class="pre">1234</span></code></p>
+<p>If this option is not given, the seed is assume to be 1234.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–curvature BOOLEAN</strong>:</li>
+</ul>
+<blockquote>
+<div><p>Whether the user wants to set the curvature or not.</p>
+<p>Curvature is the second difference of the time series of output.
+(If you are not sure whether to use the curvature, you can set it as False)</p>
+<p>The following are two ways to specify that the curvature is True:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--curvature</span> <span class="pre">True</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">True</span></code></p>
+<p>If this option is not given, the curvature is assumed to be False</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–time_limit INTEGER</strong>:</li>
+</ul>
+<blockquote>
+<div><p>Time limit of the computation of curvature.</p>
+<p>The following are two ways to specify that the time limit is 40 seconds:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--time_limit</span> <span class="pre">40</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-tl</span> <span class="pre">40</span></code></p>
+<p>If this option is not given, the time limits is assumed to be 3600 seconds.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–curvature_target FLOAT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The target of the second difference.</p>
+<p>The following are two ways to specify that the target of the second difference is 3.1:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--curvature_target</span> <span class="pre">3.1</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-ct</span> <span class="pre">3.1</span></code></p>
+<p>If this option is not given, the target of the second difference is assumed to be the mean of the second difference of the dataset.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–mip FLOAT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>the mip gap</p>
+<p>The following are two ways to specify that the mip gap is 3.2:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--mip</span> <span class="pre">3.2</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">3.2</span></code></p>
+<p>If this option is not given, the mip gap is assumed to be 0.3.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–solver TEXT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>The software that is used during the optimization process.</p>
+<p>The following are two ways to specify that the solver is “gurobi”:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--solver</span> <span class="pre">&quot;gurobi&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-so</span> <span class="pre">&quot;gurobi&quot;</span></code></p>
+<p>If this option is not given, the solver is assumed to be “gurobi”.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–full_dataset BOOLEAN</strong>:</li>
+</ul>
+<blockquote>
+<div><p>simulation over the entire input dataset</p>
+<p>The following are two ways to specify that the full dataset is True:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--full_dataset</span> <span class="pre">True</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-fd</span> <span class="pre">True</span></code></p>
+<p>If this option is not given, the full dataset is assumed to be False.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–latex_output BOOLEAN</strong>:</li>
+</ul>
+<blockquote>
+<div><p>Write your result in the latex output(latex output is not available for now).</p>
+<p>The following are two ways to specify that the latex output is set as True:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--latex_output</span> <span class="pre">True</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-lo</span> <span class="pre">True</span></code></p>
+<p>If this option is not given, the latex output is assumed to be False since it is not supported yet.</p>
+</div></blockquote>
+<ul class="simple">
+<li><strong>–show BOOLEAN</strong>:</li>
+</ul>
+<blockquote>
+<div><p>show and save the simulation plot</p>
+<p>The following are two ways to specify that the user wants to show and save the simulation plot:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--show</span> <span class="pre">True</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-sh</span> <span class="pre">True</span></code></p>
+<p>If this option is not given, it will show and save the simulation plot by default.</p>
+</div></blockquote>
+</div>
+<div class="section" id="wind-data-file-examples">
+<h2>Wind data file examples<a class="headerlink" href="#wind-data-file-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="sample-command-1">
+<h4>sample command 1:<a class="headerlink" href="#sample-command-1" title="Permalink to this headline">¶</a></h4>
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=3 and seed=1234 from forecasts to actuals using an IID
+Base Process. It will simulate all the dates in the input files. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_1”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;iid&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_1&quot;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “actuals”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “actuals”. So the MapeMaker will simulate the “actuals” data
+according to the “forecasts” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 3</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “3”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “iid”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “iid” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<ul class="simple">
+<li><strong>-o “wind_data_command_1”</strong>：</li>
+</ul>
+<blockquote>
+<div>Create an output directory called “wind_data_command_1”, in which will store the simulation output file.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+<div class="figure align-center">
+<img alt="sections/../_static/wind_command_line1.png" src="sections/../_static/wind_command_line1.png" />
+</div>
+</div>
+<div class="section" id="sample-command-2">
+<h4>sample command 2:<a class="headerlink" href="#sample-command-2" title="Permalink to this headline">¶</a></h4>
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=5 and target mape=30 from actuals to forecasts using an ARMA
+Base Process. It will simulate from 2014-6-1 to 2014-6-30. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_2”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;forecasts&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;ARMA&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_2&quot;</span> <span class="o">-</span><span class="n">sd</span> <span class="s2">&quot;2014-6-1&quot;</span> <span class="o">-</span><span class="n">ed</span> <span class="s2">&quot;2014-6-30&quot;</span> <span class="o">-</span><span class="n">t</span> <span class="mi">30</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “forecasts”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “forecasts”. So the MapeMaker will simulate the “forecasts” data
+according to the “actuals” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 5</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “5”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “ARMA”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “ARMA” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-sd “2014-6-1”</strong>:</li>
+</ul>
+<blockquote>
+<div>The start date of the simulation is “2014-6-1”</div></blockquote>
+<ul class="simple">
+<li><strong>-ed “2014-6-30”</strong>:</li>
+</ul>
+<blockquote>
+<div>The end date of the simulation is “2014-6-30”</div></blockquote>
+<ul class="simple">
+<li><strong>-t 30</strong></li>
+</ul>
+<blockquote>
+<div>The mape that you want to return is 30</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+</div>
+</div>
+<div class="section" id="additional-examples">
+<h3>Additional examples<a class="headerlink" href="#additional-examples" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="sample-command-3">
+<h4>sample command 3:<a class="headerlink" href="#sample-command-3" title="Permalink to this headline">¶</a></h4>
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=3 and seed=1234 from forecasts to actuals using an IID
+Base Process. It will simulate all the dates in the input files. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_1”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;ARMA&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_3&quot;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “actuals”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “actuals”. So the MapeMaker will simulate the “actuals” data
+according to the “forecasts” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 3</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “3”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “ARMA”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “ARMA” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<ul class="simple">
+<li><strong>-o “wind_data_command_3”</strong>：</li>
+</ul>
+<blockquote>
+<div>Create an output directory called “wind_data_command_3”, in which will store the simulation output file.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+<div class="figure align-center">
+<img alt="sections/../_static/wind_command_line3.png" src="sections/../_static/wind_command_line3.png" />
+</div>
+</div>
+<div class="section" id="sample-command-4">
+<h4>sample command 4:<a class="headerlink" href="#sample-command-4" title="Permalink to this headline">¶</a></h4>
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=5 and target mape=30 from actuals to forecasts using an ARMA
+Base Process. It will simulate from 2014-6-1 to 2014-6-30. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_2”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;forecasts&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;iid&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_4&quot;</span> <span class="o">-</span><span class="n">sd</span> <span class="s2">&quot;2014-6-1&quot;</span> <span class="o">-</span><span class="n">ed</span> <span class="s2">&quot;2014-6-30&quot;</span> <span class="o">-</span><span class="n">t</span> <span class="mi">30</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “forecasts”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “forecasts”. So the MapeMaker will simulate the “forecasts” data
+according to the “actuals” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 5</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “5”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “iid”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “iid” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-sd “2014-6-1”</strong>:</li>
+</ul>
+<blockquote>
+<div>The start date of the simulation is “2014-6-1”</div></blockquote>
+<ul class="simple">
+<li><strong>-ed “2014-6-30”</strong>:</li>
+</ul>
+<blockquote>
+<div>The end date of the simulation is “2014-6-30”</div></blockquote>
+<ul class="simple">
+<li><strong>-t 30</strong></li>
+</ul>
+<blockquote>
+<div>The mape that you want to return is 30</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+<div class="figure align-center">
+<img alt="sections/../_static/wind_command_line4.png" src="sections/../_static/wind_command_line4.png" />
+</div>
+</div>
+</div>
+<div class="section" id="unittest">
+<h3>Unittest<a class="headerlink" href="#unittest" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="wind-quick-test-py">
+<h4>wind_quick_test.py<a class="headerlink" href="#wind-quick-test-py" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>This test is used to see whether the above command lines will run successfully at once.</li>
+<li>You can run this unittest by typing “python wind_quick_test.py” in your terminal.</li>
+<li>wine_quick_test.py will first save the current working directory and change to a temporary directory. It will then run the above command lines and save the output dir to the folder where you run the tests. Finally, it will return back to the previous directory once the unittest is finished.</li>
+<li>Since command 3 and command 4 are similar to command 1 and command 2, if you want to save the running time, you can skip the last two tests by setting “skip_test”(line 16) to False.</li>
+</ul>
+<div class="figure align-center">
+<img alt="sections/../_static/skip_test_line.png" src="sections/../_static/skip_test_line.png" />
+</div>
+</div>
+<div class="section" id="wind-slow-test-py">
+<h4>wind_slow_test.py<a class="headerlink" href="#wind-slow-test-py" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>The difference between wind_quick_test.py and wind_slow_test.py is that the second one will show more details. After running each above command line, it will find the difference between simulation 1 and simulation 2 in each row, then save the result to a csv file called “simulation_comparison”. At the same time, it will also plot the simulation differences and save the graph called “simulation_plot”.</li>
+<li>As you can see the picture below, “simulation_comparison” add a new column called “simulation_1_minus_2” comparing to the original output file.</li>
+</ul>
+<div class="figure align-center">
+<img alt="sections/../_static/sample_simulation_diff.png" src="sections/../_static/sample_simulation_diff.png" />
+</div>
+<ul class="simple">
+<li>The “simulation_plot” will show a set of blue dots, where the y-axis represents the range of differences, and the x-axis stands for the dates(from start date to end date).</li>
+</ul>
+<div class="figure align-center">
+<img alt="sections/../_static/sample_plot.png" src="sections/../_static/sample_plot.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Your python version should be at 3.x.x(i.e 3.7.1). You can check your current version by typing “python –version” in your terminal.</li>
+<li>If you want to initialize and use the curvature, you need to install a Quadratic MIP solver such as “Gurobi” first: www.gurobi.com/</li>
+</ul>
+<p>(e.g Gurobi, Cplex, SCJP, etc.)</p>
+<ol class="arabic simple">
+<li>Click on “Clone or download” to copy the web URL.</li>
+<li>Switch to a proper directory and then type:</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">+</span> <span class="n">the</span> <span class="n">web</span> <span class="n">URL</span> <span class="n">link</span> <span class="n">that</span> <span class="n">you</span> <span class="n">copied</span>
+</pre></div>
+</div>
+<p>to clone the entire “mape_maker_v2” to your own directory</p>
+<ol class="arabic simple" start="3">
+<li>Install the package with the setup.py file:</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">develop</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>You can use the package in command-line, for a quick-first run :</li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="input-file-format">
+<h2>Input file format<a class="headerlink" href="#input-file-format" title="Permalink to this headline">¶</a></h2>
+<p>If you want to use your own datafile as an input to run the mape_maker, then the input file format should be:</p>
+<ul class="simple">
+<li>Datetime as the first column, format as “year-month-day + time”. i.e: 2017-1-3 00:00</li>
+<li>Forecast data as the second column, format as “float”. i.e: 3264.59</li>
+<li>Actual data as the third column, format as “float”. i.e: 3264.59</li>
+</ul>
+<div class="section" id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p><strong>sample command 1:</strong></p>
+<hr class="docutils" />
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=3 and seed=1234 from forecasts to actuals using an IID
+Base Process. It will simulate all the dates in the input files. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_1”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;iid&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_1&quot;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “actuals”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “actuals”. So the MapeMaker will simulate the “actuals” data
+according to the “forecasts” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 3</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “3”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “iid”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “iid” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<ul class="simple">
+<li><strong>-o “wind_data_command_1”</strong>:</li>
+</ul>
+<blockquote>
+<div>Create an output directory called “wind_data_command_1”, in which will store the simulation output file.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+<div class="figure align-center">
+<img alt="sections/../_static/wind_command_line1.png" src="sections/../_static/wind_command_line1.png" />
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>sample command 2:</strong></p>
+<hr class="docutils" />
+<p>The following command will take the data from <em>wind_total_forecast_actual_070113_063015.csv</em>
+, and launch the simulations with n=5 and target mape=30 from forecasts to actuals using an ARMA
+Base Process. It will simulate from 2014-6-1 to 2014-6-30. Finally, it will return a
+plot of simulations, and create an output dir called “wind_data_command_2”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mape_maker</span> <span class="s2">&quot;mape_maker/samples/wind_total_forecast_actual_070113_063015.csv&quot;</span> <span class="o">-</span><span class="n">st</span> <span class="s2">&quot;actuals&quot;</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">bp</span> <span class="s2">&quot;ARMA&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;wind_data_command_2&quot;</span> <span class="o">-</span><span class="ow">is</span> <span class="s2">&quot;2014-6-1 00:00:00&quot;</span> <span class="o">-</span><span class="n">ie</span> <span class="s2">&quot;2014-6-30 00:00:00&quot;</span> <span class="o">-</span><span class="n">sd</span> <span class="s2">&quot;2014-6-27 01:00:00&quot;</span> <span class="o">-</span><span class="n">ed</span> <span class="s2">&quot;2014-6-30 00:00:00&quot;</span> <span class="o">-</span><span class="n">t</span> <span class="mi">30</span> <span class="o">-</span><span class="n">s</span> <span class="mi">1234</span>
+</pre></div>
+</div>
+<p>This command will first call the __main__.py, which will create a MapeMaker class and
+call the simulate function. You should see a plot similar to this:</p>
+<p>-is “2014-6-1 00:00:00” -ie “2014-6-30 00:00:00” -sd “2014-6-27 01:00:00” -ed “2014-6-30 00:00:00”</p>
+<ul class="simple">
+<li><strong>“mape_maker/samples/wind_total_forecast_actual_070113_063015.csv”</strong>:</li>
+</ul>
+<blockquote>
+<div>The csv file containing forecasts and actuals for specified datetimes.</div></blockquote>
+<ul class="simple">
+<li><strong>-st “actuals”</strong>:</li>
+</ul>
+<blockquote>
+<div>Set up the the target of the simulation as “actuals”. So the MapeMaker will simulate the “actuals” data
+according to the “forecasts” data in the input file.</div></blockquote>
+<ul class="simple">
+<li><strong>-n 5</strong>:</li>
+</ul>
+<blockquote>
+<div>The number of simulations that we want to create is “5”. This will create three simulation columns in the output file.</div></blockquote>
+<ul class="simple">
+<li><strong>-bp “ARMA”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “ARMA” as the base process. The default base process is set as “ARMA”.</div></blockquote>
+<ul class="simple">
+<li><strong>-is “2014-6-1 00:00:00”</strong>:</li>
+</ul>
+<blockquote>
+<div>Use “2014-6-1 00:00:00” as the starting datetime of the input dataset to compute distributions (default is all data).</div></blockquote>
+<ul class="simple">
+<li><strong>-ie “2014-6-30 00:00:00”</strong></li>
+</ul>
+<blockquote>
+<div>Use “2014-6-1 00:00:00” as the ending datetime of the input dataset to compute distributions (default is all data).</div></blockquote>
+<ul class="simple">
+<li><strong>-sd “2014-6-27 01:00:00”</strong>:</li>
+</ul>
+<blockquote>
+<div>The start date of the simulation is “2014-6-27 01:00:00”.</div></blockquote>
+<ul class="simple">
+<li><strong>-ed “2014-6-30 00:00:00”</strong>:</li>
+</ul>
+<blockquote>
+<div>The end date of the simulation is “2014-6-30 00:00:00”.</div></blockquote>
+<ul class="simple">
+<li><strong>-t 30</strong>:</li>
+</ul>
+<blockquote>
+<div>The mape that you want to return is 30.</div></blockquote>
+<ul class="simple">
+<li><strong>-s 1234</strong>:</li>
+</ul>
+<blockquote>
+<div>Set the seed as “1234”, so it won’t randomly choose a number as the seed.</div></blockquote>
+<p>After running the command line, you should see a similar plot like this:</p>
+<div class="figure align-center">
+<img alt="sections/../_static/wind_command_line1.png" src="sections/../_static/wind_command_line1.png" />
+</div>
+<p><strong>RTS Wind Unittest Examples</strong></p>
+<blockquote>
+<div>&lt;b&gt;&lt;i&gt;&lt;u&gt;RTS_wind_test.py&lt;/u&gt;&lt;/i&gt;&lt;/b&gt;</div></blockquote>
+<ul class="simple">
+<li>This test is used to see whether the above command lines will run successfully at once.</li>
+<li>You can run this unittest by typing “python RTS_wind_test.py” in your terminal.</li>
+<li>RTS_wind_test.py will first save the current working directory and change to a temporary directory. It will then run the above command lines and save the output dir to the folder where you run the tests. Finally, it will return back to the previous directory once the unittest is finished.</li>
+</ul>
+<div class="figure align-center">
+<img alt="sections/../_static/skip_test_line.png" src="sections/../_static/skip_test_line.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Mape_Maker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wind_example.html">CAISO wind data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demand_example.html">Demand data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational_example.html">Operational Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second_file_example.html">Second File Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rts_example.html">Using rts_gmlc data file as input for MapeMaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittest_example.html">Unit Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infeasible_example.html">Infeasible_example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David L. Woodruff, Guillaume Goujard, Yifei Chen, Sukhmandeep Kaur.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/sections/yifei.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

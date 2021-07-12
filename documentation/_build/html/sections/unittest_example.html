@@ -1,0 +1,184 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Unit Tests &#8212; Mape_Maker 0.9 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Infeasible_example" href="infeasible_example.html" />
+    <link rel="prev" title="Using rts_gmlc data file as input for MapeMaker" href="rts_example.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="unit-tests">
+<h1>Unit Tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="unittest-examples-for-wind-and-load">
+<h2>Unittest Examples for Wind and Load<a class="headerlink" href="#unittest-examples-for-wind-and-load" title="Permalink to this headline">¶</a></h2>
+<p><strong>CAISO Wind Unittest Examples</strong></p>
+<hr class="docutils" />
+<p><strong>fast_CAISO_wind_tests.py</strong></p>
+<ul class="simple">
+<li>This test will run very fast because it only includes one sample command line.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>quick_CAISO_wind_tests.py</strong></p>
+<ul class="simple">
+<li>This test is used to check whether some sample command lines will run successfully at once.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>slow_CAISO_wind_tests.py</strong></p>
+<ul class="simple">
+<li>The difference between CAISO_wind_quick_test.py and CAISO_wind_slow_test.py is that the second one will compare the first simulation column and the second simulation column, then show the differences.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>Load Unittest Examples</strong></p>
+<ul class="simple">
+<li>This test will run very fast because it only includes one sample command line.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>load_quick_test.py</strong></p>
+<ul class="simple">
+<li>This test is used to check whether some sample command lines will run successfully at once.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>load_slow_test.py</strong></p>
+<ul class="simple">
+<li>The difference between load_quick_test.py and load_slow_test.py is that the second one will compare the first simulation column and the second simulation column, then show the differences.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="unittest-examples-for-rts-wind-and-bus">
+<h2>Unittest Examples for RTS WIND and BUS<a class="headerlink" href="#unittest-examples-for-rts-wind-and-bus" title="Permalink to this headline">¶</a></h2>
+<p><strong>RTS Wind Unittest Examples</strong></p>
+<hr class="docutils" />
+<p><strong>rts_wind_test.py</strong></p>
+<ul class="simple">
+<li>This test is used to see whether the sample command line for RTS Wind example will run successfully.</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p><strong>Bus_220_Load_test.py</strong></p>
+<ul class="simple">
+<li>This test is used to see whether the sample command line for Load example will run successfully.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Mape_Maker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wind_example.html">CAISO wind data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demand_example.html">Demand data file examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational_example.html">Operational Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second_file_example.html">Second File Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rts_example.html">Using rts_gmlc data file as input for MapeMaker</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Unit Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unittest-examples-for-wind-and-load">Unittest Examples for Wind and Load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unittest-examples-for-rts-wind-and-bus">Unittest Examples for RTS WIND and BUS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="infeasible_example.html">Infeasible_example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="rts_example.html" title="previous chapter">Using rts_gmlc data file as input for MapeMaker</a></li>
+      <li>Next: <a href="infeasible_example.html" title="next chapter">Infeasible_example</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David L. Woodruff, Guillaume Goujard, Yifei Chen, Sukhmandeep Kaur.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/sections/unittest_example.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
