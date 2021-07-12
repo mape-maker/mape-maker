@@ -50,13 +50,17 @@ highly auto-correlated errors and finally if the user specifies it, it operates 
 yield “plausible” scenario sets (see more at <span class="xref std std-ref">Plausibility objectives</span>).</p>
 <div class="section" id="percent-errors-and-mapes">
 <span id="id1"></span><h2>Percent Errors and MAPEs<a class="headerlink" href="#percent-errors-and-mapes" title="Permalink to this headline">¶</a></h2>
-<p>We denote <em>f</em> and <em>a</em> as respectively the timeseries of forecasts and actuals. From there we can define two MAPEs depending on the simulation you wish to accomplish.</p>
+<p>We denote <em>f</em> and <em>a</em> as respectively the timeseries of forecasts and actuals, and denote <em>cap</em> as the capacity.
+  From there we can define three MAPEs depending on the simulation you wish to accomplish.</p>
 <p>Then if you are simulating <strong>forecasts from actuals</strong>,</p>
 <div class="math notranslate nohighlight">
 \[mape = \frac{100}{n} \sum_{i=1}^n \frac{|f_i - a_i|}{a_i}\]</div>
 <p>If you are simulating <strong>actuals from forecasts</strong>,</p>
 <div class="math notranslate nohighlight">
 \[mape = \frac{100}{n} \sum_{i=1}^n \frac{|f_i - a_i|}{f_i}\]</div>
+<p>If you want the MAPE to be with respect to capacity instead of observation,</p>
+<div class="math notranslate nohighlight">
+\[mape = \frac{100}{n} \sum_{i=1}^n \frac{|f_i - a_i|}{cap}\]</div>
 </div>
 <div class="section" id="plausibility-objectives">
 <h2>Plausibility objectives<a class="headerlink" href="#plausibility-objectives" title="Permalink to this headline">¶</a></h2>

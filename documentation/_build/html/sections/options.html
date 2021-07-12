@@ -407,6 +407,23 @@ We then apply a transformation to the base process to retrieve the simulated err
 <p><code class="docutils literal notranslate"><span class="pre">-xl</span> <span class="pre">&quot;x</span> <span class="pre">legend&quot;</span></code></p>
 <p>If this option is not given, the x legend of the simulation plot is assumed to be None. Therefore, no additional legend will be added to the plot.</p>
 </div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li><strong>--scale_by_capacity FLOAT</strong>:</li>
+</ul>
+<blockquote>
+<div><p>If the user wants the MAPE to be with respect to the capacity, enter the capacity; or enter 0 to use the maximum of 
+  observation as capacity. If none, the MAPE will be with respect to observation.</p>
+<p>The following are two ways to specify that MAPE is with respect to capacity and the capacity should be 4000 :</p>
+<p><code class="docutils literal notranslate"><span class="pre">--scale_by_capacity</span> <span class="pre">4000</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">-sb</span> <span class="pre">4000</span></code></p>
+<p>If this option is not given, the MAPE will be with respect to observation.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 </div>
 <div class="section" id="by-default-options">
 <h2>By Default-options<a class="headerlink" href="#by-default-options" title="Permalink to this headline">¶</a></h2>
@@ -436,6 +453,7 @@ We then apply a transformation to the base process to retrieve the simulated err
 <li><strong>solver</strong>                : gurobi</li>
 <li><strong>title</strong>                 : None, no additional title will be added to the plot</li>
 <li><strong>x_legend</strong>              : None, will use the feature of curves (actuals or forecasts)</li>
+<li><strong>scale_by_capacity</strong>     : None, will calculate MAPE with respect to observation</li>
 </ul>
 </div>
 </div>
