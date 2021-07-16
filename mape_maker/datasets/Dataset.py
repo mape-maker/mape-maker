@@ -29,7 +29,7 @@ class Dataset:
     """
 
     def __init__(self, logger: Logger, csv_filepath: str = None, dataset: 'Dataset' = None, start_date: str = None,
-                 end_date: str = None, ending_feature: str = "actuals") -> None:
+                 end_date: str = None, ending_feature: str = "actuals", scale_by_capacity: float = None) -> None:
         """
 
         Args:
@@ -47,7 +47,8 @@ class Dataset:
 
         """
         self.logger = logger
-
+        self.cap = None
+        self.scale_by_capacity = scale_by_capacity
         self.y_name = ending_feature
         if ending_feature == "actuals":
             self.y_name = ending_feature
@@ -65,11 +66,14 @@ class Dataset:
         at the same time
         """
         if csv_filepath is not None:  #: then this is a sid
-            self.name = csv_filepath.split("/")[-1].split(".")[0] + "_to{}".format(self.y_name)
-            self.x_t, self.y_t, self.e_t, self.ares_t, self.full_df = self.cut_timeseries(csv_filepath, start_date, end_date)
+            self.name = csv_filepath.split(
+                "/")[-1].split(".")[0] + "_to{}".format(self.y_name)
+            self.x_t, self.y_t, self.e_t, self.ares_t, self.full_df = self.cut_timeseries(
+                csv_filepath, start_date, end_date)
         else:
             self.name = dataset.name + "_SID"
-            self.x_t, self.y_t, self.e_t, self.ares_t = self.get_timeseries_from_dataset(dataset, start_date, end_date)
+            self.x_t, self.y_t, self.e_t, self.ares_t = self.get_timeseries_from_dataset(
+                dataset, start_date, end_date)
         test_holes(self.logger, self.x_t.index)
         self.dataset_x = get_dataset_x(self.x_t)
         self.n_samples = len(self.x_t)
@@ -104,7 +108,8 @@ class Dataset:
             df (pd.DataFrame): full data frame
 
         """
-        self.logger.info(loading_bar + "\nXY data is being loaded and processed")
+        self.logger.info(
+            loading_bar + "\nXY data is being loaded and processed")
         df = pd.read_csv(csv_filepath)
         df = set_index(self, df)
         number_of_columns = df.shape[1]
@@ -112,9 +117,11 @@ class Dataset:
             self.logger.info("Column for forecasts found"
                              "\nColumn for actuals found")
             if df.columns[0] == "actuals" or df.columns[1] == "forecasts":
-                df = df.rename(columns={list(df)[0]: "actuals", list(df)[1]: "forecasts"})
+                df = df.rename(
+                    columns={list(df)[0]: "actuals", list(df)[1]: "forecasts"})
             else:
-                df = df.rename(columns={list(df)[0]: "forecasts", list(df)[1]: "actuals"})
+                df = df.rename(
+                    columns={list(df)[0]: "forecasts", list(df)[1]: "actuals"})
             df[self.x_name] = pd.to_numeric(df[self.x_name])
             df[self.y_name] = pd.to_numeric(df[self.y_name])
             df = replace_negative(self.logger, df, self.x_name)
@@ -123,19 +130,22 @@ class Dataset:
             full_df = df
             df = remove_na(self.logger, self.y_name, df)
             x_t, y_t, e_t, ares_t = df[self.x_name].copy(), df[self.y_name].copy(), \
-                                    df["errors"].copy(), (abs(df["errors"]) / df["ares_t"]).copy()
+                df["errors"].copy(), (abs(df["errors"]) / df["ares_t"]).copy()
         elif number_of_columns == 1:
-            self.logger.info("Operation mode : One Column for {} found".format(self.x_name))
+            self.logger.info(
+                "Operation mode : One Column for {} found".format(self.x_name))
             df = df.rename(columns={list(df)[0]: self.x_name})
             df[self.x_name] = pd.to_numeric(df[self.x_name])
             df = replace_negative(self.logger, df, self.x_name)
             full_df = df
             x_t, y_t, e_t, ares_t = df[self.x_name].copy(), None, None, None
         else:
-            raise AttributeError("There are more than two columns of data in the dataset")
+            raise AttributeError(
+                "There are more than two columns of data in the dataset")
 
         return slice_timeseries(x_t, start_date, end_date), slice_timeseries(y_t, start_date, end_date), \
-               slice_timeseries(e_t, start_date, end_date), slice_timeseries(ares_t, start_date, end_date), full_df
+            slice_timeseries(e_t, start_date, end_date), slice_timeseries(
+                ares_t, start_date, end_date), full_df
 
     def get_timeseries_from_dataset(self, dataset: 'Dataset', start_date: datetime.datetime, end_date: datetime.datetime) \
             -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -154,7 +164,8 @@ class Dataset:
 
         """
         x_t, y_t = slice_timeseries(dataset.full_df[dataset.x_name], start_date, end_date), \
-                                    slice_timeseries(dataset.full_df[dataset.y_name], start_date, end_date)
+            slice_timeseries(
+                dataset.full_df[dataset.y_name], start_date, end_date)
         if sum(y_t.isna()) == len(y_t):
             y_t, e_t, ares_t = None, None, None
         else:
@@ -172,7 +183,7 @@ class Dataset:
             bool : if the file existed or not
 
         """
-        #TODO check the class is XYID when loading
+        # TODO check the class is XYID when loading
         with open(self.outfile_estimation_parameters, 'rb') as f:
             d = pickle.load(f)
             self.s_x = d["s_x"]
@@ -193,7 +204,8 @@ class Dataset:
         """
         # TODO check the class is XYID when saving
         with open(self.outfile_estimation_parameters, 'wb') as f:
-            d = dict([["s_x", self.s_x], ["m", self.m], ["m_max", self.m_max], ["om", self.om]])
+            d = dict([["s_x", self.s_x], ["m", self.m], [
+                     "m_max", self.m_max], ["om", self.om]])
             pickle.dump(d, f, pickle.HIGHEST_PROTOCOL)
         return True
 
@@ -212,7 +224,7 @@ class Dataset:
 
         """
         cap = max(self.x_t)
-
+        self.cap = cap
         if self.y_t is not None:
             y = self.y_t.diff(1).diff(1).dropna()
             d = np.mean(abs(y))
@@ -223,29 +235,41 @@ class Dataset:
             max_ares = max(self.ares_t[self.x_t != 0])
             dt = self.ares_t[self.ares_t == max_ares].index
             if max_ares > 100:
-                self.logger.warning("WARNING: the maximum relative error in the input {}% occurs at {}". \
+                self.logger.warning("WARNING: the maximum relative error in the input {}% occurs at {}".
                                     format(round(100 * max_ares), dt[0]))
             mare = np.mean(self.ares_t[self.x_t != 0])
         else:
             mare, max_ares = None, None
 
-        if (self.y_t is None) or (sum(self.y_t.isna())>0):
-            self.logger.info("-"*60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y_name))
+        if (self.y_t is None) or (sum(self.y_t.isna()) > 0):
+            self.logger.info(
+                "-"*60 + "\n\n There are some missing {} => OPERATION MODE\n".format(self.y_name))
             operation = True
         else:
             operation = False
 
-        self.dataset_info = {"r": mare, "cap": cap, "operation": operation, "second_differences":d}
+        if self.scale_by_capacity != None and self.scale_by_capacity != 0:
+            if self.scale_by_capacity > 2*cap:
+                self.logger.warning(
+                    "WARNING: Input capacity lager than 2 times max of actuals.")
+            if self.scale_by_capacity < 0.5*cap:
+                self.logger.warning(
+                    "WARNING: Input capacity smaller than 0.5 times max of actuals.")
+
+        self.dataset_info = {"r": mare, "cap": cap,
+                             "operation": operation, "second_differences": d, "scale_by_capacity": self.scale_by_capacity}
         return self.dataset_info
 
     def compute_estimation_statistics(self) -> Dict[str, float]:
         if self.m_max is not None and self.m is not None:
-            self.dataset_info["r_m_hat"] = get_mare_from_m_hat(self.m)
-            self.dataset_info["r_m_max"] = get_mare_from_m_hat(self.m_max)
+            self.dataset_info["r_m_hat"] = get_mare_from_m_hat(
+                self.m, self.scale_by_capacity, self.cap)
+            self.dataset_info["r_m_max"] = get_mare_from_m_hat(
+                self.m_max, self.scale_by_capacity, self.cap)
         return self.dataset_info
 
 
-def get_mare_from_m_hat(m):
+def get_mare_from_m_hat(m, scale_by_capacity, cap):
     """
     Get the theorical mare from an error simulated with the estimated distributions
     :param m:
@@ -254,7 +278,12 @@ def get_mare_from_m_hat(m):
     r_m_hat = 0
     for x in m.keys():
         if x != 0:
-            r_m_hat += m[x] / x
+            if scale_by_capacity == None:
+                r_m_hat += m[x] / x
+            elif scale_by_capacity == 0:
+                r_m_hat += m[x] / cap
+            else:
+                r_m_hat += m[x] / scale_by_capacity
     r_m_hat = r_m_hat / len(m.keys())
     return r_m_hat
 
@@ -282,16 +311,17 @@ def replace_negative(logger, df, x):
     else:
         logger.info("Replacing negative values by 0 at indexes : ")
         for i, ind in enumerate(index):
-            logger.info("     *{}, value = {}".format(ind, float(df.loc[ind][x])))
+            logger.info(
+                "     *{}, value = {}".format(ind, float(df.loc[ind][x])))
             if i > 5:
-                logger.info("{} negative values replaced and not displayed" \
+                logger.info("{} negative values replaced and not displayed"
                             .format(len(index) - 5))
                 break
         df[df[x] < 0] = 0
 
     index = df[df[x] == 0].index
     if len(index) != 0:
-        logger.warning("WARNING: {} X values at zero are present". \
+        logger.warning("WARNING: {} X values at zero are present".
                        format(len(index)))
 
     return df
@@ -363,7 +393,7 @@ def test_holes(logger: Logger, index: List[datetime.datetime], time_gap: int = 1
     if holes:
         for i in holes_list:
             logger.warning("     * Holes found in the index between {} and {}".format(index[i],
-                                                                                         index[i + 1]))
+                                                                                      index[i + 1]))
     else:
         logger.info("no holes in the index of the dataset")
 

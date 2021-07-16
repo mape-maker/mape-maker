@@ -7,6 +7,7 @@ from scipy import stats
 from scipy.stats import beta
 from scipy import optimize
 import pandas as pd
+import matplotlib.pyplot as plt
 loading_bar = "-"*70
 
 
@@ -34,8 +35,10 @@ class XYID(Dataset):
         if xyid_load_pickle:
             try:
                 self.load_pickle()
-                self.logger.info(loading_bar + "\n Estimation parameters, conditional MAES, weight function have been loaded")
-                self.create_arma_process(base_process=base_process, xyid_load_pickle=xyid_load_pickle)
+                self.logger.info(
+                    loading_bar + "\n Estimation parameters, conditional MAES, weight function have been loaded")
+                self.create_arma_process(
+                    base_process=base_process, xyid_load_pickle=xyid_load_pickle)
             except Exception as e:
                 self.logger.error(e)
                 self.logger.error(loading_bar + "\nCouldn't load")
@@ -58,15 +61,19 @@ class XYID(Dataset):
         Returns:
 
         """
-        self.logger.info(loading_bar + "\nEstimation parameters are being computed\n")
+        self.logger.info(
+            loading_bar + "\nEstimation parameters are being computed\n")
         self.estimate_parameters()
-        self.logger.info(loading_bar + "\nConditional Mean Absolute Errors are being computed\n")
+        self.logger.info(
+            loading_bar + "\nConditional Mean Absolute Errors are being computed\n")
         self.get_maes_from_parameters()
         self.compute_estimation_statistics()
         self.logger.info(loading_bar + "\nWeight function is being computed\n")
-        self.create_weight_function()
-        self.logger.info(loading_bar + "\nBase Process {} is being fitted\n".format(base_process))
-        self.create_arma_process(base_process=base_process, xyid_load_pickle=xyid_load_pickle)
+        self.create_weight_function(self.dataset_info.get("scale_by_capacity"))
+        self.logger.info(
+            loading_bar + "\nBase Process {} is being fitted\n".format(base_process))
+        self.create_arma_process(
+            base_process=base_process, xyid_load_pickle=xyid_load_pickle)
 
     def create_arma_process(self, base_process: str = "ARMA", xyid_load_pickle: bool = False):
         """create an ARMAProcess object in self.arma_process
@@ -81,7 +88,8 @@ class XYID(Dataset):
             z_hat = [0.] * self.n_samples
             for j in range(self.n_samples):
                 p = self.s_x[self.x_t.iloc[j]]
-                y = stats.beta.cdf(self.e_t.iloc[j], p[0], p[1], loc=p[2], scale=p[3])
+                y = stats.beta.cdf(
+                    self.e_t.iloc[j], p[0], p[1], loc=p[2], scale=p[3])
                 y = 0.00001 if y == 0 else y
                 y = 0.99999 if y == 1 else y
                 z_hat[j] = norm.ppf(y)
@@ -103,21 +111,24 @@ class XYID(Dataset):
             self.s_x[x] = s_x_a[nx]
             if j % p == 0:
                 self.logger.info("     - Closest xbar for x = {} is {},  {}% done"
-                            .format("%.3f" % x, "%.3f" % nx, (round(100 * j / (self.n_samples - 1), 3))))
+                                 .format("%.3f" % x, "%.3f" % nx, (round(100 * j / (self.n_samples - 1), 3))))
         return self.s_x
 
     def get_s_hat_datasetx_a(self):
         """loop over a grid of uniformally distributed real between 0 and cap and return S_hat_dataset_a
         """
-        index_search = np.linspace(0, self.dataset_info.get("cap"), XYID.len_s_hat)
+        index_search = np.linspace(
+            0, self.dataset_info.get("cap"), XYID.len_s_hat)
         beta_parameters = [[0] * 4] * XYID.len_s_hat
         mean_var_sample = [[0] * 2] * XYID.len_s_hat
         x_bar = np.array([0] * XYID.len_s_hat, dtype=float)
         for k, x_ in enumerate(index_search):
             a_ = 1 if x_ == index_search[-1] else self.a
-            x_bar[int(k)], beta_parameters[k], mean_var_sample[k] = self.find_parameters(x_, a_)
+            x_bar[int(k)], beta_parameters[k], mean_var_sample[k] = self.find_parameters(
+                x_, a_)
             if k % 50 == 0:
-                self.logger.info("{}% of the dataset fit".format(round(100 * k / XYID.len_s_hat, 2)))
+                self.logger.info("{}% of the dataset fit".format(
+                    round(100 * k / XYID.len_s_hat, 2)))
         return x_bar, dict([(x_bar[i], beta_parameters[i]) for i in range(XYID.len_s_hat)])
 
     def find_parameters(self, x_, a_):
@@ -130,11 +141,13 @@ class XYID(Dataset):
         """
         index_x_ = np.argwhere(self.dataset_x >= x_)[0][0]
         half_length_sample = int((a_ / 100) * self.n_different_samples)
-        left_bound = index_x_ - half_length_sample if index_x_ - half_length_sample > 0 else 0
+        left_bound = index_x_ - half_length_sample if index_x_ - \
+            half_length_sample > 0 else 0
         right_bound = index_x_ + half_length_sample if index_x_ + half_length_sample < self.n_different_samples \
             else self.n_different_samples - 1
 
-        interval_index = (self.x_t > self.dataset_x[left_bound]) & (self.x_t < self.dataset_x[right_bound]) # strict condition used in v1
+        interval_index = (self.x_t > self.dataset_x[left_bound]) & (
+            self.x_t < self.dataset_x[right_bound])  # strict condition used in v1
         x_bar = np.mean(self.x_t[interval_index])
         error_sample = self.e_t[interval_index]
         mean, var = np.mean(error_sample), np.std(error_sample) ** 2
@@ -148,7 +161,8 @@ class XYID(Dataset):
             upper = self.dataset_info.get("cap") - x_bar - lower
         else:
             upper = max(error_sample) - lower
-        [a, b] = fsolve(find_alpha_beta, np.array([1, 1]), args=(lower, upper, mean, var))
+        [a, b] = fsolve(find_alpha_beta, np.array(
+            [1, 1]), args=(lower, upper, mean, var))
         return x_bar, [a, b, lower, upper], [mean, var]
 
     def get_maes_from_parameters(self):
@@ -160,41 +174,61 @@ class XYID(Dataset):
         for i, x in enumerate(self.dataset_x):
             a, b, l_, s_ = self.s_x[x]
             try:
-                sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
+                sample = beta.rvs(a, b, loc=l_, scale=s_,
+                                  size=4000, random_state=1234)
             except:
                 self.logger.warning("******* WARNING!! **********")
-                self.logger.warning(" beta rvs failed at i={},x={}; a={}, b={}, l_={}, s_={}".format(i, x, a, b, l_, s_))
+                self.logger.warning(
+                    " beta rvs failed at i={},x={}; a={}, b={}, l_={}, s_={}".format(i, x, a, b, l_, s_))
                 if last_good_parameters is None:
                     raise
                 else:
                     self.logger.warning(" Using last good beta parameters.")
                     a, b, l_, s_ = last_good_parameters
-                    sample = beta.rvs(a, b, loc=l_, scale=s_, size=4000, random_state=1234)
+                    sample = beta.rvs(a, b, loc=l_, scale=s_,
+                                      size=4000, random_state=1234)
             last_good_parameters = (a, b, l_, s_)
             opt = optimize.minimize(integrate_a_mean_1d, x0=np.array((l_, s_)),
                                     bounds=((-x, 0), (0, self.dataset_info["cap"])), args=(a, b),
                                     tol=1e-1)
-            m_max[x] = max(-opt.fun, ((self.dataset_info["cap"] - x) * a) / (a + b))
+            m_max[x] = max(-opt.fun,
+                           ((self.dataset_info["cap"] - x) * a) / (a + b))
             stored_l, stored_s = opt.x
             if i % p == 0:
-                self.logger.info(" {}% of the m_max computed".format("%.1f" % (100 * i / self.n_samples)))
+                self.logger.info(" {}% of the m_max computed".format(
+                    "%.1f" % (100 * i / self.n_samples)))
                 self.logger.info(" - for input {}, m_max = {} for l {} and s {}".format("%.3f" % x, "%.3f" % m_max[x],
-                                                                                   "%.3f" % stored_l,
-                                                                                   "%.3f" % stored_s))
+                                                                                        "%.3f" % stored_l,
+                                                                                        "%.3f" % stored_s))
             m_hat[x] = np.mean(abs(sample))
 
         self.m = m_hat
         self.m_max = m_max
 
-    def create_weight_function(self):
+    def create_weight_function(self, scale_by_capacity):
         """create the weight function from the mean absolute error s and the estimated r
         :return: om_x
         """
         om = {}
+        omlist = []
+        cap = max(self.dataset_x)
         for x in self.dataset_x:
             if x != 0:
-                om[x] = self.m[x] / (self.dataset_info["r_m_hat"] * x)
+                if scale_by_capacity == None:
+                    om[x] = self.m[x] / (self.dataset_info["r_m_hat"] * x)
+                elif scale_by_capacity == 0:
+                    om[x] = self.m[x] / \
+                        (self.dataset_info["r_m_hat"]
+                         * cap)
+                else:
+                    om[x] = self.m[x] / \
+                        (self.dataset_info["r_m_hat"] * scale_by_capacity)
+            omlist.append(om.get(x))
         self.om = om
+        # plt.plot(self.dataset_x, omlist)
+        # plt.xlabel('actuals')
+        # plt.ylabel('ARE/MARE')
+        # plt.savefig('testplot.png')
         return self.om
 
 

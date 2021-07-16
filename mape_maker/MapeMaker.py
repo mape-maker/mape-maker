@@ -17,10 +17,10 @@ class MapeMaker:
             exception that one column can be missing for operational purpose.
 
     """
-    __version__ = "2.0"
+    __version__ = "2.1"
 
     def __init__(self, logger: Logger, xyid_path: str, ending_feature: str = "actuals", xyid_load_pickle: bool = False,
-                 input_start_dt: str = None, input_end_dt: str = None, a: float = 4, base_process="ARMA") -> None:
+                 input_start_dt: str = None, input_end_dt: str = None, a: float = 4, base_process="ARMA", scale_by_capacity: float = None) -> None:
         """Init statement of MapeMaker class
 
         Args:
@@ -36,14 +36,17 @@ class MapeMaker:
                 to None.
             a (float): percent of the input dataset to use on the right and left of the conditional distribution
                 coefficient estimation.
+            scale_by_capacity (float): if you want MAPE to be with respect to the capacity, enter the capacity; if you want
+                the capacity to be the max of actuals(x), enter 0. Defaults to None, meaning the MAPE is with respect to actuals
 
         """
         self.logger = logger
         self.ending_feature = ending_feature
         self.xyid: XYID = XYID(a, base_process=base_process, csv_filepath=xyid_path, start_date=input_start_dt,
                                end_date=input_end_dt,  ending_feature=ending_feature, xyid_load_pickle=xyid_load_pickle,
-                               logger=logger)  #: step 1: load the XYID, estimate distrib and ARMA
-        self.sid: SID = type('SID', (), {})()  #: step 2: create an object SID. Will be initiated for simulation
+                               logger=logger, scale_by_capacity=scale_by_capacity)  #: step 1: load the XYID, estimate distrib and ARMA
+        #: step 2: create an object SID. Will be initiated for simulation
+        self.sid: SID = type('SID', (), {})()
 
     def simulate(self, sid_file_path: str = None, simulation_start_dt: str = None, simulation_end_dt: str = None,
                  output_dir: str = None, list_of_date_ranges: List[str] = None, seed: int = None, **kwargs) -> pd.DataFrame:
@@ -67,12 +70,14 @@ class MapeMaker:
 
         """
         np.random.seed(seed=seed)
-        #TODO create multiple SID for corresponding start and end date in list of date_ranges
+        # TODO create multiple SID for corresponding start and end date in list of date_ranges
         if list_of_date_ranges is None:
             self.sid = SID(logger=self.logger, csv_filepath=sid_file_path, dataset=self.xyid, start_date=simulation_start_dt,
                            end_date=simulation_end_dt, ending_feature=self.ending_feature)  #: initiate the SID from a new csv or from xyid
-            self.create_save_simparams(**kwargs)  #: create a SimParams object and adjust distributions
-            results = self.sid.simulate_multiple_scenarios(output_dir, **kwargs)  #: simulate and store the scenarios
+            #: create a SimParams object and adjust distributions
+            self.create_save_simparams(**kwargs)
+            results = self.sid.simulate_multiple_scenarios(
+                output_dir, **kwargs)  #: simulate and store the scenarios
 
         return results
 
@@ -94,6 +99,7 @@ class MapeMaker:
         """
         return self.sid.simulations
 
+
 if __name__ == "__main__":
     import logging
     from datetime import datetime
@@ -101,8 +107,10 @@ if __name__ == "__main__":
     logger = logging.getLogger('make-maker')
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     mare_embedder = MapeMaker(logger=logger, ending_feature="forecasts", xyid_path="samples/rts_gmlc/wind_operations_example.csv",
-                              input_start_dt=str(datetime(year=2020, month=2, day=1, hour=0, minute=0, second=0)),
-                              input_end_dt=str(datetime(year=2020, month=8, day=31, hour=23, minute=0, second=0)),
+                              input_start_dt=str(
+                                  datetime(year=2020, month=2, day=1, hour=0, minute=0, second=0)),
+                              input_end_dt=str(
+                                  datetime(year=2020, month=8, day=31, hour=23, minute=0, second=0)),
                               xyid_load_pickle=True)
     curvature_parameters = [{
         "MIP": 0.05,
@@ -111,7 +119,8 @@ if __name__ == "__main__":
         "solver": "gurobi",
     }, None]
     results = mare_embedder.simulate(n=1,
-                                     simulation_start_dt=str(datetime(year=2020, month=11, day=1, hour=0, minute=0, second=0)),
+                                     simulation_start_dt=str(
+                                         datetime(year=2020, month=11, day=1, hour=0, minute=0, second=0)),
                                      simulation_end_dt=str(datetime(year=2020, month=11, day=7, hour=0, minute=0, second=0)))
     from mape_maker.utilities.Scenarios import Scenarios
     Scenarios(logger=logger, X=mare_embedder.sid.x_t,

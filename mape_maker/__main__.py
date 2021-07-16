@@ -115,6 +115,11 @@ def make_parser():
     parser.add_argument('-xl', '--x_legend',
                         help='x legend for the plot',
                         default=None)
+    parser.add_argument('-sb', '--scale_by_capacity',
+                        help='scale by capacity instead of observations '
+                        'optionally enter the capacity (enter 0 to use max observation)',
+                        type=float,
+                        default=None)
     return parser
 
 
@@ -142,6 +147,8 @@ def set_verbose_level(logger, verbosity, verbosity_output):
 
 
 def main(args):
+    #print(f'capacity entriy was {args.scale_by_capacity}')
+    # quit()
     logger = logging.getLogger('mape-maker')
     logger = set_verbose_level(logger, args.verbosity, args.verbosity_output)
     mare_embedder = MapeMaker(logger=logger,
@@ -151,7 +158,8 @@ def main(args):
                               input_start_dt=args.input_start_time,
                               input_end_dt=args.input_end_time,
                               a=args.a,
-                              base_process=args.base_process)
+                              base_process=args.base_process,
+                              scale_by_capacity=args.scale_by_capacity)
     if args.curvature:
         pyomo_param = {
             "MIP": args.mip_gap,
@@ -160,7 +168,8 @@ def main(args):
             "solver": args.solver,
         }
     else:
-        logger.warning("You have not set curvature to be true, so curvature is not used.")
+        logger.warning(
+            "You have not set curvature to be true, so curvature is not used.")
         pyomo_param = None
     tmare = args.target_mape / 100 if args.target_mape is not None else None
     results = mare_embedder.simulate(sid_file_path=args.input_sid_file,
@@ -178,19 +187,20 @@ def main(args):
               Y=mare_embedder.sid.y_t,
               results=results,
               target_mare=mare_embedder.sid.SimParams.r_tilde,
-              f_mare=mare_embedder.xyid.dataset_info.get("r_m_hat"),
+              f_mare=mare_embedder.xyid.dataset_info.get(
+                  "r_m_hat"),
               plot_start_date=args.plot_start_date,
               output_dir=args.output_dir,
               plot=args.plot,
               title=args.title,
               x_legend=x_legend,
               ending_feature=args.sid_feature,
-              logger=logger)
-
+              logger=logger,
+              scale_by_capacity=args.scale_by_capacity,
+              cap=mare_embedder.xyid.dataset_info.get("cap"))
 
 
 if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
     main(args)
-

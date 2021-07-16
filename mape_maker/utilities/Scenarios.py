@@ -11,8 +11,9 @@ class Scenarios:
     """
     An embedded class that compute mare, save simulations, and plot simulations
     """
+
     def __init__(self, logger: Logger, X, Y, results=None, target_mare=None, f_mare=None, plot_start_date=0, output_dir: str = None, plot: bool = True,
-                 title: str = "", x_legend: str = "", ending_feature: str = ""):
+                 title: str = "", x_legend: str = "", ending_feature: str = "", scale_by_capacity: float = None, cap: float = None):
         """
 
                 Args:
@@ -41,34 +42,42 @@ class Scenarios:
         self.x_legend = x_legend
         self.ending_feature = ending_feature
         self.logger = logger
+        self. scale_by_capacity = scale_by_capacity
+        self.cap = cap
 
         if results is not None:
             self.scenario = []
             self.sim_mares = []
-            self.logger.info(loading_bar + "\nComputation of mare for scenarios")
+            self.logger.info(
+                loading_bar + "\nComputation of mare for scenarios")
             for r in range(len(results.columns)):
                 result = results.iloc[:, r]
-                self.scenario.append(Scenario(X, Y, result, target_mare, logger))
+                self.scenario.append(
+                    Scenario(X, Y, result, target_mare, logger, scale_by_capacity, cap))
                 if self.scenario[r].s_tilde is not None:
                     s_mape = round(100*float(self.scenario[r].s_tilde), 2)
-                    self.logger.info("scenario {} has target mape {}% and simulated mape {}%". \
+                    self.logger.info("scenario {} has target mape {}% and simulated mape {}%".
                                      format(r+1, round(100*float(target_mare), 2), s_mape))
                     self.sim_mares.append(self.scenario[r].s_tilde)
                 else:
-                    self.logger.error("fail to find simulated mape for scenario {}".format(r))
+                    self.logger.error(
+                        "fail to find simulated mape for scenario {}".format(r))
             if self.sim_mares is not None:
                 s_mape = round(100*float(np.mean(self.sim_mares)), 2)
-                self.logger.info("scenarios have target mape {}% and overall mape {}%".\
+                self.logger.info("scenarios have target mape {}% and overall mape {}%".
                                  format(round(100*float(target_mare), 2), s_mape))
             else:
                 self.logger.error("fail to find overall mape")
-            r_tilde = calc_mare(X, Y) if Y is not None else None
+            r_tilde = calc_mare(X, Y, scale_by_capacity,
+                                cap) if Y is not None else None
             if r_tilde is not None:
-                self.logger.info("observed mape of the input data is {}%".format(round(100*float(r_tilde), 2)))
+                self.logger.info("observed mape of the input data is {}%".format(
+                    round(100*float(r_tilde), 2)))
             else:
                 self.logger.info("no observed mape of the input data")
             if f_mare is not None:
-                self.logger.info("fitted mape of the inut data is {}%".format(round(100*float(f_mare), 2)))
+                self.logger.info("fitted mape of the inut data is {}%".format(
+                    round(100*float(f_mare), 2)))
             else:
                 self.logger.info("no fitted mape of the input data")
         if output_dir is not None:
@@ -84,7 +93,8 @@ class Scenarios:
         try:
             os.mkdir(self.output_dir)
         except FileExistsError:
-            raise RuntimeError("Directory {} already exists".format(self.output_dir))
+            raise RuntimeError(
+                "Directory {} already exists".format(self.output_dir))
         tg = "{}".format('%.1f' % (100 * self.target_mare))
         name = "simulations of target mape {}".format(tg)
         basename = name.replace(',', '-')
@@ -92,7 +102,8 @@ class Scenarios:
         basename = basename.replace(' ', '_')
         outfile = self.output_dir + os.sep + basename + ".csv"
         if outfile is not None:
-            self.logger.info(loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
+            self.logger.info(
+                loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
             self.scenarios.to_csv(outfile)
 
     def plot_results(self):
@@ -100,7 +111,8 @@ class Scenarios:
         plot forecasts, actuals, and simulations
         """
         datetime = list(self.scenarios.keys())[0]
-        index = self.scenarios[datetime].iloc[self.plot_start_date * 40:(self.plot_start_date + 1) * 40].index
+        index = self.scenarios[datetime].iloc[self.plot_start_date *
+                                              40:(self.plot_start_date + 1) * 40].index
 
         fig, ax1 = plt.subplots(figsize=(15, 6), dpi=80, facecolor='w', edgecolor='k',
                                 num="MapeMaker - Plot of simulations from {} to {}".format(
@@ -111,7 +123,8 @@ class Scenarios:
         ax1.set_ylabel('Power', color=color)
         if self.Y is not None:
             try:
-                ax1.plot(index, self.Y.loc[index].values, '--', marker=".", color="blue", label=self.ending_feature)
+                ax1.plot(index, self.Y.loc[index].values, '--',
+                         marker=".", color="blue", label=self.ending_feature)
             except Exception as e:
                 self.logger.error(e)
                 self.logger.error("**** Y Plot failed ****")
@@ -130,16 +143,18 @@ class Scenarios:
                 simulation = self.scenarios.iloc[:, r]
                 try:
                     ax1.plot(index, simulation.loc[index].values, marker=".",
-                             linewidth=0.5) # label="simulation {}".format(r+1)
+                             linewidth=0.5)  # label="simulation {}".format(r+1)
                 except Exception as e:
                     self.logger.error(e)
-                    self.logger.error("******* Plot failed for simulation {}".format(r+1))
+                    self.logger.error(
+                        "******* Plot failed for simulation {}".format(r+1))
         ax1.legend()
         if self.title is None:
             self.title = "MapeMaker - Plot of simulations from {} to {}, Target Mape {}%".format(
                 index[0].strftime("%Y-%m-%d"),
                 index[-1].strftime("%Y-%m-%d"), '%.1f' % (100 * self.target_mare))
-        name = "{}\nForecasts, actuals and simulation of {}".format(self.title, self.ending_feature)
+        name = "{}\nForecasts, actuals and simulation of {}".format(
+            self.title, self.ending_feature)
         plt.title(name)
         plt.savefig("mmFinalFig.png")
         self.logger.info("Plot saved to mmFinalFig.png")
@@ -147,7 +162,7 @@ class Scenarios:
 
 class Scenario:
 
-    def __init__(self, X, Y, result, target_mare, logger):
+    def __init__(self, X, Y, result, target_mare, logger, scale_by_capacity, cap):
         """
 
         Args:
@@ -160,13 +175,23 @@ class Scenario:
         """
         self.scenario = result
         self.t_tilde = target_mare
-        self.r_tilde = calc_mare(X, Y) if Y is not None else None
-        self.s_tilde = calc_mare(X, result) if result is not None else None
+        self.r_tilde = calc_mare(
+            X, Y, scale_by_capacity, cap) if Y is not None else None
+        self.s_tilde = calc_mare(
+            X, result, scale_by_capacity, cap) if result is not None else None
         self.logger = logger
+        self.scale_by_capacity = scale_by_capacity
+        self.cap = cap
 
 
-def calc_mare(x, y):
-    r_tilde = (y - x) / x
+def calc_mare(x, y, scale_by_capacity, cap):
+    if scale_by_capacity == None:
+        r_tilde = (y - x) / x
+    elif scale_by_capacity == 0:
+        r_tilde = (y - x) / cap
+    else:
+        r_tilde = (y - x) / scale_by_capacity
+
     r_tilde = r_tilde[x > 0]
     r_tilde = r_tilde.dropna()
     are_hat = r_tilde.apply(abs)
