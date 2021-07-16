@@ -116,8 +116,8 @@ def make_parser():
                         help='x legend for the plot',
                         default=None)
     parser.add_argument('-sb', '--scale_by_capacity',
-                        help='scale by capacity instead of observation '
-                        'optionally enter the capacity (enter 0 to use max)',
+                        help='scale by capacity instead of observations '
+                        'optionally enter the capacity (enter 0 to use max observation)',
                         type=float,
                         default=None)
     return parser
