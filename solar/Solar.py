@@ -12,9 +12,7 @@ import glob
 import shutil
 import os
 
-# TODO: option to do forcast simulation
-
-# TODO: Even though midstep output dir is deleted, in logger it still shows it's stored
+# TODO: -f 'forecasts' skipping data
 
 
 def get_irradiance(site_location, tilt, surface_azimuth, times):
@@ -75,9 +73,9 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
             obs.index[0], obs.index[-1]))
     obs = obs[(obs.index >= start_time)
               & (obs.index < end_time)]
-    tz = 'Etc/GMT-0'
+    # tz = 'Etc/GMT-0'
     times = pd.date_range(start=start_time,
-                          end=end_time, freq='60min', tz=tz, closed='left')
+                          end=end_time, freq='60min', closed='left')
     length = int(len(location_coor))
     if (length % 2) != 0:
         raise ValueError('Invalid coordinate list')
@@ -92,7 +90,6 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
         POA = POA.to_frame()
         POA.rename(columns={POA.columns[0]: "poa_global"}, inplace=True)
         n = POA.size
-        # POA.to_csv('check_this.csv')
 
     # calculate csi
     norm_max = POA.max()
@@ -131,13 +128,12 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
             upper.append(G[i]*min(max_csi_d[i], T[i]*csi_list[i*24+j]))
     upper_df = pd.DataFrame(upper, index=times, columns=['upper bound'])
     upper_df.index.name = 'datetimes'
-    # upper_df.to_csv('upper.csv')  # del later
-    # POA.to_csv('POA.csv')  # del later
-    deviation = upper_df.values-actual.values
-    deviation_df = pd.DataFrame(deviation, index=times, columns=['actuals'])
+    forecast_div = upper_df.values-forecast.values
+    deviation_df = pd.DataFrame(
+        forecast_div, index=times, columns=['forecasts'])
+    deviation_df['actuals'] = upper_df.values-actual.values
     # fig = deviation_df.plot()
     # fig.figure.savefig('deviation')
-    deviation_df['forecast'] = upper_df.values-forecast.values
     deviation_df.to_csv('deviation.csv')  # input for mape_maker, needed
     return upper
     # TODO: remember to delete plot
@@ -249,7 +245,7 @@ def make_parser():
                         help='scale by capacity instead of observations '
                         'optionally enter the capacity (enter 0 to use max observation)',
                         type=float,
-                        default=None)
+                        default=0)
     parser.add_argument('-lc', '--location_coor',
                         help='one or more pairs of location coordinates. Use space to separate\
                             numbers and enter in the sequence of lat_1 lon_1 lat_2 lon_2...',
@@ -292,6 +288,7 @@ def main(args):
 
     upper = deviation(input_start_time, input_end_time,
                       location_coor, input_solar_file)
+
     mapemain(args)
     filename = glob.glob(args.output_dir+'/'+'*.csv')
     filename = filename[0]
@@ -313,11 +310,11 @@ def main(args):
         raise ValueError('Directory already exists.')
 
     shutil.rmtree(args.output_dir)  # delete midstep dir
-    # TODO: maybe delete deviation.csv too
+    os.remove('deviation.csv')
 
 
 if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
     main(args)
- # python Solar.py -isf '/mnt/c/wind_data/Solar.csv' -is '2018-07-01 00:00:00' -ie '2018-07-30 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107
+ # python Solar.py -isf 'Solar_Taxes_2018.csv' -is '2018-07-01 00:00:00' -ie '2018-07-30 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'test_output' -sp
