@@ -135,7 +135,7 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
     # fig = deviation_df.plot()
     # fig.figure.savefig('deviation')
     deviation_df.to_csv('deviation.csv')  # input for mape_maker, needed
-    return upper
+    return upper_df
     # TODO: remember to delete plot
 
 
@@ -288,7 +288,8 @@ def main(args):
 
     upper = deviation(input_start_time, input_end_time,
                       location_coor, input_solar_file)
-
+    upper = upper[(upper.index >= simulation_start_time)
+                  & (upper.index < simulation_end_time)]
     mapemain(args)
     filename = glob.glob(args.output_dir+'/'+'*.csv')
     filename = filename[0]
@@ -296,9 +297,11 @@ def main(args):
     after_mape.rename(columns={'Unnamed: 0': 'datetime'}, inplace=True)
     after_mape['datetime'] = pd.to_datetime(after_mape['datetime'])
     after_mape.set_index("datetime", inplace=True)
+    after_mape = after_mape[(after_mape.index >= simulation_start_time)
+                            & (after_mape.index < simulation_end_time)]
     after_mape = -after_mape
     for i in range(simulations_num):
-        after_mape.iloc[:, i] = (after_mape.iloc[:, i]+upper)
+        after_mape.iloc[:, i] = (after_mape.iloc[:, i]+upper['upper bound'])
     if solar_plot == True:
         fig = after_mape.plot()
         fig.figure.savefig('results')
@@ -317,4 +320,4 @@ if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
     main(args)
- # python Solar.py -isf 'Solar_Taxes_2018.csv' -is '2018-07-01 00:00:00' -ie '2018-07-30 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'test_output' -sp
+ # python Solar.py -isf 'Solar_Taxes_2018.csv' -is '2018-07-01 00:00:00' -ie '2018-12-01 00:00:00' -ss '2018-07-01 00:00:00' -se '2018-07-07 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'test_output' -sp
