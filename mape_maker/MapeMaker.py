@@ -20,7 +20,8 @@ class MapeMaker:
     __version__ = "2.1"
 
     def __init__(self, logger: Logger, xyid_path: str, ending_feature: str = "actuals", xyid_load_pickle: bool = False,
-                 input_start_dt: str = None, input_end_dt: str = None, a: float = 4, base_process="ARMA", scale_by_capacity: float = None) -> None:
+                 input_start_dt: str = None, input_end_dt: str = None, a: float = 4, base_process="ARMA",
+                 scale_by_capacity: float = None, target_scaled_capacity: float = None) -> None:
         """Init statement of MapeMaker class
 
         Args:
@@ -38,6 +39,8 @@ class MapeMaker:
                 coefficient estimation.
             scale_by_capacity (float): if you want MAPE to be with respect to the capacity, enter the capacity; if you want
                 the capacity to be the max of actuals(x), enter 0. Defaults to None, meaning the MAPE is with respect to actuals
+            target_scaled_capacity (float): if you want scale scenario data, enter target_capacity,
+                all scenario data would be scaled by target_capacity/capacity
 
         """
         self.logger = logger
@@ -47,9 +50,10 @@ class MapeMaker:
                                logger=logger, scale_by_capacity=scale_by_capacity)  #: step 1: load the XYID, estimate distrib and ARMA
         #: step 2: create an object SID. Will be initiated for simulation
         self.sid: SID = type('SID', (), {})()
+        self.target_scaled_capacity = target_scaled_capacity
 
     def simulate(self, sid_file_path: str = None, simulation_start_dt: str = None, simulation_end_dt: str = None,
-                 output_dir: str = None, list_of_date_ranges: List[str] = None, seed: int = None, **kwargs) -> pd.DataFrame:
+                 output_dir: str = None, list_of_date_ranges: List[str] = None, seed: int = None, target_scaled_capacity: float = None, **kwargs) -> pd.DataFrame:
         """simulate scenarios
 
         Args:
@@ -77,7 +81,7 @@ class MapeMaker:
             #: create a SimParams object and adjust distributions
             self.create_save_simparams(**kwargs)
             results = self.sid.simulate_multiple_scenarios(
-                output_dir, **kwargs)  #: simulate and store the scenarios
+                output_dir, target_scaled_capacity, **kwargs)  #: simulate and store the scenarios
 
         return results
 
