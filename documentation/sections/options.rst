@@ -112,6 +112,14 @@ The options of the package are :
      - \\-\\-x_legend
      - TEXT
      - legend for x in plot
+   * - -sb
+     - \\-\\-scale_by_capacity
+     - FLOAT
+     - scale by capacity instead of observations
+   * - -ts
+     - \\-\\-target_scaled_capacity
+     - FLOAT
+     - scale all scenario data 
    * -
      - \\-\\-help
      -
@@ -415,7 +423,30 @@ Options with More Details
  ``-xl "x legend"``
 
  If this option is not given, the x legend of the simulation plot is assumed to be None. Therefore, no additional legend will be added to the plot.
+|
+* **\\-\\-scale_by_capacity FLOAT**:
+ Calculate mean absolute relative error (MRAE) relative to capacity instead of observations.
+ 
+ The following are the two ways to specify that the capacity is 2000:
 
+ ``--scale_by_capacity 2000``
+
+ ``-sb 2000``
+
+ If this option is not given, scale by observation.
+
+ If this option is given to be 0, capacity is set to be the maximum of the observation.
+|
+* **\\-\\-target_scaled_capacity FLOAT**:
+ Optionally enter target capacity to scale all simulated data by target_capacity/capacity
+ 
+ The following are the two ways to specify that the target capacity is 1000:
+
+ ``--target_scaled_capacity 1000``
+
+ ``-ts 1000``
+
+ If this option is not given, simulated data is not scaled.
 
 By Default-options
 ------------------
@@ -445,3 +476,5 @@ By Default-options
 * **solver**                : gurobi
 * **title**                 : None, no additional title will be added to the plot
 * **x_legend**              : None, will use the feature of curves (actuals or forecasts)
+* **scale_by_capacity**     : None, will not scale by capacity
+* **target_scaled_capacity**: None, will not scale simulated data
