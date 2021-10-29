@@ -1,4 +1,4 @@
-from mape_maker import BPA_maker as BPAmain
+from mape_maker import fake_BPA_maker as BPAmain
 import unittest
 import mape_maker
 import pandas as pd
@@ -16,7 +16,7 @@ class TestUM(unittest.TestCase):
         mape_maker_path = p[l + 1:r]
         out_path = p[2:o-1]
         cls.BPA_data = mape_maker_path + dir_sep + "samples" + \
-            dir_sep + "2012-2013_BPA_forecasts_actuals.csv"
+            dir_sep + "fake_bpa_data.csv"
         cls.parser = BPAmain.make_parser()
         # cls.output_1 = out_path + dir_sep + "test" + \
         #     dir_sep + "test_output"

@@ -1,4 +1,4 @@
-from mape_maker import BPA_maker as BPAmain
+from mape_maker import CAISO_maker as CAISOmain
 import unittest
 import mape_maker
 import pandas as pd
@@ -15,15 +15,15 @@ class TestUM(unittest.TestCase):
         o = p.rfind('mape_maker')
         mape_maker_path = p[l + 1:r]
         out_path = p[2:o-1]
-        cls.BPA_data = mape_maker_path + dir_sep + "samples" + \
-            dir_sep + "2012-2013_BPA_forecasts_actuals.csv"
-        cls.parser = BPAmain.make_parser()
+        cls.CAISO_data = mape_maker_path + dir_sep + "samples" + \
+            dir_sep + "CAISO_wind_operational_data.csv"
+        cls.parser = CAISOmain.make_parser()
         # cls.output_1 = out_path + dir_sep + "test" + \
         #     dir_sep + "test_output"
         # cls.output_2 = out_path + dir_sep + "test" + \
         #     dir_sep + "test_output_another"
 
-    def test_BPA_maker(self):
+    def test_CAISO_maker(self):
         # 1st run
         parm_dict = {'-s': "1234",
                      '-o': "test_output",
@@ -35,8 +35,8 @@ class TestUM(unittest.TestCase):
             else:
                 parm_list += [i]
         args = self.parser.parse_args(parm_list)
-        outputpath = 'test_output/simulations_of_target_mape_9.1.csv'
-        BPAmain.main(args)
+        outputpath = 'test_output/simulations_of_target_mape_9.0.csv'
+        CAISOmain.main(args)
         l = pd.read_csv(outputpath)
         test_numbers = l.iloc[:, 1]  # 2nd column
         single_test_number_1 = test_numbers[1]
@@ -52,8 +52,8 @@ class TestUM(unittest.TestCase):
             else:
                 parm_list += [i]
         args = self.parser.parse_args(parm_list)
-        outputpath_2 = 'test_output/simulations_of_target_mape_9.1.csv'
-        BPAmain.main(args)
+        outputpath_2 = 'test_output/simulations_of_target_mape_9.0.csv'
+        CAISOmain.main(args)
         l = pd.read_csv(outputpath_2)
         test_numbers = l.iloc[:, 1]
         single_test_number_2 = test_numbers[1]
