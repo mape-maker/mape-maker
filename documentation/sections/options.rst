@@ -425,8 +425,11 @@ Options with More Details
  If this option is not given, the x legend of the simulation plot is assumed to be None. Therefore, no additional legend will be added to the plot.
 |
 * **\\-\\-scale_by_capacity FLOAT**:
- Calculate mean absolute relative error (MRAE) relative to capacity instead of observations.
+ Calculate MAPE relative to capacity instead of observations, i.e.
  
+ .. math::
+  mape = \frac{100}{n} \sum_{i=1}^n \frac{|f_i - a_i|}{cap}
+
  The following are the two ways to specify that the capacity is 2000:
 
  ``--scale_by_capacity 2000``
