@@ -27,3 +27,4 @@ actuals and forecasts, is possible.
    sections/CAISO_maker.rst
    sections/BPA_maker.rst
    sections/fake_BPA_maker.rst
+   sections/solar_mape_maker.rst

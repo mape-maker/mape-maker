@@ -19,7 +19,7 @@ Options
 
  ``-o "output"``
 
- If this option is not given, the output directory is assumed to be None. No output directory will be created.
+ This option is required, and if this option is not given, a value error will be raised.
 |
 * **\\-\\-simulation_start_dt TEXT**:
  The start date of the simulation of scenarios, must be between the input file date range. (format = "Y-m-d H:M:S")
@@ -29,7 +29,7 @@ Options
  ``-ss "2020-1-3 00:00:00"``
 
 
- If the simulation start date is not given, it will take the first date of the sid file as simulation start date (07-01-2013).
+ If the simulation start date is not given, it will take the first date of the sid file as simulation start date (2013-07-01 00:00:00).
 |
 * **\\-\\-simulation_end_dt TEXT**:
  The end date of the simulation of scenarios, must be between the input file date range. (format = "Y-m-d H:M:S")
@@ -38,11 +38,11 @@ Options
 
  ``-se "2020-1-3 00:00:00"``
 
- If the simulation end date is not given, it will take the last date of the sid file as simulation end date (06-30-2015).
+ If the simulation end date is not given, it will take the last date of the sid file as simulation end date (2015-06-30 23:00:00).
 |
 * **\\-\\-target_mape FLOAT**:
  The target MAPE (Mean Absolute Percentage Error) sets the value of the desired MAPE for the simulated data.
-
+ The MAPE will be computed based on capacity. 
  The following are the two ways to specify that the target MAPE should be 41.1:
 
  ``--target_mape 41.1``
@@ -73,8 +73,39 @@ Options
 
  In this option is not given, the seed used for simulation is 1234.
 |
+* **\\-\\-plot BOOLEAN**:
+ True if the user wants to plot the results.
+
+ The following are two ways to specify to plot the result:
+
+ ``--plot``
+
+ ``-p``
+
+ If this option is not given, the option is assumed to be False
+Example
+*******
+
+::
+
+    python -m mape_maker.CAISO_maker -o "CAISO_maker_test_output" -n 3 -ss "2013-07-01 00:00:00" -se "2014-07-01 00:00:00" -p
+
+
+* **-o "CAISO_maker_test_output"**:
+ Create an output directory called "CAISO_maker_test_output", in which will store the simulation output file.
+* **-n 3**:
+ The number of simulations that we want to create is "3". This will create three simulation columns in the output file.
+* **-ss "2013-07-01 00:00:00"**:
+ The start time of the simulation is "2013-07-01 00:00:00".
+* **-se "2014-07-01 00:00:00"**: 
+ The end time of the simulation is "2014-07-01 00:00:00".  
+* **-p**:
+ Plot the output
+|
 Imutable Features
 *****************
+The following MapeMaker options cannot be changed from the command line in ``CAISO_maker``.
+
 * **\\-\\-input_sid_file "mape_maker/samples/CAISO_wind_operational_data.csv"**:
  The csv file containing CAISO data.
 * **\\-\\-sid_feature "actuals"**:
@@ -104,27 +135,9 @@ Imutable Features
  Do not optimize the scenarios curvature.
 * **\\-\\-show_curv_model False**:
  Do not show the model for curvature. 
-* **\\-\\-plot False**:
- Do not plot the results.
 * **\\-\\-solver "gurobi"**:
  The name of the software that is used to perform the curvature optimization process is "gurobi".
 * **\\-\\-scale_by_capacity 0**:
  Scale by capacity, which is the maximum of the observation data.
 * **\\-\\-target_scaled_capacity None**:
  Simulated data is not scaled. 
-Example
-*******
-
-::
-
-    python -m mape_maker.CAISO_maker -o "test_output" -n 3 -ss "2013-07-01 00:00:00" -se "2014-07-01 00:00:00"
-
-
-* **-o "test_output"**:
- Create an output directory called "test_output", in which will store the simulation output file.
-* **-n 3**:
- The number of simulations that we want to create is "3". This will create three simulation columns in the output file.
-* **-ss "2013-07-01 00:00:00"**:
- The start time of the simulation is "2013-07-01 00:00:00".
-* **-se "2014-07-01 00:00:00"**: 
- The end time of the simulation is "2014-07-01 00:00:00".

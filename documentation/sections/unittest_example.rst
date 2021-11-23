@@ -41,6 +41,19 @@ Unittest Examples for Wind and Load
 |
 |
 
+**cap_test.py**
+
+* This test is used to check whether the scale_by_capacity option works properly.
+|
+|
+
+**cap_scale_test.py**
+
+* This test is used to check whether the target_scale_capacity option works properly by comparing the data
+  scaled by the input option and the manually scaled data.
+|
+|
+
 Unittest Examples for RTS WIND and BUS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 **RTS Wind Unittest Examples**
@@ -55,3 +68,22 @@ Unittest Examples for RTS WIND and BUS
 **Bus_220_Load_test.py**
 
 * This test is used to see whether the sample command line for Load example will run successfully.
+
+|
+|
+Unittest Examples for xxx_makers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**BPA_maker_test.py**
+
+* This test is used to see whether the BPA_maker will run successfully.
+|
+
+**fake_BPA_maker_test.py**
+
+* This test is used to see whether the fake_BPA_maker will run successfully.
+|
+**CAISO_maker_test.py**
+
+* This test is used to see whether the CAISO_maker will run successfully.
+|
