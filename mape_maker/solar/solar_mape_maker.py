@@ -12,8 +12,6 @@ import glob
 import shutil
 import os
 
-# TODO: -f 'forecasts' skipping data
-
 
 def get_irradiance(site_location, tilt, surface_azimuth, times):
     clearsky = site_location.get_clearsky(times)
@@ -241,11 +239,11 @@ def make_parser():
     parser.add_argument('-sv', '--solver',
                         help='curvature solver',
                         default='gurobi')
-    parser.add_argument('-sb', '--scale_by_capacity',
-                        help='scale by capacity instead of observations '
-                        'optionally enter the capacity (enter 0 to use max observation)',
-                        type=float,
-                        default=0)
+    # parser.add_argument('-sb', '--scale_by_capacity',
+    #                     help='scale by capacity instead of observations '
+    #                     'optionally enter the capacity (enter 0 to use max observation)',
+    #                     type=float,
+    #                     default=0)
     parser.add_argument('-lc', '--location_coor',
                         help='one or more pairs of location coordinates. Use space to separate\
                             numbers and enter in the sequence of lat_1 lon_1 lat_2 lon_2...',
@@ -257,34 +255,19 @@ def main(args):
     solar_output_dir = args.solar_output_dir
     solar_plot = args.solar_plot
     input_solar_file = args.input_solar_file
-    input_sid_file = args.input_sid_file
-    target_mape = args.target_mape
-    base_process = args.base_process
-    a = args.a
     simulations_num = args.simulations_num
     input_start_time = args.input_start_time
     input_end_time = args.input_end_time
     simulation_start_time = args.simulation_start_time
     simulation_end_time = args.simulation_end_time
-    seed = args.seed
-    load_pickle = args.load_pickle
-    curvature = args.curvature
-    time_limit = args.time_limit
-    curvature_target = args.curvature_target
-    show_curv_model = args. show_curv_model
-    mip_gap = args.mip_gap
-    solver = args.solver
-    verbosity = args.verbosity
-    verbosity_output = args.verbosity_output
-    sid_feature = args.sid_feature
-    plot_start_date = args.plot_start_date
-    plot = args. plot
     location_coor = args.location_coor
-    scale_by_capacity = args.scale_by_capacity
+
     args.input_xyid_file = 'deviation.csv'
     args.output_dir = 'midstep_output'
     args.title = None
     args.x_legend = None
+    args.target_scaled_capacity = None
+    args.scale_by_capacity = 0
 
     upper = deviation(input_start_time, input_end_time,
                       location_coor, input_solar_file)
@@ -320,4 +303,4 @@ if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
     main(args)
- # python Solar.py -isf 'Solar_Taxes_2018.csv' -is '2018-07-01 00:00:00' -ie '2018-12-01 00:00:00' -ss '2018-07-01 00:00:00' -se '2018-07-07 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'test_output' -sp
+ # python -m mape_maker.solar.Solar -isf '/home/naijing/Desktop/work/mape-maker-Naijing/mape_maker/solar/Solar_Taxes_2018.csv' -is '2018-07-01 00:00:00' -ie '2018-12-01 00:00:00' -ss '2018-07-01 00:00:00' -se '2018-07-07 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'solar_test_output' -sp

@@ -1,0 +1,1 @@
+# make solar a module
