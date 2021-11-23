@@ -3,6 +3,7 @@ import unittest
 import mape_maker
 import pandas as pd
 import shutil
+from datetime import datetime
 dir_sep = '/'
 
 
@@ -27,7 +28,9 @@ class TestUM(unittest.TestCase):
         # 1st run
         parm_dict = {'-s': "1234",
                      '-o': "test_output",
-                     '-n': "3"}
+                     '-n': "3",
+                     '-ss': str(datetime(year=2013, month=1, day=1, hour=0, minute=0, second=0)),
+                     '-se': str(datetime(year=2013, month=7, day=1, hour=0, minute=0, second=0))}
         parm_list = []
         for i, j in parm_dict.items():
             if j is not None:
@@ -44,7 +47,9 @@ class TestUM(unittest.TestCase):
         # 2nd run
         parm_dict = {'-s': "1234",
                      '-o': "test_output_another",
-                     '-n': "3"}
+                     '-n': "3",
+                     '-ss': str(datetime(year=2013, month=1, day=1, hour=0, minute=0, second=0)),
+                     '-se': str(datetime(year=2013, month=7, day=1, hour=0, minute=0, second=0))}
         parm_list = []
         for i, j in parm_dict.items():
             if j is not None:
