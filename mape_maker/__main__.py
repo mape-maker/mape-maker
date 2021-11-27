@@ -124,6 +124,14 @@ def make_parser():
                         help='scale all scenario data by target_capacity/capacity',
                         type=float,
                         default=None)
+    # user should not change this option
+    parser.add_argument('--use_output_as_intermidiate',
+                        help='True if other module (solar) uses MapeMaker\
+                        as an intermidiate step and will delete output directory. If true, the log will not show\
+                        the simulation is saved.',
+                        default=False,
+                        action='store_true')
+
     return parser
 
 
@@ -204,7 +212,8 @@ def main(args):
               logger=logger,
               scale_by_capacity=args.scale_by_capacity,
               cap=mare_embedder.xyid.dataset_info.get("cap"),
-              target_scaled_capacity=args.target_scaled_capacity)
+              target_scaled_capacity=args.target_scaled_capacity,
+              use_output_as_intermidiate=args.use_output_as_intermidiate)
 
 
 if __name__ == '__main__':

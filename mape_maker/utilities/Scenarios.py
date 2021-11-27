@@ -13,7 +13,8 @@ class Scenarios:
     """
 
     def __init__(self, logger: Logger, X, Y, results=None, target_mare=None, f_mare=None, plot_start_date=0, output_dir: str = None, plot: bool = True,
-                 title: str = "", x_legend: str = "", ending_feature: str = "", scale_by_capacity: float = None, cap: float = None, target_scaled_capacity: float = None):
+                 title: str = "", x_legend: str = "", ending_feature: str = "", scale_by_capacity: float = None, cap: float = None, target_scaled_capacity: float = None,
+                 use_output_as_intermidiate: bool = False):
         """
 
                 Args:
@@ -44,6 +45,7 @@ class Scenarios:
         self.logger = logger
         self. scale_by_capacity = scale_by_capacity
         self.cap = cap
+        self.use_output_as_intermidiate = use_output_as_intermidiate
 
         if results is not None:
             self.scenario = []
@@ -101,10 +103,11 @@ class Scenarios:
         basename = basename.replace(':', '-')
         basename = basename.replace(' ', '_')
         outfile = self.output_dir + os.sep + basename + ".csv"
-        if outfile is not None:
-            self.logger.info(
-                loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
+        if outfile is not None:  # TODO: do not display if using solar
             self.scenarios.to_csv(outfile)
+            if self.use_output_as_intermidiate == False:
+                self.logger.info(
+                    loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
 
     def plot_results(self, cap, target_scaled_capacity):
         """
