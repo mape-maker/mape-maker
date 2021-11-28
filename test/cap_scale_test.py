@@ -121,6 +121,10 @@ class TestUM(unittest.TestCase):
             shutil.rmtree('test_output_3')
         except:
             pass
+        try:
+            os.remove("mmFinalFig.png")
+        except:
+            pass
 
 
 if __name__ == "__main__":

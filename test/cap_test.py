@@ -82,6 +82,10 @@ class TestUM(unittest.TestCase):
             shutil.rmtree('test_output_another')  # delete the output dir
         except:
             pass
+        try:
+            os.remove("mmFinalFig.png")
+        except:
+            pass
 
 
 if __name__ == "__main__":
