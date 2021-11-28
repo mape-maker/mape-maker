@@ -26,7 +26,7 @@ class TestUM(unittest.TestCase):
         # cls.output_2 = out_path + dir_sep + "test" + \
         #     dir_sep + "test_output_another"
 
-    def test_CAISO_wind_actuals_cap_maxx(self):
+    def test_CAISO_wind_actuals_cap_scale(self):
         # 1st run, use -ts scale to 100
         parm_dict = {'-xf': self.wind_data, '-s': "1234",
                      '-is': str(datetime(year=2014, month=7, day=1, hour=0, minute=0, second=0)),
