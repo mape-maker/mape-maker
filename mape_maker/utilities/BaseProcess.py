@@ -5,8 +5,8 @@ from logging import Logger
 import os
 import itertools
 import scipy.optimize
-from statsmodels.tsa.arima.model import ARIMA
-from statsmodels.tsa.arima.model import ARIMAResults
+from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima_model import ARIMAResults
 file_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 loading_bar = "-"*70
 
