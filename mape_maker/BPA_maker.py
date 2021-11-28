@@ -88,6 +88,7 @@ def main(args):
     args.title = None
     args.x_legend = None
     args.scale_by_capacity = 0
+    args.use_output_as_intermidiate = False
     mapemain(args)
 
 
