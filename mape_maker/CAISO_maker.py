@@ -5,8 +5,6 @@ import pandas as pd
 from argparse import ArgumentParser
 from datetime import timedelta
 
-# TODO: don't have actual for the last day, still allow last day?
-
 p = str(mape_maker.__path__)
 p_start = p.find("'")
 p_end = p.find("'", p_start + 1)

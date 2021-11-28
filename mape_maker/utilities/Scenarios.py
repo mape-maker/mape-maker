@@ -103,7 +103,7 @@ class Scenarios:
         basename = basename.replace(':', '-')
         basename = basename.replace(' ', '_')
         outfile = self.output_dir + os.sep + basename + ".csv"
-        if outfile is not None:  # TODO: do not display if using solar
+        if outfile is not None:
             self.scenarios.to_csv(outfile)
             if self.use_output_as_intermidiate == False:
                 self.logger.info(
