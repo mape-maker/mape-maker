@@ -14,3 +14,4 @@ scipy
 six
 statsmodels
 verboselogs
+pvlib
