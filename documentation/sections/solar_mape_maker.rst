@@ -326,14 +326,14 @@ Example
  The start time of the simulation is "2018-07-01 00:00:00".
 * **-se "2018-07-07 00:00:00"**: 
  The end time of the simulation is "2013-07-07 00:00:00".  
-* **-bp "iid"**
+* **-bp "iid"**:
  Use “iid” as the base process. The default base process is set as “ARMA”.
-* **-lc "37 -103 31 -94 26 -98 32 -107"**
-  Specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W)
+* **-lc "37 -103 31 -94 26 -98 32 -107"**:
+ Specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W).
 * **-sts 100**:
- Specify the target capacity is 100, and scale all scenario data by target_capacity/capacity, where capacity is the max of observation
+ Specify the target capacity is 100, and scale all scenario data by target_capacity/capacity, where capacity is the max of observation.
 * **-sp**:
- Plot the output
+ Plot the output.
 |
 
 Default option values
