@@ -52,14 +52,13 @@ def flatten(t):
     return out
 
 
-def deviation(start_time, end_time, location_coor, input_solar_file):
+def deviation(start_time, end_time, location_coor, input_solar_file, x_name):
     try:
         obs = pd.read_csv(input_solar_file)
     except:
         raise ValueError('Invalid input solar file name')
     obs = obs.set_index(pd.DatetimeIndex(pd.to_datetime(obs['datetime'])))
     obs = obs.iloc[:, 1:]
-    obs.to_csv('Solar_Taxes_2018.csv')
     if start_time == None:
         start_time = str(obs.index[0])
     if end_time == None:
@@ -71,12 +70,13 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
             obs.index[0], obs.index[-1]))
     obs = obs[(obs.index >= start_time)
               & (obs.index < end_time)]
-    # tz = 'Etc/GMT-0'
+    cap = max(obs[x_name])
     times = pd.date_range(start=start_time,
                           end=end_time, freq='60min', closed='left')
+    location_coor = list(location_coor[0].split())
+    for i in range(len(location_coor)):
+        location_coor[i] = int(location_coor[i])
     length = int(len(location_coor))
-    if (length % 2) != 0:
-        raise ValueError('Invalid coordinate list')
     POA = pd.DataFrame()
     for i in range(int(length/2)):
         lat = location_coor[2*i]
@@ -130,11 +130,8 @@ def deviation(start_time, end_time, location_coor, input_solar_file):
     deviation_df = pd.DataFrame(
         forecast_div, index=times, columns=['forecasts'])
     deviation_df['actuals'] = upper_df.values-actual.values
-    # fig = deviation_df.plot()
-    # fig.figure.savefig('deviation')
     deviation_df.to_csv('deviation.csv')  # input for mape_maker, needed
-    return upper_df
-    # TODO: remember to delete plot
+    return upper_df, cap
 
 
 def make_parser():
@@ -227,11 +224,7 @@ def make_parser():
                         help='show model of curvature',
                         default=False,
                         action='store_true')
-    # changed plot default to False since this is the midstep plot
-    parser.add_argument('-p', '--plot',
-                        help='plot simulations',
-                        default=False,
-                        action='store_true')
+    # plot for solar, the original plot (for deviation) is disabled here
     parser.add_argument('-sp', '--solar_plot',
                         help='solar plot simulations',
                         default=False,
@@ -239,15 +232,15 @@ def make_parser():
     parser.add_argument('-sv', '--solver',
                         help='curvature solver',
                         default='gurobi')
-    # parser.add_argument('-sb', '--scale_by_capacity',
-    #                     help='scale by capacity instead of observations '
-    #                     'optionally enter the capacity (enter 0 to use max observation)',
-    #                     type=float,
-    #                     default=0)
-    parser.add_argument('-lc', '--location_coor',
+    parser.add_argument('-lc', '--location_coordinate',
                         help='one or more pairs of location coordinates. Use space to separate\
                             numbers and enter in the sequence of lat_1 lon_1 lat_2 lon_2...',
-                        nargs='+', type=int, required=True)
+                        nargs='+', required=True)
+    # target_scale_cap for solar, the original option is disabled here
+    parser.add_argument('-sts', '--solar_target_scaled_capacity',
+                        help='scale all solar scenario data by target_capacity/capacity',
+                        type=float,
+                        default=None)
     return parser
 
 
@@ -260,17 +253,23 @@ def main(args):
     input_end_time = args.input_end_time
     simulation_start_time = args.simulation_start_time
     simulation_end_time = args.simulation_end_time
-    location_coor = args.location_coor
-
+    location_coor = args.location_coordinate
+    solar_target_scaled_capacity = args.solar_target_scaled_capacity
     args.input_xyid_file = 'deviation.csv'
     args.output_dir = 'midstep_output'
     args.title = None
     args.x_legend = None
     args.target_scaled_capacity = None
     args.scale_by_capacity = 0
-
-    upper = deviation(input_start_time, input_end_time,
-                      location_coor, input_solar_file)
+    # save (then delete) output file from MapeMaker, but do not show on log
+    args.use_output_as_intermidiate = True
+    args.plot = False
+    if args.sid_feature == "actuals":
+        x_name = "forecasts"
+    elif args.sid_feature == "forecasts":
+        x_name = "actuals"
+    upper, cap = deviation(input_start_time, input_end_time,
+                           location_coor, input_solar_file, x_name)
     upper = upper[(upper.index >= simulation_start_time)
                   & (upper.index < simulation_end_time)]
     mapemain(args)
@@ -285,6 +284,9 @@ def main(args):
     after_mape = -after_mape
     for i in range(simulations_num):
         after_mape.iloc[:, i] = (after_mape.iloc[:, i]+upper['upper bound'])
+    if solar_target_scaled_capacity != None:
+        after_mape = after_mape * \
+            (solar_target_scaled_capacity/cap)
     if solar_plot == True:
         fig = after_mape.plot()
         fig.figure.savefig('results')
@@ -292,10 +294,12 @@ def main(args):
     if not os.path.exists(dir):
         os.mkdir(dir)
         after_mape.to_csv(dir + '/simulations.csv')
+        print('output saved to' + ' ' + solar_output_dir)
     else:
         raise ValueError('Directory already exists.')
 
-    shutil.rmtree(args.output_dir)  # delete midstep dir
+    # delete midstep files
+    shutil.rmtree(args.output_dir)
     os.remove('deviation.csv')
 
 
