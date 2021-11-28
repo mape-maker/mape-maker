@@ -5,17 +5,16 @@ solar_mape_maker
 The ``solar_mape_maker.py`` program enables creation of scenario files using solar data.
 It calculates the difference between the input data and upper bound of solar energy generation at the same time 
 as the input data. The upper bound uses the maximum of clear-sky POA from the location parameters users put in,
-and the algorithm is described in *Constructing probabilistic scenarios for wide-area solar power generation* by
-Professor David Woodruff et al. 
+and the algorithm is described in *Constructing probabilistic scenarios for wide-area solar power generation* by David L. Woodruff, et al. (<https://doi.org/10.1016/j.solener.2017.11.067>, see citing section for more information).
+
 This difference is used to feed in ``Mape_Maker`` to generate scenarios. Then the output of ``Mape_Maker`` is added
 to the upper bound to create the final solar scenarios. 
 
-Required Argument
-*****************
+Required Arguments
+******************
 |
 * **\\-\\-input_solar_file TEXT**:
- The path to input solar dataset that contains date time, forecasts and actuals (the same format as the input
-  of ``Mape_Maker``).
+ The path to input solar dataset that contains date time, forecasts and actuals (the same format as the input of ``Mape_Maker``).
 
  The following specify "solar_data.csv" as the input file:
 
@@ -32,15 +31,15 @@ Required Argument
 
  The following specify the location as (37N 103W):
 
- ``--location_coor 37 -103``
+ ``--location_coor "37 -103"``
 
- ``-lc 37 -103``
+ ``-lc "37 -103"``
 
  The following specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W)
  
- ``--location_coor 37 -103 31 -94 26 -98 32 -107``
+ ``--location_coor "37 -103 31 -94 26 -98 32 -107"``
 
- ``-lc 37 -103 31 -94 26 -98 32 -107``
+ ``-lc "37 -103 31 -94 26 -98 32 -107"``
 
 Options
 *******
@@ -295,14 +294,25 @@ Options
  ``-sv "cplex"``
 
  If this option is not given, the solver is assumed to be "gurobi".
+|
+* **\\-\\-solar_target_scaled_capacity FLOAT**:
+ Optionally enter target capacity to scale all simulated data by target_capacity/capacity
+ 
+ The following are the two ways to specify that the target capacity is 100:
 
+ ``--solar_target_scaled_capacity 100``
+
+ ``-sts 100``
+
+ If this option is not given, simulated data is not scaled.
+|
 Example
 *******
 
 ::
 
-    python -m mape_maker.solar.solar_mape_maker -isf "mape_maker/solar/Solar_Taxes_2018.csv" -so "solar_test_output" -n 3 -is '2018-07-01 00:00:00' -ie '2018-12-01 00:00:00' -ss '2018-07-01 00:00:00' -se '2018-07-07 00:00:00' -n 2 -bp 'iid' -lc 37 -103 31 -94 26 -98 32 -107 -so 'test_output' -sp
-* **-isf "mape_maker/solar/Solar_Taxes_2018.csv"**:
+    python -m mape_maker.solar.solar_mape_maker -isf "mape_maker/solar/NREL_solar_data.csv" -so "solar_test_output" -n 3 -is "2018-07-01 00:00:00" -ie "2018-12-01 00:00:00" -ss "2018-07-01 00:00:00" -se "2018-07-07 00:00:00" -n 2 -bp "iid" -lc "37 -103 31 -94 26 -98 32 -107" -so "solar_test_output" -sts 100 -sp
+* **-isf "mape_maker/solar/NREL_solar_data.csv"**:
  The csv file containing forecasts and actuals for specified datetimes.
 * **-so "solar_test_output"**:
  Create an output directory called "solar_test_output", in which will store the simulation output file.
@@ -316,16 +326,18 @@ Example
  The start time of the simulation is "2018-07-01 00:00:00".
 * **-se "2018-07-07 00:00:00"**: 
  The end time of the simulation is "2013-07-07 00:00:00".  
-* **-bp 'iid'**
+* **-bp "iid"**
  Use “iid” as the base process. The default base process is set as “ARMA”.
-* **-lc 37 -103 31 -94 26 -98 32 -107**
+* **-lc "37 -103 31 -94 26 -98 32 -107"**
   Specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W)
+* **-sts 100**:
+ Specify the target capacity is 100, and scale all scenario data by target_capacity/capacity, where capacity is the max of observation
 * **-sp**:
  Plot the output
 |
 
-By Default-options
-------------------
+Default option values
+---------------------
 
 * **input_sid_file**        : None, will take the input dataset as sid
 * **solar_output**          : None, no output_file will be created while a plot will be outputted
@@ -349,12 +361,15 @@ By Default-options
 * **show_curv_model**       : False
 * **solar_plot**            : False
 * **solver**                : gurobi
+* **solar_target_scaled_capacity** : None, will not scale scenario data
 
 Imutable Features
 *****************
 The following MapeMaker options cannot be changed from the command line in ``solar_mape_maker``.
 
 * **\\-\\-scale_by_capacity 0**:
- Scale by capacity, which is the maximum of the observation data.
+ Scale MAPE by capacity, which is the maximum of the observation data.
 * **\\-\\-target_scaled_capacity None**:
- Simulated data is not scaled. 
+ Simulated data from ``MapeMaker`` is not scaled, 
+ since the input and output of ``MapeMaker`` are deviations.
+ ``--solar_target_scaled_capacity`` or ``-sts`` is used if the user want to scale all scenario data.
