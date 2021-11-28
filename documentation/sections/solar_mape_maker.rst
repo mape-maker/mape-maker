@@ -313,7 +313,7 @@ Example
 
     python -m mape_maker.solar.solar_mape_maker -isf "mape_maker/solar/NREL_solar_data.csv" -so "solar_test_output" -n 3 -is "2018-07-01 00:00:00" -ie "2018-12-01 00:00:00" -ss "2018-07-01 00:00:00" -se "2018-07-07 00:00:00" -n 2 -bp "iid" -lc "37 -103 31 -94 26 -98 32 -107" -so "solar_test_output" -sts 100 -sp
 * **-isf "mape_maker/solar/NREL_solar_data.csv"**:
- The csv file containing forecasts and actuals for specified datetimes.
+ The csv file of NREL solar data at the system level for Texas 7k, containing forecasts and actuals from 2018-01-01 to 2018-12-31.
 * **-so "solar_test_output"**:
  Create an output directory called "solar_test_output", in which will store the simulation output file.
 * **-n 2**:
