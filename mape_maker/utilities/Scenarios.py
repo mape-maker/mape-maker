@@ -13,7 +13,8 @@ class Scenarios:
     """
 
     def __init__(self, logger: Logger, X, Y, results=None, target_mare=None, f_mare=None, plot_start_date=0, output_dir: str = None, plot: bool = True,
-                 title: str = "", x_legend: str = "", ending_feature: str = "", scale_by_capacity: float = None, cap: float = None):
+                 title: str = "", x_legend: str = "", ending_feature: str = "", scale_by_capacity: float = None, cap: float = None, target_scaled_capacity: float = None,
+                 use_output_as_intermidiate: bool = False):
         """
 
                 Args:
@@ -44,6 +45,7 @@ class Scenarios:
         self.logger = logger
         self. scale_by_capacity = scale_by_capacity
         self.cap = cap
+        self.use_output_as_intermidiate = use_output_as_intermidiate
 
         if results is not None:
             self.scenario = []
@@ -84,7 +86,7 @@ class Scenarios:
             self.save_output()
 
         if plot:
-            self.plot_results()
+            self.plot_results(cap, target_scaled_capacity)
 
     def save_output(self):
         """
@@ -102,14 +104,19 @@ class Scenarios:
         basename = basename.replace(' ', '_')
         outfile = self.output_dir + os.sep + basename + ".csv"
         if outfile is not None:
-            self.logger.info(
-                loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
             self.scenarios.to_csv(outfile)
+            if self.use_output_as_intermidiate == False:
+                self.logger.info(
+                    loading_bar + "\nStoring the output for {} in {}".format(name, outfile))
 
-    def plot_results(self):
+    def plot_results(self, cap, target_scaled_capacity):
         """
         plot forecasts, actuals, and simulations
         """
+        if target_scaled_capacity != None:
+            scale = cap/target_scaled_capacity
+            self.Y = self.Y.div(scale)
+            self.X = self.X.div(scale)
         datetime = list(self.scenarios.keys())[0]
         index = self.scenarios[datetime].iloc[self.plot_start_date *
                                               40:(self.plot_start_date + 1) * 40].index

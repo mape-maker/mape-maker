@@ -13,6 +13,7 @@ class SID(Dataset):
         SimParams (Dict[datasetx, float]): dictionary of maximum attainable mean absolute error for each x
 
     """
+
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.SimParams = None
@@ -20,8 +21,9 @@ class SID(Dataset):
         self.seed = None
         self.number_of_simulations = 0
         self.curvature_parameters = None
+        self.scale = None
 
-    def simulate_multiple_scenarios(self, output_dir: str, **kwargs):
+    def simulate_multiple_scenarios(self, output_dir: str, target_scaled_capacity, **kwargs):
         """simulate multiple scenarios and store them in output dir
 
         Notes:
@@ -39,14 +41,19 @@ class SID(Dataset):
             simulation = self.simulate_one_scenario()
             simulation.name = simulation.name + "_n_{}".format(i)
             simulations = pd.concat([simulations, simulation], axis=1)
+        if target_scaled_capacity != None:
+            scale = self.dataset_info["cap"]/target_scaled_capacity
+            simulations = simulations.div(scale)
         return simulations
 
     def simulate_one_scenario(self):
         simulation = pd.DataFrame(index=self.x_t.index)
         simulation.loc[self.x_t.index, "x"] = self.x_t
-        simulation["base_process"] = self.arma_process.simulate_base_process(self.x_t)
+        simulation["base_process"] = self.arma_process.simulate_base_process(
+            self.x_t)
         simulation["error"] = simulation.apply(self.from_bp_to_errors, axis=1)
-        simulation[self.y_name] = simulation.apply(self.from_errors_to_simulated, axis=1, **{"cap": self.dataset_info['cap']})
+        simulation[self.y_name] = simulation.apply(
+            self.from_errors_to_simulated, axis=1, **{"cap": self.dataset_info['cap']})
         simulation = self.adjust_curvature(simulation)
         return simulation
 
@@ -67,10 +74,12 @@ class SID(Dataset):
         return simulation
 
     def from_bp_to_errors(self, row):
-        x = row["x"]  # row has three rows : error, x, bp, and set datetime as columns
+        # row has three rows : error, x, bp, and set datetime as columns
+        x = row["x"]
         bp = row["base_process"]
         a, b, loc, scale = self.s_x[x]
-        simulated_error = beta.ppf(bp, a, b, loc=loc, scale=scale)  # scale = 0 cause NAN
+        simulated_error = beta.ppf(
+            bp, a, b, loc=loc, scale=scale)  # scale = 0 cause NAN
         return simulated_error
 
     def from_errors_to_simulated(self, row, floored=True, simulators=(), floor=0, cap=4500, show_errors=False):
@@ -88,7 +97,8 @@ class SID(Dataset):
         if floored:
             if y < floor or y > cap:
                 if show_errors is True:
-                    self.logger.error("Error : y = {} max is {}, \n   {}".format(y, cap, row))
+                    self.logger.error(
+                        "Error : y = {} max is {}, \n   {}".format(y, cap, row))
                 if len(simulators) == 2:
                     while y < floor:
                         y = simulators[0](np.random.uniform(0, 1, 1))[0]

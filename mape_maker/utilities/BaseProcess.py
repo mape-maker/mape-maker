@@ -10,6 +10,7 @@ from statsmodels.tsa.arima_model import ARIMAResults
 file_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 loading_bar = "-"*70
 
+
 class BaseProcess:
     """Class estimating and simulating the base process of an underlying error timeseries
 
@@ -19,7 +20,7 @@ class BaseProcess:
         the gaussian cdf.
 
     """
-    n_init = 10 #for simulation
+    n_init = 10  # for simulation
 
     def __init__(self, logger: Logger, z_hat: pd.DataFrame = None, base_process: str = "ARMA", name: str = None,
                  load_coeffs: bool = False) -> None:
@@ -58,8 +59,9 @@ class BaseProcess:
 
     def simulate_base_process(self, x_t):
         simulation = pd.DataFrame(index=x_t.index, columns=["base_process"])
-        if self.model is None: #user wants IID
-            base_process = pd.Series(index=simulation.index, data=np.random.uniform(0, 1, len(simulation.index)))
+        if self.model is None:  # user wants IID
+            base_process = pd.Series(
+                index=simulation.index, data=np.random.uniform(0, 1, len(simulation.index)))
         else:
             base_process = self.simulate_arma(index=x_t.index)
             base_process = base_process.iloc[BaseProcess.n_init:]
@@ -76,14 +78,15 @@ class BaseProcess:
         while i < n:
             simulations[i] = np.inner(ar[::-1], simulations[i - len(ar):i]) + np.inner(ma[::-1],
                                                                                        errors[i - len(ma):i]) \
-                             + errors[i]
+                + errors[i]
             i += 1
-        testing_estimation = pd.DataFrame(columns=["base_process"], data=simulations)
+        testing_estimation = pd.DataFrame(
+            columns=["base_process"], data=simulations)
         simulations = norm.cdf(simulations)
         self.logger.info("Checking assumptions. Variance simulated should be close to 1 and is {} \n"
                          "Mean simulated should be close to 0 and is {}".format(
-            '%.1f' % np.std(testing_estimation) ** 2,
-            '%.1f' % np.mean(testing_estimation) ** 2))
+                             '%.1f' % np.std(testing_estimation) ** 2,
+                             '%.1f' % np.mean(testing_estimation) ** 2))
         simulation = pd.DataFrame(columns=["base_process"], data=simulations)
         return simulation
 
@@ -95,11 +98,14 @@ class BaseProcess:
         model = ARIMA(z_hat, order=pgq)
         self.model = model.fit(disp=0)
         self.logger.info(self.model.summary())
-        self.logger.info("\n-Setting up the correct std for the error so that V[Z] = 1")
-        n_sigma = setting_correct_sigma(self.model.arparams, self.model.maparams)
+        self.logger.info(
+            "\n-Setting up the correct std for the error so that V[Z] = 1")
+        n_sigma = setting_correct_sigma(
+            self.model.arparams, self.model.maparams)
         before = self.model.sigma2
         self.model.sigma2 = n_sigma
-        self.logger.info("The sigma2 of the estimated model was {} and is now {}".format(before, self.model.sigma2))
+        self.logger.info("The sigma2 of the estimated model was {} and is now {}".format(
+            before, self.model.sigma2))
         # self.logger.info("Testing ...")
         return self.model
         # self.order = pgq
@@ -127,9 +133,9 @@ def find_best_arma_repr(logger, base_process):
             if model_fit.bic < bic:
                 best_model = (p, d, q)
                 bic = model_fit.bic
-                logger.info("{},{},{} BIC = {}".format(p,d,q, model_fit.bic))
+                logger.info("{},{},{} BIC = {}".format(p, d, q, model_fit.bic))
         except Exception as e:
-            logger.info("{},{},{} rejected:".format(p,d,q))
+            logger.info("{},{},{} rejected:".format(p, d, q))
             logger.error(e)
             continue
 
@@ -150,7 +156,7 @@ def setting_correct_sigma(ar, ma):
         i = max(len(ar), len(ma))
         while i < n:
             simulations[i] = np.inner(ar[::-1], simulations[i - len(ar):i]) + np.inner(ma[::-1], errors[i - len(ma):i]) \
-                             + errors[i]
+                + errors[i]
             i += 1
         return (float(np.std(simulations))**2 - 1)**2
 

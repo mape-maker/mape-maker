@@ -1,134 +1,48 @@
-.. _Options:
+.. _solar_mape_maker:
+
+solar_mape_maker
+================
+The ``solar_mape_maker.py`` program enables creation of scenario files using solar data.
+It calculates the difference between the input data and upper bound of solar energy generation at the same time 
+as the input data. The upper bound uses the maximum of clear-sky POA from the location parameters users put in,
+and the algorithm is described in *Constructing probabilistic scenarios for wide-area solar power generation* by David L. Woodruff, et al. (<https://doi.org/10.1016/j.solener.2017.11.067>, see citing section for more information).
+
+This difference is used to feed in ``Mape_Maker`` to generate scenarios. Then the output of ``Mape_Maker`` is added
+to the upper bound to create the final solar scenarios. 
+
+Required Arguments
+******************
+|
+* **\\-\\-input_solar_file TEXT**:
+ The path to input solar dataset that contains date time, forecasts and actuals (the same format as the input of ``Mape_Maker``).
+
+ The following specify "solar_data.csv" as the input file:
+
+ ``--input_solar_file "solar_data.csv"``
+
+ ``-isf "solar_data.csv"``
+
+|
+* **\\-\\---location_coor int**:
+ The coordinates of the location where the input solar data is collected.
+ It can be either a pair of coordinates for data collected from an individual site, or several pairs of coordinates
+ that are the extreme points (northernmost/southernmost/easternmost/westernmost) of the group of sites from which
+ the data is collected. Use space to separate numbers and enter in the sequence of latitude_1 longitude_1 latitude_2 longitude_2
+
+ The following specify the location as (37N 103W):
+
+ ``--location_coor "37 -103"``
+
+ ``-lc "37 -103"``
+
+ The following specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W)
+ 
+ ``--location_coor "37 -103 31 -94 26 -98 32 -107"``
+
+ ``-lc "37 -103 31 -94 26 -98 32 -107"``
 
 Options
-=======
-The options of the package are :
-
-::
-
-    python mape_maker --help
-
-.. list-table::
-   :widths: 20 35 15 50
-   :header-rows: 1
-
-   * - Options
-     - Full Name
-     - Types
-     - Details
-   * - -sf
-     - \\-\\-input_sid_file
-     - TEXT
-     - path to a simulation input dataset with one or two timeseries (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)
-   * - -o
-     - \\-\\-output_dir
-     - TEXT
-     - path to destination dir where the scenario csv file(s) are saved
-    * - -vo
-     - \\-\\-verbosity_output
-     - TEXT
-     -  the name of the verbosity output file
-   * - -is
-     - \\-\\-input_start_dt
-     - TEXT
-     - start date for the estimation of the distributions, format = 'Y-m-d H:M:S'
-   * - -ie
-     - \\-\\-input_end_dt
-     - TEXT
-     - end date for the estimation of the distributions, format = 'Y-m-d H:M:S'
-   * - -ss
-     - \\-\\-simulation_start_dt
-     - TEXT
-     - start date for the simulation of scenarios, format='Y-m-d H:M:S'
-   * - -se
-     - \\-\\-simulation_end_dt
-     - TEXT
-     - end date for the simulation of scenarios, format='Y-m-d H:M:S'
-   * - -t
-     - \\-\\-target_mape
-     - FLOAT
-     - desired mape, otherwise will take the mape based on the input dataset
-   * - -a
-     - \\-\\-a
-     - FLOAT
-     - percent of data on the left and/or on the right for the estimation of conditional beta distribution parameters
-   * - -ct
-     - \\-\\-curvature_target
-     - FLOAT
-     - target of the second difference for curvature optimization
-   * - -m
-     - \\-\\-mip_gap
-     - FLOAT
-     - mip gap for curvature optimization
-   * - -n
-     - \\-\\-number_simulations
-     - INTEGER
-     - number of simulations (scenarios)
-   * - -tl
-     - \\-\\-time_limit
-     - INTEGER
-     - time limit for curvature optimization
-   * - -ps
-     - \\-\\-plot_start_date
-     - INTEGER
-     - start date for plot(if 0, the start date is the first date of the simulations)
-   * - -s
-     - \\-\\-seed
-     - INTEGER
-     - seed for the pseudo-random seed
-   * - -v
-     - \\-\\-verbosity
-     - INTEGER
-     - verbosity level
-    * - -f
-     - \\-\\-sid_feature
-     - TEXT
-     - feature you want to simulate - 'actuals' or 'forecasts'
-   * - -bp
-     - \\-\\-base_process
-     - TEXT
-     - base process - 'iid' or 'ARMA'
-   * - -lp
-     - \\-\\-load_pickle
-     - BOOLEAN
-     - load the pickle file for the dataset instead of estimation
-   * - -c
-     - \\-\\-curvature
-     - BOOLEAN
-     - optimize the curvature for the simulated scenarios
-   * - -p
-     - \\-\\-plot
-     - BOOLEAN
-     - plot scenarios
-   * - -sv
-     - \\-\\-solver
-     - TEXT
-     - name of the solver (e.g. "gurobi")
-   * - -tt
-     - \\-\\-title
-     - TEXT
-     - title for the plot
-   * - -xl
-     - \\-\\-x_legend
-     - TEXT
-     - legend for x in plot
-   * - -sb
-     - \\-\\-scale_by_capacity
-     - FLOAT
-     - scale by capacity instead of observations
-   * - -ts
-     - \\-\\-target_scaled_capacity
-     - FLOAT
-     - scale all scenario data 
-   * -
-     - \\-\\-help
-     -
-     - Show this message and exit.
-|
-|
-
-Options with More Details
--------------------------
+*******
 |
 * **\\-\\-input_sid_file TEXT**:
  The path to a simulation input dataset (sid) with one or two timeseries (e.g. actuals), from which scenarios for the other timeseries are generated (e.g. forecasts)
@@ -140,15 +54,14 @@ Options with More Details
  ``-sf "sid.csv"``
 
  If this option is not given, the sid will be taken as a subset of the input dataset, specified by a simulation_start_dt and simulation_end_dt.
-|
-* **\\-\\-output_dir TEXT**:
+* **\\-\\-solar_output TEXT**:
  Path to destination dir where the scenario are saved as csv file(s).
 
  The following are the two ways to specify that the output directory is called "output":
 
- ``--output_dir "output"``
+ ``--solar_output "output"``
 
- ``-o "output"``
+ ``-so "output"``
 
  If this option is not given, the output directory is assumed to be None. No output directory
  will be created.
@@ -166,17 +79,7 @@ Options with More Details
  ``-vo "output.log"``
 
  If this option is not given, the output will be shown on terminal.
-|
-* **\\-\\-input_start_dt TEXT**:
-  The start date for the computation of the distributions, must be between the input file date range. (format = "Y-m-d H:M:S")
 
-  The following are two ways to specify that the start date for the computation of the distributions is 2020-1-3 00:00:00 :
-
-  ``--input_start_dt "2020-1-3 00:00:00"``
-
-  ``-is "2020-1-3 00:00:00"``
-
-  .. note:: If input start date is not given, it will take the first date of the input xyid file as input start date.
 |
 * **\\-\\-input_end_dt TEXT**:
   The end date for the computation of the distributions, must be between the input file date range. (format = "Y-m-d H:M:S")
@@ -277,17 +180,7 @@ Options with More Details
  ``-tl 40``
 
  If this option is not given, the time limits is assumed to be 3600 seconds.
-|
-* **\\-\\-plot_start_date INTEGER**:
- Start date of the plot.
 
- The following are two ways to specify that the plot start date is the first day:
-
- ``--plot-start_date 0``
-
- ``-ps 0``
-
- If this option is not given, it is assumed to be 0 and the simulations will be plotted starting from the first date.
 |
 * **\\-\\-seed INTEGER**:
  The seed used for simulation. If none, the seed will be random.
@@ -380,16 +273,16 @@ Options with More Details
 
  If this option is not given, the option is assumed to be False
 |
-* **\\-\\-plot BOOLEAN**:
+* **\\-\\-solar_plot BOOLEAN**:
  True if the user wants to plot the results.
 
- The following are two ways to specify to not plot the result:
+ The following are two ways to specify to plot the result:
 
- ``--plot``
+ ``--solar_plot``
 
- ``-p``
+ ``-sp``
 
- If this option is not given, the option is assumed to be True
+ If this option is not given, the option is assumed to be False
 |
 * **\\-\\-solver TEXT**:
  The name of the software that is used to perform the curvature optimization process.
@@ -402,60 +295,52 @@ Options with More Details
 
  If this option is not given, the solver is assumed to be "gurobi".
 |
-* **\\-\\-title TEXT**:
- The title of the simulation plot.
-
- The following are two ways to specify the title of the simulation plot as "my plot":
-
- ``--title "my plot"``
-
- ``-tt "my plot"``
-
- If this option is not given, the title of the simulation plot is assumed to be None. Therefore, no additional title will be added to the plot.
-|
-* **\\-\\-x_legend TEXT**:
- The x legend of the simulation plot.
-
- The following are two ways to specify the x legend of the simulation plot as "x legend":
-
- ``--x_legend "x legend"``
-
- ``-xl "x legend"``
-
- If this option is not given, the x legend of the simulation plot is assumed to be None. Therefore, no additional legend will be added to the plot.
-|
-* **\\-\\-scale_by_capacity FLOAT**:
- Calculate MAPE relative to capacity instead of observations, i.e.
- 
- .. math::
-  mape = \frac{100}{n} \sum_{i=1}^n \frac{|f_i - a_i|}{cap}
-
- The following are the two ways to specify that the capacity is 2000:
-
- ``--scale_by_capacity 2000``
-
- ``-sb 2000``
-
- If this option is not given, scale by observation.
-
- If this option is given to be 0, capacity is set to be the maximum of the observation.
-|
-* **\\-\\-target_scaled_capacity FLOAT**:
+* **\\-\\-solar_target_scaled_capacity FLOAT**:
  Optionally enter target capacity to scale all simulated data by target_capacity/capacity
  
- The following are the two ways to specify that the target capacity is 1000:
+ The following are the two ways to specify that the target capacity is 100:
 
- ``--target_scaled_capacity 1000``
+ ``--solar_target_scaled_capacity 100``
 
- ``-ts 1000``
+ ``-sts 100``
 
  If this option is not given, simulated data is not scaled.
+|
+Example
+*******
 
-By Default-options
-------------------
+::
+
+    python -m mape_maker.solar.solar_mape_maker -isf "mape_maker/solar/NREL_solar_data.csv" -so "solar_test_output" -n 3 -is "2018-07-01 00:00:00" -ie "2018-12-01 00:00:00" -ss "2018-07-01 00:00:00" -se "2018-07-07 00:00:00" -n 2 -bp "iid" -lc "37 -103 31 -94 26 -98 32 -107" -so "solar_test_output" -sts 100 -sp
+* **-isf "mape_maker/solar/NREL_solar_data.csv"**:
+ The csv file of NREL solar data at the system level for Texas 7k, containing forecasts and actuals from 2018-01-01 to 2018-12-31.
+* **-so "solar_test_output"**:
+ Create an output directory called "solar_test_output", in which will store the simulation output file.
+* **-n 2**:
+ The number of simulations that we want to create is "2". This will create two simulation columns in the output file.
+* **-is "2018-07-01 00:00:00"**:
+ The start time of the simulation is "2018-07-01 00:00:00".
+* **-ie "2018-12-01 00:00:00"**: 
+ The end time of the simulation is "2018-12-01 00:00:00". 
+* **-ss "2018-07-01 00:00:00"**:
+ The start time of the simulation is "2018-07-01 00:00:00".
+* **-se "2018-07-07 00:00:00"**: 
+ The end time of the simulation is "2013-07-07 00:00:00".  
+* **-bp "iid"**:
+ Use “iid” as the base process. The default base process is set as “ARMA”.
+* **-lc "37 -103 31 -94 26 -98 32 -107"**:
+ Specify the rage of generation site location is within (37N 103W), (31N 94W) and (32N 107W).
+* **-sts 100**:
+ Specify the target capacity is 100, and scale all scenario data by target_capacity/capacity, where capacity is the max of observation.
+* **-sp**:
+ Plot the output.
+|
+
+Default option values
+---------------------
 
 * **input_sid_file**        : None, will take the input dataset as sid
-* **output_dir**            : None, no output_file will be created while a plot will be outputted
+* **solar_output**          : None, no output_file will be created while a plot will be outputted
 * **verbosity_output**      : None, no verbosity_output will be created while a plot will be outputted
 * **input_start_dt**        : None, will use the whole dataset for the computation of the distributions
 * **input_end_dt**          : None, will use the whole dataset for the computation of the distributions
@@ -467,7 +352,6 @@ By Default-options
 * **mip_gap**               : 0.3
 * **number_simulations**    : 1
 * **time_limit**            : 3600 seconds
-* **plot_start_date**       : 0
 * **seed**                  : 1234
 * **verbosity**             : 2
 * **sid_feature**           : "actuals"
@@ -475,9 +359,17 @@ By Default-options
 * **load_pickle**           : False
 * **curvature**             : False
 * **show_curv_model**       : False
-* **plot**                  : True
+* **solar_plot**            : False
 * **solver**                : gurobi
-* **title**                 : None, no additional title will be added to the plot
-* **x_legend**              : None, will use the feature of curves (actuals or forecasts)
-* **scale_by_capacity**     : None, will not scale by capacity
-* **target_scaled_capacity**: None, will not scale simulated data
+* **solar_target_scaled_capacity** : None, will not scale scenario data
+
+Imutable Features
+*****************
+The following MapeMaker options cannot be changed from the command line in ``solar_mape_maker``.
+
+* **\\-\\-scale_by_capacity 0**:
+ Scale MAPE by capacity, which is the maximum of the observation data.
+* **\\-\\-target_scaled_capacity None**:
+ Simulated data from ``MapeMaker`` is not scaled, 
+ since the input and output of ``MapeMaker`` are deviations.
+ ``--solar_target_scaled_capacity`` or ``-sts`` is used if the user want to scale all scenario data.

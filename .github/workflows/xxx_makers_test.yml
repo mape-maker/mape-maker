@@ -1,4 +1,4 @@
-name: scale_by_capacity_test
+name: xxx_makers_test
 
 on:
   push:
@@ -32,14 +32,18 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Test scale_by_capacity with pytest and create codecov report
+      - name: Test BPA_maker with pytest and create codecov report
         run: |
           cd test 
-          pytest cap_test.py --cov=../ --cov=./ --cov-report=xml
-      - name: Test target_scale_capacity with pytest and create codecov report
+          pytest BPA_maker_test.py --cov=../ --cov=./ --cov-report=xml
+      - name: Test fake_BPA_maker with pytest and create codecov report
         run: |
           cd test 
-          pytest cap_scale_test.py --cov=../ --cov=./ --cov-report=xml
+          pytest fake_BPA_maker_test.py --cov=../ --cov=./ --cov-report=xml
+      - name: Test CAISO_maker with pytest and create codecov report
+        run: |
+          cd test 
+          pytest CAISO_maker_test.py --cov=../ --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

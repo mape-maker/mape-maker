@@ -123,7 +123,7 @@ class XYID(Dataset):
         mean_var_sample = [[0] * 2] * XYID.len_s_hat
         x_bar = np.array([0] * XYID.len_s_hat, dtype=float)
         for k, x_ in enumerate(index_search):
-            a_ = 1 if x_ == index_search[-1] else self.a
+            a_ = self.a
             x_bar[int(k)], beta_parameters[k], mean_var_sample[k] = self.find_parameters(
                 x_, a_)
             if k % 50 == 0:
@@ -138,14 +138,19 @@ class XYID(Dataset):
         Args
             x_: real around which to take the sample
             a_: percent/2 of data for estimation samples
+
+        Note: the data used for estimation is max(a%, smallest_estimation_size)
         """
+
+        smallest_estimation_size = 5
         index_x_ = np.argwhere(self.dataset_x >= x_)[0][0]
         half_length_sample = int((a_ / 100) * self.n_different_samples)
         left_bound = index_x_ - half_length_sample if index_x_ - \
             half_length_sample > 0 else 0
         right_bound = index_x_ + half_length_sample if index_x_ + half_length_sample < self.n_different_samples \
             else self.n_different_samples - 1
-
+        if right_bound - left_bound <= 1:  # happens when dataset size too small
+            left_bound = right_bound - (smallest_estimation_size+1)
         interval_index = (self.x_t > self.dataset_x[left_bound]) & (
             self.x_t < self.dataset_x[right_bound])  # strict condition used in v1
         x_bar = np.mean(self.x_t[interval_index])

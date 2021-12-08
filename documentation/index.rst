@@ -24,3 +24,7 @@ actuals and forecasts, is possible.
    sections/rts_example.rst
    sections/unittest_example.rst
    sections/infeasible_example.rst
+   sections/CAISO_maker.rst
+   sections/BPA_maker.rst
+   sections/fake_BPA_maker.rst
+   sections/solar_mape_maker.rst

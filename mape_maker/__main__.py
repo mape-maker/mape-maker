@@ -120,6 +120,18 @@ def make_parser():
                         'optionally enter the capacity (enter 0 to use max observation)',
                         type=float,
                         default=None)
+    parser.add_argument('-ts', '--target_scaled_capacity',
+                        help='scale all scenario data by target_capacity/capacity',
+                        type=float,
+                        default=None)
+    # user should not change this option
+    parser.add_argument('--use_output_as_intermidiate',
+                        help='True if other module (solar) uses MapeMaker\
+                        as an intermidiate step and will delete output directory. If true, the log will not show\
+                        the simulation is saved.',
+                        default=False,
+                        action='store_true')
+
     return parser
 
 
@@ -159,7 +171,8 @@ def main(args):
                               input_end_dt=args.input_end_time,
                               a=args.a,
                               base_process=args.base_process,
-                              scale_by_capacity=args.scale_by_capacity)
+                              scale_by_capacity=args.scale_by_capacity,
+                              target_scaled_capacity=args.target_scaled_capacity)
     if args.curvature:
         pyomo_param = {
             "MIP": args.mip_gap,
@@ -180,7 +193,8 @@ def main(args):
                                      n=args.simulations_num,
                                      curvature_parameters=pyomo_param,
                                      show=args.show_curv_model,
-                                     r_tilde=tmare)
+                                     r_tilde=tmare,
+                                     target_scaled_capacity=args.target_scaled_capacity)
 
     x_legend = mare_embedder.xyid.x_name if args.x_legend is None else args.x_legend
     Scenarios(X=mare_embedder.sid.x_t,
@@ -197,7 +211,9 @@ def main(args):
               ending_feature=args.sid_feature,
               logger=logger,
               scale_by_capacity=args.scale_by_capacity,
-              cap=mare_embedder.xyid.dataset_info.get("cap"))
+              cap=mare_embedder.xyid.dataset_info.get("cap"),
+              target_scaled_capacity=args.target_scaled_capacity,
+              use_output_as_intermidiate=args.use_output_as_intermidiate)
 
 
 if __name__ == '__main__':
