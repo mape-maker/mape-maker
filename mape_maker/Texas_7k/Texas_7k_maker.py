@@ -137,14 +137,14 @@ def sum_or_indv_sites(args, sum_or_indv, actual, forecast):
 def make_parser():
     parser = ArgumentParser()
     parser.add_argument('-ds', '--data_source',
-                        help='data source, option is only Princeton for now',
+                        help='the source of simulation data (_test contains smaller datasets for quick test)',
                         choices=['Princeton', 'Princeton_test',
                                  'NREL_ECMWF_PEFORM', 'NREL_ECMWF_PEFORM_test'],
-                        default='test')
+                        default='Princeton_test')
     parser.add_argument('-gs', '--geographic_scale',
                         help='simulation for the sum of all sites or for individual sites',
                         choices=['sum', 'individual'],
-                        default='individual')
+                        default='sum')
     parser.add_argument('-ss', '--simulation_start_time',
                         help='start time for simulation',
                         type=str,
