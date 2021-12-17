@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime as dt
 import numpy as np
+import mape_maker
 from mape_maker.__main__ import main as mapemain
 from argparse import ArgumentParser
 import os
@@ -28,41 +29,45 @@ def date_time(df):
 
 
 def load_dataset(data_source):
+    p = str(mape_maker.__path__)
+    l = p.find("'")
+    r = p.find("'", l + 1)
+    mape_maker_path = p[l + 1:r]
     if data_source == 'Princeton_test':
         forecast = pd.read_csv(
-            "Prelim_Princeton/Scenario0/timeseries_data_files/WIND/test_data/test_Prelim_Princeton_DAY_AHEAD_wind.csv")
+            mape_maker_path + "/Texas_7k/Prelim_Princeton/Scenario0/timeseries_data_files/WIND/test_data/test_Prelim_Princeton_DAY_AHEAD_wind.csv")
         actual = pd.read_csv(
-            "Prelim_Princeton/Scenario0/timeseries_data_files/WIND/test_data/test_Prelim_Princeton_REAL_TIME_wind.csv")
+            mape_maker_path + "/Texas_7k/Prelim_Princeton/Scenario0/timeseries_data_files/WIND/test_data/test_Prelim_Princeton_REAL_TIME_wind.csv")
         forecast = date_time(forecast)
         actual = date_time(actual)
 
     elif data_source == 'Princeton':
         forecast = pd.read_csv(
-            'Prelim_Princeton/Scenario0/timeseries_data_files/WIND/DAY_AHEAD_wind.csv')
+            mape_maker_path + '/Texas_7k/Prelim_Princeton/Scenario0/timeseries_data_files/WIND/DAY_AHEAD_wind.csv')
         actual = pd.read_csv(
-            'Prelim_Princeton/Scenario0/timeseries_data_files/WIND/REAL_TIME_wind.csv')
+            mape_maker_path + '/Texas_7k/Prelim_Princeton/Scenario0/timeseries_data_files/WIND/REAL_TIME_wind.csv')
         forecast = date_time(forecast)
         actual = date_time(actual)
 
     elif data_source == 'NREL_ECMWF_PEFORM_test':
         forecast = pd.read_csv(
-            "NREL_ECMWF_PEFORM/timeseries_data_files/WIND/test_data/test_NREL_ECMWF_PEFORM_DAY_AHEAD_wind.csv")
+            mape_maker_path + "/Texas_7k/NREL_ECMWF_PEFORM/timeseries_data_files/WIND/test_data/test_NREL_ECMWF_PEFORM_DAY_AHEAD_wind.csv")
         actual = pd.read_csv(
-            "NREL_ECMWF_PEFORM//timeseries_data_files/WIND/test_data/test_NREL_ECMWF_PEFORM_REAL_TIME_wind.csv")
+            mape_maker_path + "/Texas_7k/NREL_ECMWF_PEFORM//timeseries_data_files/WIND/test_data/test_NREL_ECMWF_PEFORM_REAL_TIME_wind.csv")
         forecast = date_time(forecast)
         actual = date_time(actual)
 
     elif data_source == 'NREL_ECMWF_PEFORM':
         forecast = pd.read_csv(
-            'NREL_ECMWF_PEFORM/timeseries_data_files/WIND/DAY_AHEAD_wind.csv')
+            '../mape_maker/Texas_7k/NREL_ECMWF_PEFORM/timeseries_data_files/WIND/DAY_AHEAD_wind.csv')
         actual = pd.read_csv(
-            'NREL_ECMWF_PEFORM/timeseries_data_files/WIND/REAL_TIME_wind.csv')
+            '../mape_maker/Texas_7k/NREL_ECMWF_PEFORM/timeseries_data_files/WIND/REAL_TIME_wind.csv')
         forecast = date_time(forecast)
         actual = date_time(actual)
     return actual, forecast
 
 
-def sum_or_indv_sites(sum_or_indv, actual, forecast):
+def sum_or_indv_sites(args, sum_or_indv, actual, forecast):
 
     if sum_or_indv == 'sum':
         data_forecast = forecast.sum(axis=1)
@@ -118,8 +123,12 @@ def sum_or_indv_sites(sum_or_indv, actual, forecast):
                 df.index = pd.to_datetime(df.index)
                 df['actual'] = actual.iloc[:, i]
                 df['forecast'] = forecast.iloc[:, i]
+                act = df.pop("actual")
+                df.insert(0, act.name, act)
+                fore = df.pop("forecast")
+                df.insert(0, fore.name, fore)
                 df = df.head(50)
-                fig = df.plot()
+                fig = df.plot(style=['--', '--'])
                 fig.figure.savefig(name+'/'+name+'_results')
 
         os.remove('temp_data_for_individual_sites.csv')
@@ -179,9 +188,10 @@ def make_parser():
 def main(args):
     args.use_output_as_intermidiate = False
     actual, forecast = load_dataset(args.data_source)
-    data_forecast, data_actual = sum_or_indv_sites(
-        args.geographic_scale, actual, forecast)
+    sum_or_indv_sites(args, args.geographic_scale, actual, forecast)
     if args.geographic_scale == "sum":
+        data_forecast, data_actual = sum_or_indv_sites(
+            args, args.geographic_scale, actual, forecast)
         if args.output_dir == None:
             raise ValueError("No output directory specified")
         args.input_xyid_file = 'data_sum.csv'
@@ -223,8 +233,12 @@ def main(args):
             df.index = pd.to_datetime(df.index)
             df['actual'] = data_actual
             df['forecast'] = data_forecast
+            act = df.pop("actual")
+            df.insert(0, act.name, act)
+            fore = df.pop("forecast")
+            df.insert(0, fore.name, fore)
             df = df.head(50)
-            fig = df.plot()
+            fig = df.plot(style=['--', '--'])
             fig.figure.savefig(name+'/'+name+'_results')
 
 
