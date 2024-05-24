@@ -40,6 +40,10 @@ You can install the package with the setup.py file:
 
     python setup.py develop
 
+or
+
+::
+    pip install -e .
 
 Then you can use the package in command-line, for a quick-first run :
 
@@ -49,6 +53,8 @@ Then you can use the package in command-line, for a quick-first run :
 
 This is real data from CAISO with negative values that mape_maker treats as zero. The
 presence of many low power values makes it difficult to exactly hit a target MAPE.
+(You will probably need to install some additional packages to make it work.
+Also, as of May 2024, it tested only on Python 3.10)
 
 Options
 ########################
