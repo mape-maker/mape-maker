@@ -2,16 +2,16 @@ name: scale_by_capacity_test
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.9, 3.10.14]
 
     steps:
       - uses: actions/checkout@v2

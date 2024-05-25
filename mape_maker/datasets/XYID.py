@@ -71,7 +71,7 @@ class XYID(Dataset):
         self.logger.info(loading_bar + "\nWeight function is being computed\n")
         self.create_weight_function(self.dataset_info.get("scale_by_capacity"))
         self.logger.info(
-            loading_bar + "\nBase Process {} is being fitted\n".format(base_process))
+            loading_bar + "\nBase Process {} is being fit\n".format(base_process))
         self.create_arma_process(
             base_process=base_process, xyid_load_pickle=xyid_load_pickle)
 

@@ -5,8 +5,8 @@ from logging import Logger
 import os
 import itertools
 import scipy.optimize
-from statsmodels.tsa.arima_model import ARIMA
-from statsmodels.tsa.arima_model import ARIMAResults
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.arima.model import ARIMAResults
 file_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 loading_bar = "-"*70
 
@@ -72,7 +72,7 @@ class BaseProcess:
         n = len(index) + BaseProcess.n_init
         simulations = np.array([0.] * n)
         ar, ma = self.model.arparams, self.model.maparams
-        sigma = self.model.sigma2
+        sigma = self.model.sigma2  # this should have been attached by mape-maker
         errors = np.random.normal(scale=np.sqrt(sigma), size=n)
         i = max(len(ar), len(ma))
         while i < n:
@@ -96,13 +96,18 @@ class BaseProcess:
     def find_best_model(self, z_hat):
         pgq = find_best_arma_repr(self.logger, z_hat)
         model = ARIMA(z_hat, order=pgq)
-        self.model = model.fit(disp=0)
+        self.model = model.fit()
         self.logger.info(self.model.summary())
         self.logger.info(
             "\n-Setting up the correct std for the error so that V[Z] = 1")
         n_sigma = setting_correct_sigma(
             self.model.arparams, self.model.maparams)
-        before = self.model.sigma2
+        # Get the residuals from the fitted model
+        residuals = self.model.resid
+
+        # Calculate the variance of the residuals
+        error_variance = np.var(residuals)
+        before = error_variance
         self.model.sigma2 = n_sigma
         self.logger.info("The sigma2 of the estimated model was {} and is now {}".format(
             before, self.model.sigma2))
@@ -129,7 +134,7 @@ def find_best_arma_repr(logger, base_process):
     for p, d, q in itertools.product(ps, ds, qs):
         model = ARIMA(base_process, order=(p, d, q))
         try:
-            model_fit = model.fit(disp=0)
+            model_fit = model.fit()
             if model_fit.bic < bic:
                 best_model = (p, d, q)
                 bic = model_fit.bic

@@ -40,6 +40,10 @@ You can install the package with the setup.py file:
 
     python setup.py develop
 
+or
+
+::
+    pip install -e .
 
 Then you can use the package in command-line, for a quick-first run :
 
@@ -48,7 +52,10 @@ Then you can use the package in command-line, for a quick-first run :
     python -m mape_maker -xf "mape_maker/samples/wind_total_forecast_actual_070113_063015.csv"
 
 This is real data from CAISO with negative values that mape_maker treats as zero. The
-presence of many low power values makes it difficult to exactly hit a target MAPE.
+presence of many low power values makes it difficult to exactly hit a target MAPE. So this particular example issues a lot of warnings, but does make pretty good
+scenarios anyway.
+(You will probably need to install some additional packages to make it work.
+Also, as of May 2024, it tested only on Python 3.9 and 3.10)
 
 Options
 ########################

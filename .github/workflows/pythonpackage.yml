@@ -5,16 +5,16 @@ name: mape-maker
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.9, 3.10.14]
 
     steps:
       - uses: actions/checkout@v2
