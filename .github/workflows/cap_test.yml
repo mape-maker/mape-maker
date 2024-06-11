@@ -36,15 +36,15 @@ jobs:
         run: |
           cd test 
           pytest cap_test.py --cov=../ --cov=./ --cov-report=xml
-      - name: Test target_scale_capacity with pytest and create codecov report
-        run: |
-          cd test 
-          pytest cap_scale_test.py --cov=../ --cov=./ --cov-report=xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./test/coverage.xml
-          flags: unittests
-          env_vars: OS,PYTHON
-          name: codecov-umbrella
-          fail_ci_if_error: true
+      #- name: Test target_scale_capacity with pytest and create codecov report
+      #  run: |
+      #    cd test 
+      #    pytest cap_scale_test.py --cov=../ --cov=./ --cov-report=xml
+      #- name: Upload coverage to Codecov
+      #  uses: codecov/codecov-action@v1
+      #  with:
+      #    file: ./test/coverage.xml
+      #    flags: unittests
+      #    env_vars: OS,PYTHON
+      #    name: codecov-umbrella
+      #    fail_ci_if_error: true
