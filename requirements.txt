@@ -12,6 +12,6 @@ python-dateutil
 pytz
 scipy
 six
-statsmodels==0.12.1
+statsmodels
 verboselogs
 pvlib
